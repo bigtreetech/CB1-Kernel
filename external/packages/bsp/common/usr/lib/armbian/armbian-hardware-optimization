@@ -1,0 +1,125 @@
+#!/bin/bash
+#
+# Copyright (c) Authors: https://www.armbian.com/authors
+
+# Functions:
+#
+# set_io_scheduler
+# prepare_board
+
+# Read in basic OS image information
+. /etc/board-release
+
+# and script configuration
+. /usr/lib/armbian/armbian-common
+
+# set audio
+#. /usr/lib/armbian/armbian-audio-config
+
+set_io_scheduler() {
+
+	# Convert kernel version to integer
+	KERNELID=$(uname -r |  awk -F'.' '{print ($1 * 100) + $2}')
+	for i in $( lsblk -idn -o NAME | grep -v zram ); do
+		read ROTATE </sys/block/$i/queue/rotational
+		case ${ROTATE} in
+			1) # mechanical drives
+				[[ $KERNELID -lt 420 ]] && sched=cfq || sched=bfq
+				;;
+			0) # flash based
+				[[ $KERNELID -lt 420 ]] && sched=noop || sched=none
+				;;
+			*)
+				continue
+				;;
+		esac
+		echo $sched >/sys/block/$i/queue/scheduler
+		echo -e "[\e[0;32m ok \x1B[0m] Setting $sched I/O scheduler for $i"
+	done
+
+} # set_io_scheduler
+
+prepare_board() {
+
+	CheckDevice=$(for i in /var/log /var / ; do findmnt -n -o SOURCE $i && break ; done)
+	# adjust logrotate configs
+	if [[ "${CheckDevice}" == *"/dev/zram"* || "${CheckDevice}" == "armbian-ramlog" ]]; then
+		for ConfigFile in /etc/logrotate.d/* ; do sed -i -e "s/\/var\/log\//\/var\/log.hdd\//g" "${ConfigFile}"; done
+		sed -i "s/\/var\/log\//\/var\/log.hdd\//g" /etc/logrotate.conf
+	else
+		for ConfigFile in /etc/logrotate.d/* ; do sed -i -e "s/\/var\/log.hdd\//\/var\/log\//g" "${ConfigFile}"; done
+		sed -i "s/\/var\/log.hdd\//\/var\/log\//g" /etc/logrotate.conf
+	fi
+
+	# unlock cpuinfo_cur_freq to be accesible by a normal user
+	prefix="/sys/devices/system/cpu/cpufreq"
+	for f in $(ls -1 $prefix 2> /dev/null)
+	do
+		[[ -f $prefix/$f/cpuinfo_cur_freq ]] && chmod +r $prefix/$f/cpuinfo_cur_freq 2> /dev/null
+	done
+	# older kernels
+	prefix="/sys/devices/system/cpu/cpu0/cpufreq/"
+	[[ -f $prefix/cpuinfo_cur_freq ]] && chmod +r $prefix/cpuinfo_cur_freq 2> /dev/null
+
+	# enable compression where not exists
+	find /etc/logrotate.d/. -type f | xargs grep -H -c 'compress' | grep 0$ | cut -d':' -f1 | xargs -r -L1 sed -i '/{/ a compress'
+	sed -i "s/#compress/compress/" /etc/logrotate.conf
+
+	# tweak ondemand cpufreq governor settings to increase cpufreq with IO load
+	grep -q ondemand /etc/default/cpufrequtils
+	if [ $? -eq 0 ]; then
+		echo ondemand >/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+		cd /sys/devices/system/cpu
+		for i in cpufreq/ondemand cpu0/cpufreq/ondemand cpu4/cpufreq/ondemand ; do
+			if [ -d $i ]; then
+				echo 1 >${i}/io_is_busy
+				echo 25 >${i}/up_threshold
+				echo 10 >${i}/sampling_down_factor
+				echo 200000 >${i}/sampling_rate
+			fi
+		done
+	fi
+
+	chmod +x /etc/update-motd.d/*
+
+    if [[ $BRANCH == current ]]; then
+        # Initial hdmi audio
+        aplay /usr/share/sounds/alsa/mute.wav -D hw:0,0 > /dev/null 2>&1
+        aplay /usr/share/sounds/alsa/mute.wav -D hw:1,0 > /dev/null 2>&1
+        aplay /usr/share/sounds/alsa/mute.wav -D hw:0,0 > /dev/null 2>&1
+    fi
+
+    rfkill unblock all
+    /usr/bin/hciattach_opi -n -s 1500000 /dev/ttyBT0 sprd &
+
+    # Send IRQs for the lower real USB port (usb2) to cpu2 and for the upper (OTG/usb1) to cpu1
+    echo 2 >/proc/irq/$(awk -F":" "/usb1/ {print \$1}" </proc/interrupts | sed 's/\ //g')/smp_affinity
+    echo 4 >/proc/irq/$(awk -F":" "/usb2/ {print \$1}" </proc/interrupts | sed 's/\ //g')/smp_affinity
+    echo 8 >/proc/irq/$(awk -F":" "/sunxi-mmc/ {print \$1}" </proc/interrupts | sed 's/\ //g' | head -n1)/smp_affinity
+    echo 8 >/proc/irq/$(awk -F":" "/eth/ {print \$1}" </proc/interrupts | sed 's/\ //g' | head -n1)/smp_affinity
+    echo 7 >/sys/class/net/eth0/queues/rx-0/rps_cpus
+
+} # prepare_board
+
+branch_naming_workaround()
+# https://armbian.atlassian.net/browse/AR-748
+# Once we rework kernel packages, this can be done better
+{
+	if [[ -z $(cat /etc/board-release | grep BRANCH) ]]; then
+		BRANCH=$(dpkg -l | egrep "linux-image" | egrep "current|legacy|edge" | awk '{print $2}' | cut -d"-" -f3 | head -1)
+		[[ -n ${BRANCH} ]] && echo "BRANCH=$BRANCH" >> /etc/board-release
+	fi
+}
+
+case $1 in
+	*start*)
+		# set optimal disk scheduler settings
+		set_io_scheduler &
+
+		# hardware preparation
+		prepare_board &
+
+		# branch naming workaround
+		branch_naming_workaround &
+		;;
+esac
