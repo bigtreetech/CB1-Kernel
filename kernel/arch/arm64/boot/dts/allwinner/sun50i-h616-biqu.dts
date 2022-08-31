@@ -17,7 +17,7 @@
 	compatible = "allwinner,sun50i-h616";
 
 	aliases {
-		ethernet0 = &emac1;
+		ethernet0 = &emac0;
 		serial0 = &uart0;
 	};
 
@@ -83,7 +83,7 @@
 		regulator-max-microvolt = <5000000>;
 		vin-supply = <&reg_vcc5v>;
 		enable-active-high;
-		gpio = <&pio 2 16 GPIO_ACTIVE_HIGH>; /* PC16 */
+		gpio = <&pio 2 16 GPIO_ACTIVE_HIGH>;    /* PC16 */
 		status = "okay";
 	};
 
@@ -111,21 +111,13 @@
 		compatible = "mmc-pwrseq-simple";
 		clocks = <&rtc 1>;
 		clock-names = "osc32k-out";
-		reset-gpios = <&pio 6 18 GPIO_ACTIVE_LOW>; /* PG18 */
+		reset-gpios = <&pio 6 18 GPIO_ACTIVE_LOW>;  /* PG18 */
 		post-power-on-delay-ms = <200>;
 	};
 };
 
 &usbphy {
 	usb1_vbus-supply = <&reg_usb1_vbus>;
-	status = "okay";
-};
-
-&ac200_ephy {
-	status = "okay";
-};
-
-&ac200_pwm_clk {
 	status = "okay";
 };
 
@@ -185,32 +177,7 @@
 	};
 };
 
-// &emac1 {
-// 	pinctrl-names = "default";
-// 	pinctrl-0 = <&ext_rmii_pins>;
-// 	phy-mode = "rmii";
-// 	phy-handle = <&ext_rmii_phy>;
-// 	status = "okay";
-// };
-
-&emac1 {
-	pinctrl-names = "default";
-	pinctrl-0 = <&rmii_pins>;
-	phy-mode = "rmii";
-	phy-handle = <&rmii_phy>;
-	phy-supply = <&reg_dldo1>;
-	allwinner,rx-delay-ps = <3100>;
-	allwinner,tx-delay-ps = <700>;
-	status = "okay";
-};
-
-&mdio1 {
-	rmii_phy: ethernet-phy@1 {
-		compatible = "ethernet-phy-ieee802.3-c22";
-		reg = <1>;
-	};
-};
-
+/*------------------------------------*/
 
 &mmc0 {
     vmmc-supply = <&reg_dldo1>;
@@ -254,12 +221,6 @@
 		compatible = "x-powers,axp1530";
         status = "okay";
 		reg = <0x36>;
-		// reg = <0x745>;
-		// interrupt-parent = <&nmi_intc>;
-		// interrupts = <0 IRQ_TYPE_LEVEL_LOW>;
-		// interrupt-controller;
-		// #interrupt-cells = <1>;
-
 		wakeup-source;
 
 		standby_param: standby_param {
@@ -381,10 +342,6 @@
 
 &i2c4 {
 	status = "disabled";
-};
-
-&pwm {
-	status = "okay";
 };
 
 &ir {

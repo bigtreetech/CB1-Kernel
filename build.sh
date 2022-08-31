@@ -26,4 +26,7 @@ popd > /dev/null || exit
 
 USERPATCHES_PATH="${CONFIG_PATH}"
 
+[[ $# == 1 ]] && export $1 
+[[ $# == 2 ]] && export $1 && export $2
+
 source "${SRC}"/scripts/main.sh

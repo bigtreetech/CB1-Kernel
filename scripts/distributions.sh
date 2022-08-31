@@ -339,7 +339,6 @@ install_common()
 		#Domains=example.com
 		NTP=0.pool.ntp.org 1.pool.ntp.org
 		__EOF__
-
 	fi
 
 	# avahi daemon defaults if exists
@@ -380,21 +379,17 @@ install_rclocal()
 
 install_system_cfg()
 {
-    cat <<-EOF > "${SDCARD}"/boot/system.cfg
-	check_interval=5        # Cycle to detect whether wifi is connected, time 5s 
-	router_ip=8.8.8.8       # Reference DNS, used to detect network connections
-	
-	eth=eth0        # Ethernet Card Device No.
-	wlan=wlan0      # Wireless NIC Device No.
-	
-	###########################################
-	# wifi名称
-	WIFI_SSID="ZYIPTest"
-	# wifi密码
-	WIFI_PASSWD="12345678"
-	###########################################
-	EOF
+    mkdir "${SDCARD}"/boot/gcode -p
+    mkdir "${SDCARD}"/etc/scripts -p
+
+    cp $USERPATCHES_PATH/scripts/system.cfg ${SDCARD}/boot/system.cfg
     chmod +x "${SDCARD}"/boot/system.cfg
+
+    cp $USERPATCHES_PATH/scripts/ex_rootfs.sh ${SDCARD}/etc/scripts
+    chmod +x "${SDCARD}"/etc/scripts/ex_rootfs.sh
+
+    cp $USERPATCHES_PATH/scripts/reconnect_wifi.sh ${SDCARD}/etc/scripts
+    chmod +x "${SDCARD}"/etc/scripts/reconnect_wifi.sh
 }
 
 install_distribution_specific()
@@ -403,9 +398,6 @@ install_distribution_specific()
 
     install_rclocal
     install_system_cfg
-
-    mkdir "${SDCARD}"/boot/gcode -p
-    mkdir "${SDCARD}"/etc/scripts -p
 
 	case $RELEASE in
 

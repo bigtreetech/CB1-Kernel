@@ -18,16 +18,6 @@
 	#address-cells = <2>;
 	#size-cells = <2>;
 
-    // ac200_pwm_clk: ac200_clk {
-	// 	compatible = "pwm-clock";
-	// 	#clock-cells = <0>;
-	// 	clock-frequency = <24000000>;
-	// 	pinctrl-names = "default";
-	// 	pinctrl-0 = <&pwm1_pin>;
-	// 	pwms = <&pwm 1 42 0>;
-	// 	status = "disabled";
-	// };
-
 	cpus {
 		#address-cells = <1>;
 		#size-cells = <0>;
@@ -268,7 +258,7 @@
 			resets = <&ccu RST_BUS_PWM>;
 			pwm-number = <6>;
 			pwm-base = <0x0>;
-			sunxi-pwms = <&pwm0>, <&ac200_pwm_clk>, <&pwm2>, <&pwm3>, <&pwm4>, <&pwm5>;
+			sunxi-pwms = <&pwm0>, <&pwm1>, <&pwm2>, <&pwm3>, <&pwm4>, <&pwm5>;
 			#pwm-cells = <3>;
 			status = "disabled";
 		};
@@ -277,21 +267,11 @@
 			compatible = "allwinner,sunxi-pwm0";
 		};
 
-        ac200_pwm_clk: ac200_clk {
-            compatible = "pwm-clock";
-            #clock-cells = <0>;
-            clock-frequency = <24000000>;
-            pinctrl-names = "default";
-            pinctrl-0 = <&pwm1_pin>;
-            pwms = <&pwm 1 42 0>;
-            status = "disabled";
-        };
-
-		// pwm1: pwm1@0300a000 {
-		// 	compatible = "allwinner,sunxi-pwm1";
-		// 	pinctrl-names = "default";
-		// 	pinctrl-0 = <&pwm1_pin>;
-		// };
+		pwm1: pwm1@0300a000 {
+			compatible = "allwinner,sunxi-pwm1";
+			pinctrl-names = "default";
+			pinctrl-0 = <&pwm1_pin>;
+		};
 
 		pwm2: pwm2@0300a000 {
 			compatible = "allwinner,sunxi-pwm2";
@@ -800,23 +780,6 @@
 			status = "disabled";
 			#address-cells = <1>;
 			#size-cells = <0>;
-
-            ac200: mfd@10 {
-				compatible = "x-powers,ac200";
-				reg = <0x10>;
-				clocks = <&ac200_pwm_clk>;
-				interrupt-parent = <&pio>;
-				interrupts = <1 20 IRQ_TYPE_LEVEL_LOW>;
-				interrupt-controller;
-				#interrupt-cells = <1>;
-
-				ac200_ephy: phy {
-					compatible = "x-powers,ac200-ephy";
-					nvmem-cells = <&ephy_calibration>;
-					nvmem-cell-names = "calibration";
-					status = "disabled";
-				};
-			};
 		};
 
 		i2c4: i2c@5003000 {
