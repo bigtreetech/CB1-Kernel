@@ -1,4 +1,4 @@
-cmd_drivers/usb/gadget/config.o := ccache aarch64-none-linux-gnu-gcc -Wp,-MD,drivers/usb/gadget/.config.o.d -nostdinc -isystem /home/lodge/Desktop/CB1-Kernel/toolchains/bin/../lib/gcc/aarch64-none-linux-gnu/9.2.1/include -Iinclude   -I./arch/arm/include -include ./include/linux/kconfig.h -D__KERNEL__ -D__UBOOT__ -Wall -Wstrict-prototypes -Wno-format-security -fno-builtin -ffreestanding -std=gnu11 -fshort-wchar -fno-strict-aliasing -fno-PIE -Os -fno-stack-protector -fno-delete-null-pointer-checks -Wno-pointer-sign -Wno-stringop-truncation -Wno-array-bounds -Wno-stringop-overflow -Wno-maybe-uninitialized -fmacro-prefix-map=./= -g -fstack-usage -Wno-format-nonliteral -Wno-address-of-packed-member -Wno-unused-but-set-variable -Werror=date-time -Wno-packed-not-aligned -D__ARM__ -fno-pic -mstrict-align -ffunction-sections -fdata-sections -fno-common -ffixed-r9 -fno-common -ffixed-x18 -pipe -march=armv8-a -D__LINUX_ARM_ARCH__=8 -I./arch/arm/mach-sunxi/include    -DKBUILD_BASENAME='"config"'  -DKBUILD_MODNAME='"config"' -c -o drivers/usb/gadget/config.o drivers/usb/gadget/config.c
+cmd_drivers/usb/gadget/config.o := ccache aarch64-none-linux-gnu-gcc -Wp,-MD,drivers/usb/gadget/.config.o.d -nostdinc -isystem /home/lodge/Allwinner-H616/toolchains/bin/../lib/gcc/aarch64-none-linux-gnu/9.2.1/include -Iinclude   -I./arch/arm/include -include ./include/linux/kconfig.h -D__KERNEL__ -D__UBOOT__ -Wall -Wstrict-prototypes -Wno-format-security -fno-builtin -ffreestanding -std=gnu11 -fshort-wchar -fno-strict-aliasing -fno-PIE -Os -fno-stack-protector -fno-delete-null-pointer-checks -Wno-pointer-sign -Wno-stringop-truncation -Wno-array-bounds -Wno-stringop-overflow -Wno-maybe-uninitialized -fmacro-prefix-map=./= -g -fstack-usage -Wno-format-nonliteral -Wno-address-of-packed-member -Wno-unused-but-set-variable -Werror=date-time -Wno-packed-not-aligned -D__ARM__ -fno-pic -mstrict-align -ffunction-sections -fdata-sections -fno-common -ffixed-r9 -fno-common -ffixed-x18 -pipe -march=armv8-a -D__LINUX_ARM_ARCH__=8 -I./arch/arm/mach-sunxi/include    -DKBUILD_BASENAME='"config"'  -DKBUILD_MODNAME='"config"' -c -o drivers/usb/gadget/config.o drivers/usb/gadget/config.c
 
 source_drivers/usb/gadget/config.o := drivers/usb/gadget/config.c
 
@@ -170,7 +170,7 @@ deps_drivers/usb/gadget/config.o := \
     $(wildcard include/config/phys/64bit.h) \
     $(wildcard include/config/dma/addr/t/64bit.h) \
   include/asm-generic/int-ll64.h \
-  /home/lodge/Desktop/CB1-Kernel/toolchains/lib/gcc/aarch64-none-linux-gnu/9.2.1/include/stdbool.h \
+  /home/lodge/Allwinner-H616/toolchains/lib/gcc/aarch64-none-linux-gnu/9.2.1/include/stdbool.h \
   include/linux/printk.h \
     $(wildcard include/config/loglevel.h) \
     $(wildcard include/config/log.h) \
@@ -184,7 +184,7 @@ deps_drivers/usb/gadget/config.o := \
   include/stdio.h \
     $(wildcard include/config/tpl/serial/support.h) \
     $(wildcard include/config/spl/serial/support.h) \
-  /home/lodge/Desktop/CB1-Kernel/toolchains/lib/gcc/aarch64-none-linux-gnu/9.2.1/include/stdarg.h \
+  /home/lodge/Allwinner-H616/toolchains/lib/gcc/aarch64-none-linux-gnu/9.2.1/include/stdarg.h \
   include/linux/compiler.h \
     $(wildcard include/config/trace/branch/profiling.h) \
     $(wildcard include/config/profile/all/branches.h) \

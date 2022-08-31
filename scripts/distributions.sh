@@ -378,9 +378,34 @@ install_rclocal()
     chmod +x "${SDCARD}"/etc/rc.local
 }
 
+install_system_cfg()
+{
+    cat <<-EOF > "${SDCARD}"/boot/system.cfg
+	check_interval=5        # Cycle to detect whether wifi is connected, time 5s 
+	router_ip=8.8.8.8       # Reference DNS, used to detect network connections
+	
+	eth=eth0        # Ethernet Card Device No.
+	wlan=wlan0      # Wireless NIC Device No.
+	
+	###########################################
+	# wifi名称
+	WIFI_SSID="ZYIPTest"
+	# wifi密码
+	WIFI_PASSWD="12345678"
+	###########################################
+	EOF
+    chmod +x "${SDCARD}"/boot/system.cfg
+}
+
 install_distribution_specific()
 {
 	display_alert "Applying distribution specific tweaks for" "$RELEASE" "info"
+
+    install_rclocal
+    install_system_cfg
+
+    mkdir "${SDCARD}"/boot/gcode -p
+    mkdir "${SDCARD}"/etc/scripts -p
 
 	case $RELEASE in
 
@@ -388,7 +413,6 @@ install_distribution_specific()
 			# remove doubled uname from motd
 			[[ -f "${SDCARD}"/etc/update-motd.d/10-uname ]] && rm "${SDCARD}"/etc/update-motd.d/10-uname
 
-			install_rclocal
 			# fix missing versioning
 			[[ $(grep -L "VERSION_ID=" "${SDCARD}"/etc/os-release) ]] && echo 'VERSION_ID="11"' >> "${SDCARD}"/etc/os-release
 			[[ $(grep -L "VERSION=" "${SDCARD}"/etc/os-release) ]] && echo 'VERSION="11 (bullseye)"' >> "${SDCARD}"/etc/os-release
@@ -397,8 +421,6 @@ install_distribution_specific()
 	bookworm)
 			# remove doubled uname from motd
 			[[ -f "${SDCARD}"/etc/update-motd.d/10-uname ]] && rm "${SDCARD}"/etc/update-motd.d/10-uname
-
-			install_rclocal
 
 			# fix missing versioning
 			[[ $(grep -L "VERSION_ID=" "${SDCARD}"/etc/os-release) ]] && echo 'VERSION_ID="12"' >> "${SDCARD}"/etc/os-release
@@ -421,8 +443,6 @@ install_distribution_specific()
 
 			# remove motd news from motd.ubuntu.com
 			[[ -f "${SDCARD}"/etc/default/motd-news ]] && sed -i "s/^ENABLED=.*/ENABLED=0/" "${SDCARD}"/etc/default/motd-news
-
-			install_rclocal
 
 			if [ -d "${SDCARD}"/etc/NetworkManager ]; then
 				local RENDERER=NetworkManager
