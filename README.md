@@ -10,3 +10,10 @@ sudo apt-get install ccache debian-archive-keyring debootstrap device-tree-compi
 
 - kernel 5.16.17
 - uboot 2021.10
+
+## 编译
+
+直接在项目主目录下运行
+``` bash
+sudo ./build.sh
+```
