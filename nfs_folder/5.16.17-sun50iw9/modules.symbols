@@ -106,7 +106,6 @@ alias symbol:dw_spi_resume_host spi_dw
 alias symbol:iscsi_host_add libiscsi
 alias symbol:ceph_find_or_create_string libceph
 alias symbol:asoc_simple_startup snd_soc_simple_card_utils
-alias symbol:can_send can
 alias symbol:ata_scsi_dma_need_drain libata
 alias symbol:ip6_tnl_get_iflink ip6_tunnel
 alias symbol:rtl_efuse_shadow_map_update rtlwifi
@@ -144,7 +143,6 @@ alias symbol:usb_string_id libcomposite
 alias symbol:iscsit_increment_maxcmdsn iscsi_target_mod
 alias symbol:unregister_cdrom cdrom
 alias symbol:brcmnand_remove brcmnand
-alias symbol:can_rx_offload_del can_dev
 alias symbol:iscsi_tcp_cleanup_task libiscsi_tcp
 alias symbol:occ_setup occ_hwmon_common
 alias symbol:virtio_transport_stream_dequeue vmw_vsock_virtio_transport_common
@@ -182,7 +180,6 @@ alias symbol:v4l2_m2m_decoder_cmd v4l2_mem2mem
 alias symbol:xdr_stream_decode_string_dup sunrpc
 alias symbol:dvb_register_adapter dvb_core
 alias symbol:vhost_iotlb_itree_next vhost_iotlb
-alias symbol:free_candev can_dev
 alias symbol:hid_sensor_get_usage_index hid_sensor_hub
 alias symbol:nfs_getattr nfs
 alias symbol:nvme_fail_nonready_command nvme_core
@@ -259,7 +256,6 @@ alias symbol:lc_create lru_cache
 alias symbol:pmbus_get_driver_info pmbus_core
 alias symbol:dib0090_update_rframp_7090 dib0090
 alias symbol:osd_req_op_extent_update libceph
-alias symbol:can_rx_offload_queue_sorted can_dev
 alias symbol:edac_has_mcs edac_core
 alias symbol:typec_plug_register_altmode typec
 alias symbol:rtl92c_dm_watchdog rtl8192c_common
@@ -923,7 +919,6 @@ alias symbol:nfs_file_mmap nfs
 alias symbol:nft_data_init nf_tables
 alias symbol:rpc_init_pipe_dir_head sunrpc
 alias symbol:sata_port_ops libata
-alias symbol:alloc_can_skb can_dev
 alias symbol:dvb_usbv2_generic_write_locked dvb_usb_v2
 alias symbol:usb_copy_descriptors libcomposite
 alias symbol:xdr_page_pos sunrpc
@@ -1131,10 +1126,8 @@ alias symbol:v4l2_ctrl_request_setup videodev
 alias symbol:asoc_simple_hw_params snd_soc_simple_card_utils
 alias symbol:nand_subop_get_num_addr_cyc nand
 alias symbol:chacha20poly1305_decrypt_sg_inplace libchacha20poly1305
-alias symbol:can_proto_unregister can
 alias symbol:__v4l2_async_nf_add_fwnode_remote v4l2_async
 alias symbol:rpc_clnt_swap_deactivate sunrpc
-alias symbol:can_rx_offload_irq_offload_fifo can_dev
 alias symbol:tveeprom_read tveeprom
 alias symbol:v4l2_set_edid_phys_addr v4l2_dv_timings
 alias symbol:aic3x_regmap snd_soc_tlv320aic3x
@@ -1300,7 +1293,6 @@ alias symbol:gether_get_host_addr u_ether
 alias symbol:nfs_access_get_cached nfs
 alias symbol:taprio_offload_get sch_taprio
 alias symbol:nla_put_labels mpls_router
-alias symbol:of_can_transceiver can_dev
 alias symbol:vid_from_reg hwmon_vid
 alias symbol:rtl92c_dm_init_rate_adaptive_mask rtl8192c_common
 alias symbol:tcp_vegas_init tcp_vegas
@@ -1519,6 +1511,7 @@ alias symbol:radio_tea5777_init shark2
 alias symbol:adau1372_regmap_config snd_soc_adau1372
 alias symbol:rpc_prepare_reply_pages sunrpc
 alias symbol:ata_std_end_eh libata
+alias symbol:crypto_engine_exit crypto_engine
 alias symbol:ip6_tnl_change_mtu ip6_tunnel
 alias symbol:rtl92c_phy_sw_chnl rtl8192c_common
 alias symbol:svc_max_payload sunrpc
@@ -1532,7 +1525,6 @@ alias symbol:nf_nat_setup_info nf_nat
 alias symbol:nvme_cancel_request nvme_core
 alias symbol:__fscache_disable_cookie fscache
 alias symbol:usb_assign_descriptors libcomposite
-alias symbol:can_rx_register can
 alias symbol:ieee802154_hdr_pull ieee802154
 alias symbol:mipi_dbi_display_is_on drm_mipi_dbi
 alias symbol:rtl_init_rx_config rtlwifi
@@ -1630,7 +1622,6 @@ alias symbol:mxl111sf_tuner_attach mxl111sf_tuner
 alias symbol:nfs_mknod nfs
 alias symbol:rpc_get_sb_net sunrpc
 alias symbol:vb2_expbuf videobuf2_v4l2
-alias symbol:can_free_echo_skb can_dev
 alias symbol:iscsi_host_remove libiscsi
 alias symbol:ssb_driver_unregister ssb
 alias symbol:inet_diag_msg_attrs_fill inet_diag
@@ -1645,7 +1636,6 @@ alias symbol:br_handle_frame_finish bridge
 alias symbol:nf_dup_netdev_egress nf_dup_netdev
 alias symbol:vhost_vq_avail_empty vhost
 alias symbol:br_dev_queue_push_xmit bridge
-alias symbol:close_candev can_dev
 alias symbol:fsg_fs_function usb_f_mass_storage
 alias symbol:rtl92c_download_fw rtl8192c_common
 alias symbol:ufshcd_suspend_prepare ufshcd_core
@@ -1667,13 +1657,14 @@ alias symbol:rpc_calc_rto sunrpc
 alias symbol:sunrpc_cache_unregister_pipefs sunrpc
 alias symbol:cx231xx_uninit_vbi_isoc cx231xx
 alias symbol:eeprom_93cx6_write eeprom_93cx6
+alias symbol:crypto_finalize_kpp_request crypto_engine
 alias symbol:analogix_dp_start_crc analogix_dp
-alias symbol:can_fd_dlc2len can_dev
 alias symbol:iio_device_get_clock industrialio
 alias symbol:ata_link_online libata
 alias symbol:dvb_ringbuffer_avail dvb_core
 alias symbol:nf_ct_destroy_timeout nf_conntrack
 alias symbol:typec_set_pwr_role typec
+alias symbol:crypto_finalize_akcipher_request crypto_engine
 alias symbol:dm_get_md dm_mod
 alias symbol:dsa_tag_drivers_register dsa_core
 alias symbol:dm_bitset_del dm_persistent_data
@@ -1764,6 +1755,7 @@ alias symbol:v4l2_dv_timings_presets v4l2_dv_timings
 alias symbol:bmg160_pm_ops bmg160_core
 alias symbol:crc8 crc8
 alias symbol:nft_register_obj nf_tables
+alias symbol:crypto_engine_start crypto_engine
 alias symbol:fsg_show_inquiry_string usb_f_mass_storage
 alias symbol:fwnode_typec_switch_get typec
 alias symbol:nf_synproxy_ipv6_init nf_synproxy_core
@@ -1774,7 +1766,6 @@ alias symbol:xprt_pin_rqst sunrpc
 alias symbol:ata_host_alloc libata
 alias symbol:nft_request_module nf_tables
 alias symbol:ad_sd_read_reg ad_sigma_delta
-alias symbol:can_bus_off can_dev
 alias symbol:most_deregister_configfs_subsys most_core
 alias symbol:nf_flow_dnat_port nf_flow_table
 alias symbol:nf_nat_packet nf_nat
@@ -1817,7 +1808,6 @@ alias symbol:iio_enum_read industrialio
 alias symbol:nfs_alloc_fattr nfs
 alias symbol:typec_match_altmode typec
 alias symbol:typec_switch_unregister typec
-alias symbol:alloc_canfd_skb can_dev
 alias symbol:ieee80211_free_hw mac80211
 alias symbol:nf_synproxy_ipv4_init nf_synproxy_core
 alias symbol:typec_switch_put typec
@@ -1992,7 +1982,6 @@ alias symbol:pcm3060_regmap snd_soc_pcm3060
 alias symbol:snd_mpu401_uart_interrupt_tx snd_mpu401_uart
 alias symbol:dibx000_get_i2c_adapter dibx000_common
 alias symbol:nf_tproxy_get_sock_v4 nf_tproxy_ipv4
-alias symbol:can_change_state can_dev
 alias symbol:__devm_iio_device_register industrialio
 alias symbol:dm_cache_policy_unregister dm_cache
 alias symbol:vq_meta_prefetch vhost
@@ -2062,7 +2051,6 @@ alias symbol:dm_bio_prison_destroy_v2 dm_bio_prison
 alias symbol:netfs_write_begin netfs
 alias symbol:virtio_transport_stream_has_data vmw_vsock_virtio_transport_common
 alias symbol:nf_ct_helper_expectfn_find_by_name nf_conntrack
-alias symbol:can_rx_offload_irq_finish can_dev
 alias symbol:edac_layer_name edac_core
 alias symbol:cx231xx_enable656 cx231xx
 alias symbol:fuse_mount_remove fuse
@@ -2154,7 +2142,6 @@ alias symbol:taprio_offload_free sch_taprio
 alias symbol:atapi_cmd_type libata
 alias symbol:ieee80211_stop_tx_ba_session mac80211
 alias symbol:rc_g_keycode_from_table rc_core
-alias symbol:can_rx_unregister can
 alias symbol:svc_prepare_thread sunrpc
 alias symbol:xprt_wait_for_reply_request_def sunrpc
 alias symbol:ieee80211_tdls_oper_request mac80211
@@ -2216,7 +2203,6 @@ alias symbol:rpc_unlink sunrpc
 alias symbol:dw_spi_remove_host spi_dw
 alias symbol:team_options_change_check team
 alias symbol:v4l2_apply_frmsize_constraints videodev
-alias symbol:can_skb_get_frame_len can_dev
 alias symbol:iscsit_handle_task_mgt_cmd iscsi_target_mod
 alias symbol:nfs_show_options nfs
 alias symbol:udp_tunnel_notify_add_rx_port udp_tunnel
@@ -2266,13 +2252,13 @@ alias symbol:nvme_set_features nvme_core
 alias symbol:vb2_mmap videobuf2_common
 alias symbol:cx24123_attach cx24123
 alias symbol:vsock_bind_table vsock
-alias symbol:can_rx_offload_add_fifo can_dev
 alias symbol:ceph_msg_dump libceph
 alias symbol:tda10023_attach tda10023
 alias symbol:uhid_hid_driver uhid
 alias symbol:iscsit_build_nopin_rsp iscsi_target_mod
 alias symbol:media_request_object_find mc
 alias symbol:nfs4_schedule_migration_recovery nfsv4
+alias symbol:crypto_finalize_aead_request crypto_engine
 alias symbol:w1_register_family wire
 alias symbol:nfs_lock nfs
 alias symbol:dm_bufio_new dm_bufio
@@ -2311,7 +2297,6 @@ alias symbol:usb_wwan_port_remove usb_wwan
 alias symbol:ata_dev_printk libata
 alias symbol:ksz_port_mdb_del ksz_common
 alias symbol:nla_get_labels mpls_router
-alias symbol:can_put_echo_skb can_dev
 alias symbol:dm_array_info_init dm_persistent_data
 alias symbol:nf_ct_helper_expectfn_register nf_conntrack
 alias symbol:__cfg80211_send_event_skb cfg80211
@@ -2346,7 +2331,6 @@ alias symbol:ieee80211_get_tkip_p1k_iv mac80211
 alias symbol:nfs_file_llseek nfs
 alias symbol:sas_remove_children scsi_transport_sas
 alias symbol:ad_sd_write_reg ad_sigma_delta
-alias symbol:can_rx_offload_get_echo_skb can_dev
 alias symbol:dlm_lock dlm
 alias symbol:svc_age_temp_xprts_now sunrpc
 alias symbol:target_put_nacl target_core_mod
@@ -2527,8 +2511,8 @@ alias symbol:ieee80211_sta_block_awake mac80211
 alias symbol:snd_tea575x_init tea575x
 alias symbol:__regmap_init_w1 regmap_w1
 alias symbol:xfrm4_tunnel_register tunnel4
-alias symbol:can_rx_offload_queue_tail can_dev
 alias symbol:dm_kcopyd_prepare_callback dm_mod
+alias symbol:crypto_engine_alloc_init_and_set crypto_engine
 alias symbol:virtio_transport_release vmw_vsock_virtio_transport_common
 alias symbol:nfc_hci_send_cmd_async hci
 alias symbol:au8522_release_state au8522_common
@@ -2573,7 +2557,6 @@ alias symbol:em28xx_setup_xc3028 em28xx
 alias symbol:ife_validate_meta_u16 act_ife
 alias symbol:ct_sip_get_sdp_header nf_conntrack_sip
 alias symbol:nci_hci_dev_session_init nci
-alias symbol:can_fd_len2dlc can_dev
 alias symbol:cdrom_number_of_slots cdrom
 alias symbol:dm_bitset_set_bit dm_persistent_data
 alias symbol:rndis_command rndis_host
@@ -2720,7 +2703,6 @@ alias symbol:mpu3050_dev_pm_ops mpu3050
 alias symbol:dsa_devlink_resource_occ_get_register dsa_core
 alias symbol:ieee80211_iterate_interfaces mac80211
 alias symbol:nvme_wait_reset nvme_core
-alias symbol:can_change_mtu can_dev
 alias symbol:ieee80211_mark_rx_ba_filtered_frames mac80211
 alias symbol:ife_alloc_meta_u32 act_ife
 alias symbol:lowpan_nhc_del 6lowpan
@@ -2995,7 +2977,6 @@ alias symbol:usbip_event_happened usbip_core
 alias symbol:mt312_attach mt312
 alias symbol:nfc_find_se nfc
 alias symbol:typec_plug_set_num_altmodes typec
-alias symbol:alloc_can_err_skb can_dev
 alias symbol:asoc_simple_parse_card_name snd_soc_simple_card_utils
 alias symbol:nfs_mark_client_ready nfs
 alias symbol:iio_read_avail_channel_raw industrialio
@@ -3049,7 +3030,6 @@ alias symbol:__nft_release_basechain nf_tables
 alias symbol:hid_sensor_write_raw_hyst_value hid_sensor_iio_common
 alias symbol:nfc_llc_start hci
 alias symbol:rpc_net_ns sunrpc
-alias symbol:alloc_candev_mqs can_dev
 alias symbol:fuse_fill_super_common fuse
 alias symbol:edac_mc_add_mc_with_groups edac_core
 alias symbol:fscache_check_aux fscache
@@ -3129,7 +3109,6 @@ alias symbol:sensor_hub_get_feature hid_sensor_hub
 alias symbol:config_ep_by_speed_and_alt libcomposite
 alias symbol:iscsi_post_host_event scsi_transport_iscsi
 alias symbol:mipi_dbi_command_read drm_mipi_dbi
-alias symbol:can_rx_offload_enable can_dev
 alias symbol:ceph_reset_client_addr libceph
 alias symbol:dm_region_hash_create dm_region_hash
 alias symbol:dsa_8021q_xmit dsa_core
@@ -3391,6 +3370,7 @@ alias symbol:usbnet_status_start usbnet
 alias symbol:iscsi_boot_create_acpitbl iscsi_boot_sysfs
 alias symbol:ieee80211_find_sta_by_ifaddr mac80211
 alias symbol:tea5767_attach tea5767
+alias symbol:crypto_engine_stop crypto_engine
 alias symbol:dm_btree_find_lowest_key dm_persistent_data
 alias symbol:dvb_usbv2_generic_rw_locked dvb_usb_v2
 alias symbol:frame_vector_to_pfns videobuf2_common
@@ -3496,6 +3476,7 @@ alias symbol:nand_monolithic_write_page_raw nand
 alias symbol:sas_rphy_free scsi_transport_sas
 alias symbol:auth_domain_lookup sunrpc
 alias symbol:cache_create_net sunrpc
+alias symbol:crypto_transfer_kpp_request_to_engine crypto_engine
 alias symbol:fscache_withdraw_cache fscache
 alias symbol:csum_partial_copy_to_xdr sunrpc
 alias symbol:nci_allocate_device nci
@@ -3576,6 +3557,7 @@ alias symbol:cx24113_agc_callback cx24113
 alias symbol:rpc_put_sb_net sunrpc
 alias symbol:ufshcd_map_desc_id_to_length ufshcd_core
 alias symbol:v4l2_m2m_get_curr_priv v4l2_mem2mem
+alias symbol:crypto_transfer_hash_request_to_engine crypto_engine
 alias symbol:b2c2_flexcop_debug b2c2_flexcop
 alias symbol:usbnet_get_link_ksettings_internal usbnet
 alias symbol:vhost_log_write vhost
@@ -3640,12 +3622,12 @@ alias symbol:rtl_btc_status_false rtlwifi
 alias symbol:st_gyro_common_probe st_gyro
 alias symbol:fxos8700_regmap_config fxos8700_core
 alias symbol:ata_cable_ignore libata
-alias symbol:can_sock_destruct can
 alias symbol:gserial_suspend u_serial
 alias symbol:nfc_hci_get_param hci
 alias symbol:iio_get_time_ns industrialio
 alias symbol:rm3100_readable_table rm3100_core
 alias symbol:st21nfca_im_send_dep_req st21nfca_hci
+alias symbol:crypto_transfer_skcipher_request_to_engine crypto_engine
 alias symbol:iio_str_to_fixpoint industrialio
 alias symbol:pn544_hci_remove pn544
 alias symbol:send_implementation_id nfs
@@ -3673,7 +3655,6 @@ alias symbol:usbnet_cdc_bind cdc_ether
 alias symbol:cfg80211_chandef_valid cfg80211
 alias symbol:dm_dirty_log_destroy dm_log
 alias symbol:bma400_regmap_config bma400_core
-alias symbol:can_proto_register can
 alias symbol:mma9551_read_version mma9551_core
 alias symbol:nf_defrag_ipv6_disable nf_defrag_ipv6
 alias symbol:nfs_fattr_init nfs
@@ -3892,7 +3873,6 @@ alias symbol:netfs_subreq_terminated netfs
 alias symbol:cx231xx_demod_reset cx231xx
 alias symbol:usb_free_all_descriptors libcomposite
 alias symbol:v4l_bound_align_image videodev
-alias symbol:can_rx_offload_add_timestamp can_dev
 alias symbol:dm_audit_log_ti dm_mod
 alias symbol:iscsi_unregister_transport scsi_transport_iscsi
 alias symbol:tda829x_attach tda8290
@@ -3902,9 +3882,9 @@ alias symbol:zd1301_demod_get_dvb_frontend zd1301_demod
 alias symbol:dvb_free_device dvb_core
 alias symbol:nfcmrvl_nci_register_dev nfcmrvl
 alias symbol:ct_sip_parse_header_uri nf_conntrack_sip
-alias symbol:register_candev can_dev
 alias symbol:v4l2_norm_to_name videodev
 alias symbol:tda10048_attach tda10048
+alias symbol:crypto_finalize_skcipher_request crypto_engine
 alias symbol:iio_pop_from_buffer industrialio
 alias symbol:aic3x_probe snd_soc_tlv320aic3x
 alias symbol:dm_cell_visit_release dm_bio_prison
@@ -3982,6 +3962,7 @@ alias symbol:nxt6000_attach nxt6000
 alias symbol:virtio_transport_connect vmw_vsock_virtio_transport_common
 alias symbol:_nfs_display_fhandle_hash nfs
 alias symbol:rtl_send_smps_action rtlwifi
+alias symbol:crypto_transfer_aead_request_to_engine crypto_engine
 alias symbol:media_entity_pads_init mc
 alias symbol:nfs_drop_inode nfs
 alias symbol:br_multicast_enabled bridge
@@ -4029,7 +4010,6 @@ alias symbol:cx231xx_init_isoc cx231xx
 alias symbol:rtl92c_phy_rf_config rtl8192c_common
 alias symbol:v4l2_ctrl_merge videodev
 alias symbol:v4l2_m2m_expbuf v4l2_mem2mem
-alias symbol:can_get_state_str can_dev
 alias symbol:cfg80211_free_nan_func cfg80211
 alias symbol:dib7000m_get_i2c_master dib7000m
 alias symbol:rtl8366_mc_is_used realtek_smi
@@ -4229,7 +4209,6 @@ alias symbol:rtl_efuse_ops_init rtlwifi
 alias symbol:dib0090_pwm_gain_reset dib0090
 alias symbol:hid_sensor_batch_mode_supported hid_sensor_iio_common
 alias symbol:nf_br_ops bridge
-alias symbol:unregister_candev can_dev
 alias symbol:xprt_reserve_xprt sunrpc
 alias symbol:rpcauth_destroy_credcache sunrpc
 alias symbol:fsg_store_file usb_f_mass_storage
@@ -4260,7 +4239,6 @@ alias symbol:ip_md_tunnel_xmit ip_tunnel
 alias symbol:mhi_download_rddm_image mhi
 alias symbol:vhost_iotlb_add_range_ctx vhost_iotlb
 alias symbol:iscsi_tcp_recv_segment_is_hdr libiscsi_tcp
-alias symbol:safe_candev_priv can_dev
 alias symbol:v4l2_m2m_get_vq v4l2_mem2mem
 alias symbol:dm_bufio_get_client dm_bufio
 alias symbol:iscsi_create_flashnode_sess scsi_transport_iscsi
@@ -4300,7 +4278,6 @@ alias symbol:iio_read_avail_channel_attribute industrialio
 alias symbol:chacha20poly1305_encrypt libchacha20poly1305
 alias symbol:devm_mux_control_get mux_core
 alias symbol:__devm_regmap_init_spmi_ext regmap_spmi
-alias symbol:can_rx_offload_add_manual can_dev
 alias symbol:dm_noflush_suspending dm_mod
 alias symbol:ip_set_put_flags ip_set
 alias symbol:asoc_simple_dai_init snd_soc_simple_card_utils
@@ -4327,6 +4304,7 @@ alias symbol:__cfg80211_alloc_event_skb cfg80211
 alias symbol:mux_chip_register mux_core
 alias symbol:rpc_pipefs_notifier_unregister sunrpc
 alias symbol:ceph_alloc_options libceph
+alias symbol:crypto_finalize_hash_request crypto_engine
 alias symbol:dlm_unlock dlm
 alias symbol:adxl372_readable_noinc_reg adxl372
 alias symbol:ceph_cls_break_lock libceph
@@ -4339,7 +4317,6 @@ alias symbol:vb2_queue_init_name videobuf2_v4l2
 alias symbol:media_entity_setup_link mc
 alias symbol:nf_nat_alloc_null_binding nf_nat
 alias symbol:nfnetlink_has_listeners nfnetlink
-alias symbol:can_get_echo_skb can_dev
 alias symbol:u_audio_set_mute u_audio
 alias symbol:v4l2_g_parm_cap videodev
 alias symbol:v4l2_m2m_release v4l2_mem2mem
@@ -4350,7 +4327,6 @@ alias symbol:rpcauth_lookup_credcache sunrpc
 alias symbol:sas_get_address scsi_transport_sas
 alias symbol:srp_attach_transport scsi_transport_srp
 alias symbol:vb2_video_unregister_device videobuf2_v4l2
-alias symbol:can_rx_offload_irq_offload_timestamp can_dev
 alias symbol:crypto_ecdh_key_len ecdh_generic
 alias symbol:nf_conntrack_expect_lock nf_conntrack
 alias symbol:ssb_device_is_enabled ssb
@@ -4374,7 +4350,6 @@ alias symbol:rpc_debug sunrpc
 alias symbol:br_multicast_router bridge
 alias symbol:i3c_device_enable_ibi i3c
 alias symbol:nfs_remove_bad_delegation nfsv4
-alias symbol:open_candev can_dev
 alias symbol:dm_array_cursor_next dm_persistent_data
 alias symbol:lc_seq_printf_stats lru_cache
 alias symbol:max9271_set_gpios max9271
@@ -4454,6 +4429,7 @@ alias symbol:cfg80211_disconnected cfg80211
 alias symbol:v4l2_m2m_ioctl_stateless_try_decoder_cmd v4l2_mem2mem
 alias symbol:xdr_buf_from_iov sunrpc
 alias symbol:snd_seq_event_port_attach snd_seq
+alias symbol:crypto_engine_alloc_init crypto_engine
 alias symbol:ir_raw_gen_pl rc_core
 alias symbol:ecc_make_pub_key ecc
 alias symbol:nfc_target_lost nfc
@@ -4647,7 +4623,6 @@ alias symbol:ax25_display_timer ax25
 alias symbol:ip_tunnel_ctl ip_tunnel
 alias symbol:usb_string_ids_tab libcomposite
 alias symbol:ata_xfer_mask2mode libata
-alias symbol:can_rx_offload_threaded_irq_finish can_dev
 alias symbol:of_iio_channel_get_by_name industrialio
 alias symbol:rtl_set_tx_report rtlwifi
 alias symbol:gre_del_protocol gre
@@ -4802,6 +4777,7 @@ alias symbol:altera_spi_irq spi_altera_core
 alias symbol:iscsi_unblock_session scsi_transport_iscsi
 alias symbol:v4l2_prio_check videodev
 alias symbol:usbnet_skb_return usbnet
+alias symbol:crypto_transfer_akcipher_request_to_engine crypto_engine
 alias symbol:nand_subop_get_addr_start_off nand
 alias symbol:wpan_phy_register ieee802154
 alias symbol:fscache_mark_pages_cached fscache

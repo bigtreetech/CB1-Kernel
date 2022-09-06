@@ -41,7 +41,6 @@ kernel/fs/pstore/pstore.ko
 kernel/security/keys/trusted-keys/trusted.ko
 kernel/security/keys/encrypted-keys/encrypted-keys.ko
 kernel/crypto/crypto.ko
-kernel/crypto/crypto_engine.ko
 kernel/crypto/crypto_algapi.ko
 kernel/crypto/aead.ko
 kernel/crypto/geniv.ko
@@ -233,6 +232,7 @@ kernel/drivers/mtd/chips/gen_probe.ko
 kernel/drivers/mtd/chips/jedec_probe.ko
 kernel/drivers/mtd/nand/nandcore.ko
 kernel/drivers/mtd/spi-nor/spi-nor.ko
+kernel/drivers/spi/spidev.ko
 kernel/drivers/spi/spi-pl022.ko
 kernel/drivers/spi/spi-sun4i.ko
 kernel/drivers/spi/spi-sun6i.ko
@@ -248,6 +248,8 @@ kernel/drivers/net/mdio/of_mdio.ko
 kernel/drivers/net/mdio/mdio-bitbang.ko
 kernel/drivers/net/mdio/mdio-sun4i.ko
 kernel/drivers/net/pcs/pcs_xpcs.ko
+kernel/drivers/net/can/dev/can-dev.ko
+kernel/drivers/net/can/spi/mcp251x.ko
 kernel/drivers/net/ethernet/allwinner/sun4i-emac.ko
 kernel/drivers/net/ethernet/altera/altera_tse.ko
 kernel/drivers/net/ethernet/stmicro/stmmac/stmmac.ko
@@ -309,11 +311,6 @@ kernel/drivers/md/bcache/bcache.ko
 kernel/drivers/md/md-mod.ko
 kernel/drivers/cpufreq/freq_table.ko
 kernel/drivers/cpufreq/cpufreq_performance.ko
-kernel/drivers/cpufreq/cpufreq_powersave.ko
-kernel/drivers/cpufreq/cpufreq_userspace.ko
-kernel/drivers/cpufreq/cpufreq_ondemand.ko
-kernel/drivers/cpufreq/cpufreq_conservative.ko
-kernel/drivers/cpufreq/sun50i-cpufreq-nvmem.ko
 kernel/drivers/mmc/core/mmc_core.ko
 kernel/drivers/mmc/core/pwrseq_simple.ko
 kernel/drivers/mmc/core/pwrseq_emmc.ko
@@ -339,9 +336,6 @@ kernel/drivers/firmware/scpi_pm_domain.ko
 kernel/drivers/firmware/arm_ffa/ffa-module.ko
 kernel/drivers/firmware/arm_scmi/scmi-module.ko
 kernel/drivers/firmware/arm_scmi/scmi_pm_domain.ko
-kernel/drivers/crypto/allwinner/sun4i-ss/sun4i-ss.ko
-kernel/drivers/crypto/allwinner/sun8i-ce/sun8i-ce.ko
-kernel/drivers/crypto/allwinner/sun8i-ss/sun8i-ss.ko
 kernel/drivers/hid/hid.ko
 kernel/drivers/hid/hid-generic.ko
 kernel/drivers/hid/usbhid/usbhid.ko
@@ -386,6 +380,7 @@ kernel/net/tls/tls.ko
 kernel/net/unix/unix.ko
 kernel/net/ipv6/ipv6.ko
 kernel/net/packet/af_packet.ko
+kernel/net/can/can.ko
 kernel/net/8021q/8021q.ko
 kernel/net/rfkill/rfkill.ko
 kernel/net/9p/9pnet.ko

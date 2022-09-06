@@ -1733,15 +1733,15 @@ static int axp20x_sysfs_init(struct axp20x_dev *axp)
     if (ret)
         dev_warn(axp->dev, "Unable to create sysfs ocv_curve file: %d", ret);
 
-    ret = sysfs_create_link_nowarn(power_kobj, &axp->dev->kobj, "axp_pmu");
-    if (ret)
-        dev_warn(axp->dev, "Unable to create sysfs symlink: %d", ret);
+    // ret = sysfs_create_link_nowarn(power_kobj, &axp->dev->kobj, "axp_pmu");      // lodge 2022-09-01 del
+    // if (ret)
+    //     dev_warn(axp->dev, "Unable to create sysfs symlink: %d", ret);
     return ret;
 }
 
 static void axp20x_sysfs_exit(struct axp20x_dev *axp)
 {
-    sysfs_delete_link(power_kobj, &axp->dev->kobj, "axp_pmu");
+    // sysfs_delete_link(power_kobj, &axp->dev->kobj, "axp_pmu");   // lodge 2022-09-01 del
     sysfs_remove_bin_file(&axp->dev->kobj, &axp20x_ocv_curve);
     axp20x_sysfs_remove_subgroup(subsystems.control, &axp20x_group_control);
     axp20x_sysfs_remove_subgroup(subsystems.charger, &axp20x_group_charger);

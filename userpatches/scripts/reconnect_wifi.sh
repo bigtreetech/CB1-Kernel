@@ -5,7 +5,7 @@ cfg_file=/boot/system.cfg
 WIFI_CFG=/home/biqu/control/wifi/conf/netinfo.txt
 log_file=/etc/scripts/wifi.log
 
-IFS=:
+IFS=\"
 
 IS_AP_MODE="no"
 sta_mount=0
@@ -27,17 +27,29 @@ function Env_init() {
     [[ $(ifconfig | grep $wlan) == "" ]] && nmcli radio wifi on
 
     sudo nmcli dev wifi connect $WIFI_SSID password $WIFI_PASSWD ifname $wlan
+    sleep 6
 }
 
 function is_network() {
     local Result=no
-    if [ $# -eq 0 ]; then
-        ping -c 1 $router_ip >/dev/null 2>&1
-        [[ $? != 0 ]] && Result=no || Result=yes
-    else
-        ping -c 1 $router_ip -I $1 >/dev/null 2>&1
-        [[ $? != 0 ]] && Result=no || Result=yes
-    fi
+    local err_num=0
+
+    for((i=1;i<=5;i++))
+    do
+        if [ $# -eq 0 ]; then
+            ping -c 1 $router_ip >/dev/null 2>&1
+            [[ $? != 0 ]] && err_num=`expr $err_num + 1`
+        else
+            ping -c 1 $router_ip -I $1 >/dev/null 2>&1
+            [[ $? != 0 ]] && err_num=`expr $err_num + 1`
+        fi
+        sleep 1
+        sync
+    done
+    [[ $err_num -lt 5 ]] && Result=yes || Result=no
+    err_num=0
+    unset err_num
+
     echo $Result
 }
 
@@ -54,8 +66,8 @@ function Create_AP_ON() {
             echo -e $(date)" ==== $wlan modify cfg..." >> $log_file
             IS_AP_MODE="no"
             source $WIFI_CFG
-            sudo sed -i "s/^WIFI_SSID=.*$/WIFI_SSID=$WIFI_SSID/" $SYS_CFG
-            sudo sed -i "s/^WIFI_PASSWD=.*$/WIFI_PASSWD=$WIFI_PASSWD/" $SYS_CFG
+            sudo sed -i "s/^WIFI_SSID=.*$/WIFI_SSID=$WIFI_SSID/" $cfg_file
+            sudo sed -i "s/^WIFI_PASSWD=.*$/WIFI_PASSWD=$WIFI_PASSWD/" $cfg_file
             [[ $(is_network $eth) == no ]] && Create_AP_OFF
         fi
     fi
@@ -69,8 +81,8 @@ function Create_AP_OFF() {
     [[ $(ifconfig | grep $wlan) == "" ]] && nmcli radio wifi on  # 确保wlan连接启动了
 
     if [[ $(is_network $wlan) == no ]]; then
-        source $SYS_CFG
-        echo -e $(date)" ==== $wlan prepare connection... -WIFI_SSID:$WIFI_SSID -WIFI_PASSWD:$WIFI_PASSWD" >> $log_file
+        source $cfg_file
+        echo -e $(date)" ==== $wlan prepare connection... -WIFI_SSID:$WIFI_SSID " >> $log_file
         sudo nmcli dev wifi connect $WIFI_SSID password $WIFI_PASSWD ifname $wlan
         sleep 5
     fi
@@ -105,6 +117,7 @@ function startWifi() {
 }
 
 Env_init
+sleep 20
 
 while [ 1 ]; do
 
@@ -113,8 +126,9 @@ while [ 1 ]; do
             echo -e $(date)" ==== No network connection..." >> $log_file
             startWifi
             sleep 6    # 更改间隔时间，因为有些服务启动较慢，试验后，改的间隔长一点有用
-        else
-            [[ $(is_network $eth) == yes ]] && nmcli device disconnect $wlan && echo "==== Ethernet Connected, wlan disconnect! ====" >> $log_file
+        # else
+        #     sleep 6
+        #     [[ $(is_network $eth) == yes ]] && nmcli device disconnect $wlan && echo "==== Ethernet Connected, wlan disconnect! ====" >> $log_file
         fi
     elif [[ $WIFI_AP == "true" ]]; then
         if [[ $(is_network $eth) == yes ]]; then

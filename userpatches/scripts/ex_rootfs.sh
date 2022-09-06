@@ -37,6 +37,11 @@ EOF
 sudo resize2fs /dev/${filelist[2]}           # 扩展分区;
 unset filelist
 
+#-----------------
+sudo usermod -a -G root $username
+# sudo chmod 777 /var/run/wpa_supplicant/wlan0
+
+
 cd $shell_path
 
 [[ -e "init.sh" ]] && rm init.sh -fr
@@ -52,7 +57,7 @@ if [ -e "ex_rootfs.sh" ];then
 fi
 
 sudo chown $username:$username /home/$username/ -R
-sudo ntpdate stdtime.gov.hk
+# sudo ntpdate stdtime.gov.hk
 
 cd /boot/gcode
 if ls *.gcode > /dev/null 2>&1;then
@@ -62,7 +67,37 @@ fi
 sync
 
 cd $shell_path
+./pwr_status.sh &
 ./reconnect_wifi.sh
+
+EOF
+
+[[ -e "pwr_status.sh" ]] && rm pwr_status.sh -fr
+touch pwr_status.sh
+chmod +x pwr_status.sh
+
+cat >> pwr_status.sh << EOF
+#!/bin/bash
+
+if [[ \`lsusb\` == *"BTT-HDMI"* ]]
+then
+    sed -i "s/self.blanking_time = 0*$/self.blanking_time = abs(int(time))/" /home/$username/KlipperScreen/screen.py
+else
+    sed -i "s/self.blanking_time = abs(int(time))*$/self.blanking_time = 0/" /home/$username/KlipperScreen/screen.py
+fi
+
+cd /sys/class/gpio
+echo 229 > export
+cd /sys/class/gpio/gpio229
+echo out > direction
+
+while [ 1 ]
+do
+    echo 1 > value
+    sleep 0.5
+    echo 0 > value
+    sleep 0.5
+done
 
 EOF
 

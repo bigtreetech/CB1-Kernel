@@ -32,3 +32,4 @@ ucf
 udev
 whiptail
 wireless-regdb
+ntpdate

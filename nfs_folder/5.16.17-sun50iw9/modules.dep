@@ -115,6 +115,7 @@ kernel/crypto/asymmetric_keys/asym_tpm.ko:
 kernel/crypto/asymmetric_keys/pkcs8_key_parser.ko:
 kernel/crypto/asymmetric_keys/pkcs7_test_key.ko:
 kernel/crypto/asymmetric_keys/tpm_key_parser.ko: kernel/crypto/asymmetric_keys/asym_tpm.ko
+kernel/crypto/crypto_engine.ko:
 kernel/crypto/echainiv.ko:
 kernel/crypto/ecdsa_generic.ko: kernel/crypto/ecc.ko
 kernel/crypto/crypto_user.ko:
@@ -319,8 +320,6 @@ kernel/drivers/gpu/drm/panel/panel-arm-versatile.ko:
 kernel/drivers/gpu/drm/panel/panel-boe-himax8279d.ko:
 kernel/drivers/gpu/drm/panel/panel-dsi-cm.ko:
 kernel/drivers/gpu/drm/panel/panel-lvds.ko:
-kernel/drivers/gpu/drm/panel/panel-simple.ko:
-kernel/drivers/gpu/drm/panel/panel-edp.ko: kernel/drivers/gpu/drm/drm_dp_aux_bus.ko
 kernel/drivers/gpu/drm/panel/panel-feixin-k101-im2ba02.ko:
 kernel/drivers/gpu/drm/panel/panel-feiyang-fy07024di26a30d.ko:
 kernel/drivers/gpu/drm/panel/panel-ilitek-ili9322.ko:
@@ -344,7 +343,6 @@ kernel/drivers/gpu/drm/panel/panel-raspberrypi-touchscreen.ko:
 kernel/drivers/gpu/drm/panel/panel-raydium-rm67191.ko:
 kernel/drivers/gpu/drm/panel/panel-raydium-rm68200.ko:
 kernel/drivers/gpu/drm/panel/panel-ronbo-rb070d30.ko:
-kernel/drivers/gpu/drm/panel/panel-samsung-atna33xc20.ko: kernel/drivers/gpu/drm/drm_dp_aux_bus.ko
 kernel/drivers/gpu/drm/panel/panel-samsung-db7430.ko: kernel/drivers/gpu/drm/drm_mipi_dbi.ko
 kernel/drivers/gpu/drm/panel/panel-samsung-s6d16d0.ko:
 kernel/drivers/gpu/drm/panel/panel-samsung-s6d27a1.ko: kernel/drivers/gpu/drm/drm_mipi_dbi.ko
@@ -492,7 +490,6 @@ kernel/drivers/mtd/nand/raw/intel-nand-controller.ko: kernel/drivers/mtd/nand/ra
 kernel/drivers/mtd/nand/spi/spinand.ko:
 kernel/drivers/mtd/mtdpstore.ko: kernel/fs/pstore/pstore_blk.ko kernel/fs/pstore/pstore_zone.ko
 kernel/drivers/spi/spi-mux.ko: kernel/drivers/mux/mux-core.ko
-kernel/drivers/spi/spidev.ko:
 kernel/drivers/spi/spi-loopback-test.ko:
 kernel/drivers/spi/spi-altera-platform.ko: kernel/drivers/spi/spi-altera-core.ko
 kernel/drivers/spi/spi-altera-core.ko:
@@ -536,6 +533,18 @@ kernel/drivers/net/mdio/mdio-mscc-miim.ko:
 kernel/drivers/net/mdio/mdio-mvusb.ko:
 kernel/drivers/net/mdio/mdio-mux.ko:
 kernel/drivers/net/mdio/mdio-mux-multiplexer.ko: kernel/drivers/net/mdio/mdio-mux.ko kernel/drivers/mux/mux-core.ko
+kernel/drivers/net/can/usb/usb_8dev.ko:
+kernel/drivers/net/can/usb/ems_usb.ko:
+kernel/drivers/net/can/usb/esd_usb2.ko:
+kernel/drivers/net/can/usb/etas_es58x/etas_es58x.ko:
+kernel/drivers/net/can/usb/gs_usb.ko:
+kernel/drivers/net/can/usb/kvaser_usb/kvaser_usb.ko:
+kernel/drivers/net/can/usb/mcba_usb.ko:
+kernel/drivers/net/can/usb/peak_usb/peak_usb.ko:
+kernel/drivers/net/can/usb/ucan.ko:
+kernel/drivers/net/can/vcan.ko:
+kernel/drivers/net/can/vxcan.ko:
+kernel/drivers/net/can/slcan.ko:
 kernel/drivers/net/ethernet/stmicro/stmmac/dwmac-sunxi.ko:
 kernel/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.ko: kernel/drivers/net/mdio/mdio-mux.ko
 kernel/drivers/net/ethernet/stmicro/stmmac/dwmac-dwc-qos-eth.ko:
@@ -584,22 +593,6 @@ kernel/drivers/net/bareudp.ko: kernel/net/ipv6/ip6_udp_tunnel.ko kernel/net/ipv4
 kernel/drivers/net/gtp.ko: kernel/net/ipv4/udp_tunnel.ko
 kernel/drivers/net/nlmon.ko:
 kernel/drivers/net/mhi_net.ko: kernel/drivers/bus/mhi/core/mhi.ko
-kernel/drivers/net/can/dev/can-dev.ko:
-kernel/drivers/net/can/spi/mcp251xfd/mcp251xfd.ko: kernel/drivers/net/can/dev/can-dev.ko
-kernel/drivers/net/can/spi/hi311x.ko: kernel/drivers/net/can/dev/can-dev.ko
-kernel/drivers/net/can/spi/mcp251x.ko: kernel/drivers/net/can/dev/can-dev.ko
-kernel/drivers/net/can/usb/usb_8dev.ko: kernel/drivers/net/can/dev/can-dev.ko
-kernel/drivers/net/can/usb/ems_usb.ko: kernel/drivers/net/can/dev/can-dev.ko
-kernel/drivers/net/can/usb/esd_usb2.ko: kernel/drivers/net/can/dev/can-dev.ko
-kernel/drivers/net/can/usb/etas_es58x/etas_es58x.ko: kernel/drivers/net/can/dev/can-dev.ko
-kernel/drivers/net/can/usb/gs_usb.ko: kernel/drivers/net/can/dev/can-dev.ko
-kernel/drivers/net/can/usb/kvaser_usb/kvaser_usb.ko: kernel/drivers/net/can/dev/can-dev.ko
-kernel/drivers/net/can/usb/mcba_usb.ko: kernel/drivers/net/can/dev/can-dev.ko
-kernel/drivers/net/can/usb/peak_usb/peak_usb.ko: kernel/drivers/net/can/dev/can-dev.ko
-kernel/drivers/net/can/usb/ucan.ko: kernel/drivers/net/can/dev/can-dev.ko
-kernel/drivers/net/can/vcan.ko:
-kernel/drivers/net/can/vxcan.ko:
-kernel/drivers/net/can/slcan.ko:
 kernel/drivers/net/dsa/hirschmann/hellcreek_sw.ko: kernel/net/sched/sch_taprio.ko kernel/net/dsa/dsa_core.ko kernel/net/bridge/bridge.ko
 kernel/drivers/net/dsa/microchip/ksz_common.ko: kernel/net/dsa/dsa_core.ko kernel/net/bridge/bridge.ko
 kernel/drivers/net/dsa/microchip/ksz9477.ko: kernel/drivers/net/dsa/microchip/ksz_common.ko kernel/net/dsa/dsa_core.ko kernel/net/bridge/bridge.ko
@@ -920,7 +913,6 @@ kernel/drivers/media/i2c/ov2685.ko: kernel/drivers/media/v4l2-core/v4l2-async.ko
 kernel/drivers/media/i2c/ov5640.ko: kernel/drivers/media/v4l2-core/v4l2-fwnode.ko kernel/drivers/media/v4l2-core/v4l2-async.ko kernel/drivers/media/v4l2-core/videodev.ko kernel/drivers/media/mc/mc.ko
 kernel/drivers/media/i2c/ov5645.ko: kernel/drivers/media/v4l2-core/v4l2-fwnode.ko kernel/drivers/media/v4l2-core/v4l2-async.ko kernel/drivers/media/v4l2-core/videodev.ko kernel/drivers/media/mc/mc.ko
 kernel/drivers/media/i2c/ov5647.ko: kernel/drivers/media/v4l2-core/v4l2-fwnode.ko kernel/drivers/media/v4l2-core/v4l2-async.ko kernel/drivers/media/v4l2-core/videodev.ko kernel/drivers/media/mc/mc.ko
-kernel/drivers/media/i2c/ov5648.ko: kernel/drivers/media/v4l2-core/v4l2-fwnode.ko kernel/drivers/media/v4l2-core/v4l2-async.ko kernel/drivers/media/v4l2-core/videodev.ko kernel/drivers/media/mc/mc.ko
 kernel/drivers/media/i2c/ov5670.ko: kernel/drivers/media/v4l2-core/v4l2-fwnode.ko kernel/drivers/media/v4l2-core/v4l2-async.ko kernel/drivers/media/v4l2-core/videodev.ko kernel/drivers/media/mc/mc.ko
 kernel/drivers/media/i2c/ov5675.ko: kernel/drivers/media/v4l2-core/v4l2-fwnode.ko kernel/drivers/media/v4l2-core/v4l2-async.ko kernel/drivers/media/v4l2-core/videodev.ko kernel/drivers/media/mc/mc.ko
 kernel/drivers/media/i2c/ov5695.ko: kernel/drivers/media/v4l2-core/v4l2-fwnode.ko kernel/drivers/media/v4l2-core/v4l2-async.ko kernel/drivers/media/v4l2-core/videodev.ko kernel/drivers/media/mc/mc.ko
@@ -931,7 +923,6 @@ kernel/drivers/media/i2c/ov7670.ko: kernel/drivers/media/v4l2-core/v4l2-fwnode.k
 kernel/drivers/media/i2c/ov772x.ko: kernel/drivers/base/regmap/regmap-sccb.ko kernel/drivers/media/v4l2-core/v4l2-fwnode.ko kernel/drivers/media/v4l2-core/v4l2-async.ko kernel/drivers/media/v4l2-core/videodev.ko kernel/drivers/media/mc/mc.ko
 kernel/drivers/media/i2c/ov7740.ko: kernel/drivers/base/regmap/regmap-sccb.ko kernel/drivers/media/v4l2-core/v4l2-async.ko kernel/drivers/media/v4l2-core/videodev.ko kernel/drivers/media/mc/mc.ko
 kernel/drivers/media/i2c/ov8856.ko: kernel/drivers/media/v4l2-core/v4l2-fwnode.ko kernel/drivers/media/v4l2-core/v4l2-async.ko kernel/drivers/media/v4l2-core/videodev.ko kernel/drivers/media/mc/mc.ko
-kernel/drivers/media/i2c/ov8865.ko: kernel/drivers/media/v4l2-core/v4l2-fwnode.ko kernel/drivers/media/v4l2-core/v4l2-async.ko kernel/drivers/media/v4l2-core/videodev.ko kernel/drivers/media/mc/mc.ko
 kernel/drivers/media/i2c/ov9282.ko: kernel/drivers/media/v4l2-core/v4l2-fwnode.ko kernel/drivers/media/v4l2-core/v4l2-async.ko kernel/drivers/media/v4l2-core/videodev.ko kernel/drivers/media/mc/mc.ko
 kernel/drivers/media/i2c/ov9640.ko: kernel/drivers/media/v4l2-core/v4l2-async.ko kernel/drivers/media/v4l2-core/videodev.ko kernel/drivers/media/mc/mc.ko
 kernel/drivers/media/i2c/ov9650.ko: kernel/drivers/base/regmap/regmap-sccb.ko kernel/drivers/media/v4l2-core/v4l2-async.ko kernel/drivers/media/v4l2-core/videodev.ko kernel/drivers/media/mc/mc.ko
@@ -1649,8 +1640,6 @@ kernel/drivers/md/dm-era.ko: kernel/drivers/md/persistent-data/dm-persistent-dat
 kernel/drivers/md/dm-clone.ko: kernel/drivers/md/persistent-data/dm-persistent-data.ko kernel/drivers/md/dm-bufio.ko kernel/drivers/md/dm-mod.ko
 kernel/drivers/md/dm-integrity.ko: kernel/drivers/md/dm-bufio.ko kernel/drivers/md/dm-mod.ko
 kernel/drivers/md/dm-writecache.ko: kernel/drivers/md/dm-mod.ko
-kernel/drivers/cpufreq/cpufreq-dt.ko:
-kernel/drivers/cpufreq/scpi-cpufreq.ko:
 kernel/drivers/mmc/host/sdhci-milbeaut.ko:
 kernel/drivers/mmc/host/sdhci_am654.ko: kernel/drivers/mmc/host/cqhci.ko
 kernel/drivers/mmc/host/dw_mmc-bluefield.ko:
@@ -1677,9 +1666,9 @@ kernel/drivers/leds/leds-regulator.ko:
 kernel/drivers/leds/leds-cr0014114.ko:
 kernel/drivers/leds/leds-el15203000.ko:
 kernel/drivers/crypto/ccree/ccree.ko: kernel/crypto/authenc.ko
-kernel/drivers/crypto/virtio/virtio_crypto.ko:
+kernel/drivers/crypto/virtio/virtio_crypto.ko: kernel/crypto/crypto_engine.ko
 kernel/drivers/crypto/inside-secure/crypto_safexcel.ko: kernel/crypto/authenc.ko
-kernel/drivers/crypto/amlogic/amlogic-gxl-crypto.ko:
+kernel/drivers/crypto/amlogic/amlogic-gxl-crypto.ko: kernel/crypto/crypto_engine.ko
 kernel/drivers/hid/uhid.ko:
 kernel/drivers/hid/hid-a4tech.ko:
 kernel/drivers/hid/hid-accutouch.ko:
@@ -2621,6 +2610,10 @@ kernel/net/ipv6/ip6_gre.ko: kernel/net/ipv6/ip6_tunnel.ko kernel/net/ipv6/tunnel
 kernel/net/ipv6/ip6_udp_tunnel.ko:
 kernel/net/bpfilter/bpfilter.ko:
 kernel/net/packet/af_packet_diag.ko:
+kernel/net/can/can-raw.ko:
+kernel/net/can/can-bcm.ko:
+kernel/net/can/can-gw.ko:
+kernel/net/can/j1939/can-j1939.ko:
 kernel/net/wireless/cfg80211.ko:
 kernel/net/rfkill/rfkill-gpio.ko:
 kernel/net/mpls/mpls_gso.ko:
@@ -2673,11 +2666,6 @@ kernel/net/dsa/tag_xrs700x.ko: kernel/net/dsa/dsa_core.ko kernel/net/bridge/brid
 kernel/net/netrom/netrom.ko: kernel/net/ax25/ax25.ko
 kernel/net/rose/rose.ko: kernel/net/ax25/ax25.ko
 kernel/net/ax25/ax25.ko:
-kernel/net/can/can.ko:
-kernel/net/can/can-raw.ko: kernel/net/can/can.ko
-kernel/net/can/can-bcm.ko: kernel/net/can/can.ko
-kernel/net/can/can-gw.ko: kernel/net/can/can.ko
-kernel/net/can/j1939/can-j1939.ko: kernel/net/can/can.ko
 kernel/net/sunrpc/sunrpc.ko:
 kernel/net/sunrpc/auth_gss/auth_rpcgss.ko: kernel/net/sunrpc/sunrpc.ko
 kernel/net/sunrpc/auth_gss/rpcsec_gss_krb5.ko: kernel/net/sunrpc/auth_gss/auth_rpcgss.ko kernel/net/sunrpc/sunrpc.ko

@@ -36,20 +36,26 @@
 		};
 	};
 
+    mcp2515_clock: mcp2515_clock {
+		compatible = "fixed-clock";
+		#clock-cells = <0>;
+		clock-frequency  = <12000000>;          //对应模块上晶振的频率，我的是12MHz的
+	};
+
 	leds {
 		compatible = "gpio-leds";
         
 		led-0 {
 			function = LED_FUNCTION_POWER;
 			color = <LED_COLOR_ID_RED>;
-            gpio = <&pio 7 5 GPIO_ACTIVE_HIGH>; /* PH5 */
-            status = "okay";
+            gpios = <&pio 2 13 GPIO_ACTIVE_HIGH>; /* PC13 */
+            status = "disabled";
 		};
 
 		led-1 {
 			function = LED_FUNCTION_STATUS;
 			color = <LED_COLOR_ID_GREEN>;
-			gpios = <&pio 2 13 GPIO_ACTIVE_HIGH>; /* PC13 */
+            gpio = <&pio 7 5 GPIO_ACTIVE_HIGH>; /* PH5 */
 			default-state = "on";
             status = "disabled";
 		};
@@ -294,16 +300,38 @@
 };
 
 &spi1 {
-	#address-cells = <1>;
-	#size-cells = <0>;
-	status = "disabled";
+    #address-cells = <1>;
+    #size-cells = <0>;
+    pinctrl-names = "default";
+    // pinctrl-0 = <&spi1_pins &spi1_cs_pin>;
+    pinctrl-0 = <&spi1_pins>;
+    // cs-gpios = <&pio 7 9 GPIO_ACTIVE_HIGH>;		/* PH9 */
+    cs-gpios = <&pio 2 11 GPIO_ACTIVE_HIGH>;		/* PC11 */
 
-	spidev@1 {
-		compatible = "rohm,dh2228fv";
-		status = "disabled";
-		reg = <1>;
-		spi-max-frequency = <1000000>;
-	};
+    status = "okay";
+
+    can: mcp2515@0 {
+        compatible = "microchip,mcp2515";
+        clocks = <&mcp2515_clock>; 				
+        status = "okay";
+        
+        reg = <0>;
+        spi-max-frequency = <5000000>;
+
+        interrupt-parent = <&pio>;
+        interrupts = <2 9 IRQ_TYPE_EDGE_FALLING>;			/* PC9 */
+        
+        vdd-supply = <&reg_vcc33_wifi>;
+        xceiver-supply = <&reg_vcc33_wifi>;
+    };
+
+    spidev@1 {
+        compatible = "spidev";
+        // compatible = "rohm,dh2228fv";
+        status = "okay";
+        reg = <1>;
+        spi-max-frequency = <1000000>;
+    };
 };
 
 &uart0 {
