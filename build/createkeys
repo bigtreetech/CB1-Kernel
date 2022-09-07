@@ -1,0 +1,131 @@
+#!/bin/bash
+#
+# pack/pack
+# (c) Copyright 2013
+# Allwinner Technology Co., Ltd. <www.allwinnertech.com>
+# flord wang <wangflord@allwinnertech.com>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+
+LOCAL_DIR=$(cd $(dirname $0) && pwd)
+TOP_DIR=$(cd $LOCAL_DIR/.. && pwd)
+TOOLS_DIR=$TOP_DIR/tools/pack/pctools/linux/openssl
+SELECT_IC=
+
+export PATH=$TOOLS_DIR:$PATH
+
+function pack_error()
+{
+	echo -e "\033[47;31mERROR: $*\033[0m"
+}
+
+function pack_info()
+{
+	echo -e "\033[0;31;1mINFO: $*\033[0m"
+}
+
+function show_help()
+{
+	echo "build.sh - this script is used to create all keys defined in the dragon_toc.cfg"
+	echo "OPTIONS"
+	echo "-h            Display help message"
+	echo "-i [ic_type]  IC type, e.g. a50,a64..."
+}
+
+function build_select_ic()
+{
+	[ -n "$SELECT_IC" ] && return 0
+	local count=0
+	local defidx=0
+	local defval=""
+
+	if [ -f $TOP_DIR/.buildconfig ]; then
+		defval=$(awk -F= '/^export LICHEE_IC=/{print $2}' $TOP_DIR/.buildconfig)
+	fi
+
+	printf "All valid Sunxi ic:\n"
+	for ic in $( find $TOP_DIR/device/config/chips/ -mindepth 1 -maxdepth 1 -type d |sort); do
+		ics[$count]=`basename $ic`
+		printf "%4d. ${ics[$count]}\n" $count
+		[ "x$defval" == "x${ics[$count]}" ] && defidx=$count
+		let count=$count+1
+	done
+
+	while true; do
+		read -p "Please select a ic[${ics[$defidx]}]: "
+		[ -z "$REPLY" ] && REPLY=$defidx
+		RES=`expr match $REPLY "[0-9][0-9]*$"`
+		if [ "$RES" -le 0 ]; then
+			echo "please use index number"
+			continue
+		fi
+		if [ "$REPLY" -ge $count ]; then
+			echo "too big"
+			continue
+		fi
+		if [ "$REPLY" -lt "0" ]; then
+			echo "too small"
+			continue
+		fi
+		break
+	done
+
+	SELECT_IC=${ics[$REPLY]}
+}
+
+function createkeys()
+{
+	printf "ready to create keys\n"
+
+	find $TOP_DIR/device/config/chips/ -mindepth 1 -maxdepth 1 -type d | grep -w "$SELECT_IC"
+	if [ $? -ne 0 ]; then
+		pack_error "plat: $SELECT_IC is not exist"
+		exit 1
+	fi
+
+	pack_info "SELECT_IC is $SELECT_IC\n"
+
+	local toc_cfg_special=$TOP_DIR/device/config/chips/$SELECT_IC/configs/default/dragon_toc.cfg
+	local toc_cfg_default=$TOP_DIR/device/config/common/sign_config/dragon_toc.cfg
+	local toc_cfg=$toc_cfg_special
+	local key_out=$TOP_DIR/out/$SELECT_IC/common/keys
+
+	if [ ! -f $toc_cfg ]; then
+		toc_cfg=$toc_cfg_default
+	fi
+
+	if [ ! -f $toc_cfg ]; then
+		pack_error "dragon toc config file is not exist"
+		exit 1
+	fi
+
+	dragonsecboot -key $toc_cfg $key_out
+	if [ $? -ne 0 ]; then
+		pack_error "dragon toc run error"
+		exit 1
+	fi
+
+	if [ "x$toc_cfg" == "x$toc_cfg_special" ]; then
+		pack_info "use platform[$SELECT_IC] toc config to create keys\n"
+	else
+		pack_info "use default toc config to create keys\n"
+	fi
+}
+
+while getopts hi: OPTION; do
+	case $OPTION in
+		i)
+			SELECT_IC=$OPTARG
+			;;
+		*)
+			show_help
+			exit 0
+			;;
+	esac
+done
+
+build_select_ic
+createkeys

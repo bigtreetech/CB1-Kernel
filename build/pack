@@ -1,0 +1,1402 @@
+#!/bin/bash
+#
+# pack/pack
+# (c) Copyright 2013
+# Allwinner Technology Co., Ltd. <www.allwinnertech.com>
+# James Deng <csjamesdeng@allwinnertech.com>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+
+############################ Notice #####################################
+# a. Some config files priority is as follows:
+#    - xxx_${platform}.{cfg|fex} > xxx.{cfg|fex}
+#    - ${chip}/${board}/*.{cfg|fex} > ${chip}/default/*.{cfg|fex}
+#    - ${chip}/default/*.cfg > ${LICHEE_COMMON_CONFIG_DIR}/imagecfg/*.cfg
+#    - ${chip}/default/*.fex > ${LICHEE_COMMON_CONFIG_DIR}/partition/*.fex
+#  e.g. sun8iw7p1/configs/perf/image_linux.cfg > sun8iw7p1/configs/default/image_linux.cfg
+#       > ${LICHEE_COMMON_CONFIG_DIR}/imagecfg/image_linux.cfg > sun8iw7p1/configs/perf/image.cfg
+#       > sun8iw7p1/configs/default/image.cfg > ${LICHEE_COMMON_CONFIG_DIR}/imagecfg/image.cfg
+#
+# b. Support Nor storages rule:
+#    - Need to create sys_partition_nor.fex or sys_partition_nor_${platform}.fex
+#    - Add "{filename = "full_img.fex",     maintype = "12345678", \
+#      subtype = "FULLIMG_00000000",}" to image[_${platform}].cfg
+#
+# c. Switch uart port
+#    - Need to add your chip configs into ${LICHEE_COMMON_CONFIG_DIR}/debug/card_debug_pin
+#    - Call pack with 'debug' parameters
+
+function pack_error()
+{
+	echo -e "\033[47;31mERROR: $*\033[0m"
+}
+
+function pack_warn()
+{
+	echo -e "\033[47;34mWARN: $*\033[0m"
+}
+
+function pack_info()
+{
+	echo -e "\033[47;30mINFO: $*\033[0m"
+}
+
+localpath=$(cd $(dirname $0) && pwd)
+. $localpath/shflags
+
+# define option, format:
+#   'long option' 'default value' 'help message' 'short option'
+DEFINE_string 'chip' '' 'chip to build, e.g. sun7i' 'c'
+DEFINE_string 'ic' '' 'ic to build, e.g. a50' 'i'
+DEFINE_string 'platform' '' 'platform to build, e.g. linux, android, camdroid' 'p'
+DEFINE_string 'platform_version' '' 'platform version to build' 'V'
+DEFINE_string 'board' '' 'board to build, e.g. evb' 'b'
+DEFINE_string 'kernel' '' 'kernel to build, e.g. linux-3.4, linux-3.10' 'k'
+DEFINE_string 'debug_mode' 'uart0' 'config debug mode, e.g. uart0, card0' 'd'
+DEFINE_string 'signture' 'none' 'pack boot signture to do secure boot' 's'
+DEFINE_string 'secure' 'none' 'pack secure boot with -v arg' 'v'
+DEFINE_string 'mode' 'normal' 'pack dump firmware' 'm'
+DEFINE_string 'function' 'android' 'pack private firmware' 'f'
+DEFINE_string 'vsp' '' 'pack firmware for vsp' 't'
+DEFINE_string 'programmer' '' 'creat programmer img or not' 'w'
+DEFINE_string 'nor' 'none' 'pack nor image' 'n'
+DEFINE_boolean 'verity' false 'if enable dm-verity' ''
+DEFINE_boolean 'signfel' false 'if enable fel signing' ''
+
+# parse the command-line
+FLAGS "$@" || exit $?
+eval set -- "${FLAGS_ARGV}"
+
+PACK_CHIP=${FLAGS_chip}
+PACK_IC=${FLAGS_ic}
+PACK_PLATFORM=${FLAGS_platform}
+PACK_PLATFORM_VERSION=${FLAGS_platform_version}
+PACK_BOARD=${FLAGS_board}
+PACK_KERN=${FLAGS_kernel}
+PACK_DEBUG=${FLAGS_debug_mode}
+PACK_SIG=${FLAGS_signture}
+PACK_SECURE=${FLAGS_secure}
+PACK_MODE=${FLAGS_mode}
+PACK_FUNC=${FLAGS_function}
+PACK_VSP=${FLAGS_vsp}
+PACK_PROGRAMMER=${FLAGS_programmer}
+PACK_NOR=${FLAGS_nor}
+PACK_PRODUCT=${FLAGS_product}
+PACK_VERITY=${FLAGS_verity}
+PACK_SIGNFEL=${FLAGS_signfel}
+
+CFG_TOP_DIR=$(cd $localpath/../ && pwd)
+CFG_PLAT_OUT=$CFG_TOP_DIR/out/$PACK_IC/$PACK_BOARD/$PACK_PLATFORM
+CFG_KEY_DIR=$CFG_TOP_DIR/out/$PACK_IC/common/keys
+
+if [ ! -d ${CFG_PLAT_OUT} ] || \
+   [ ! -f $CFG_PLAT_OUT/.buildconfig ]; then
+	pack_error "config & build lichee before you pack"
+	exit 1
+fi
+
+source $CFG_PLAT_OUT/.buildconfig
+
+if [ -z "${PACK_KERN}" ]; then
+	pack_info "No kernel param, parse it from .buildconfig"
+	PACK_KERN=$LICHEE_KERN_VER
+	if [ -z "${PACK_KERN}" ]; then
+		pack_error "Failed to parse kernel param from .buildconfig"
+		exit 1
+	fi
+fi
+
+PACK_TYPE=""
+case "x${PACK_PLATFORM}" in
+	"xandroid")
+		PACK_TYPE="android"
+		;;
+	"xdragonboard")
+		PACK_TYPE="dragonboard"
+		;;
+	"xbsp"|"xsata"|"xlongan")
+		PACK_TYPE="linux"
+		;;
+	*)
+		pack_error "Unsupport PACK_PLATFORM: ${PACK_PLATFORM}"
+		exit 1
+		;;
+esac
+
+OTA_TEST_NAME="ota_test"
+
+export PATH=${LICHEE_TOOLS_DIR}/pack/pctools/linux/mod_update:${LICHEE_TOOLS_DIR}/pack/pctools/linux/openssl:${LICHEE_TOOLS_DIR}/pack/pctools/linux/eDragonEx:${LICHEE_TOOLS_DIR}/pack/pctools/linux/fsbuild200:${LICHEE_TOOLS_DIR}/pack/pctools/linux/android:$PATH
+
+possible_bin_path=(
+configs/${PACK_BOARD}/${PACK_PLATFORM}/${LICHEE_BUSSINESS}/bin
+configs/${PACK_BOARD}/${PACK_PLATFORM}/bin
+configs/${PACK_BOARD}/${LICHEE_BUSSINESS}/bin
+configs/${PACK_BOARD}/bin
+${LICHEE_BUSSINESS}/bin
+bin)
+
+BIN_PATH=""
+for d in ${possible_bin_path[@]}; do
+	[ -d ${LICHEE_CHIP_CONFIG_DIR}/$d ] && BIN_PATH=$d && break
+done
+
+[ -z "${BIN_PATH}" ] &&
+pack_error "No BIN_PATH found!" && exit 1
+
+pack_info "Use BIN_PATH: ${LICHEE_CHIP_CONFIG_DIR}/$BIN_PATH"
+
+tools_file_list=(
+${LICHEE_COMMON_CONFIG_DIR}/tools/split_xxxx.fex
+${LICHEE_CHIP_CONFIG_DIR}/tools/split_xxxx.fex
+${LICHEE_COMMON_CONFIG_DIR}/tools/usbtool_test.fex
+${LICHEE_COMMON_CONFIG_DIR}/tools/usbtool_crash.fex
+${LICHEE_CHIP_CONFIG_DIR}/tools/usbtool_test.fex
+${LICHEE_COMMON_CONFIG_DIR}/tools/cardscript.fex
+${LICHEE_COMMON_CONFIG_DIR}/tools/cardscript_secure.fex
+${LICHEE_CHIP_CONFIG_DIR}/tools/cardscript.fex
+${LICHEE_CHIP_CONFIG_DIR}/tools/cardscript_secure.fex
+${LICHEE_COMMON_CONFIG_DIR}/tools/cardtool.fex
+${LICHEE_CHIP_CONFIG_DIR}/tools/cardtool.fex
+${LICHEE_COMMON_CONFIG_DIR}/tools/usbtool.fex
+${LICHEE_CHIP_CONFIG_DIR}/tools/usbtool.fex
+${LICHEE_COMMON_CONFIG_DIR}/tools/usbtool_crash.fex
+${LICHEE_CHIP_CONFIG_DIR}/tools/usbtool_crash.fex
+${LICHEE_COMMON_CONFIG_DIR}/tools/aultls32.fex
+${LICHEE_CHIP_CONFIG_DIR}/tools/aultls32.fex
+${LICHEE_COMMON_CONFIG_DIR}/tools/aultools.fex
+${LICHEE_CHIP_CONFIG_DIR}/tools/aultools.fex
+)
+
+configs_file_list=(
+${LICHEE_COMMON_CONFIG_DIR}/toc/toc1.fex
+${LICHEE_COMMON_CONFIG_DIR}/toc/toc0.fex
+${LICHEE_COMMON_CONFIG_DIR}/toc/boot_package.fex
+${LICHEE_COMMON_CONFIG_DIR}/hdcp/esm.fex
+${LICHEE_COMMON_CONFIG_DIR}/dtb/sunxi.fex
+${LICHEE_COMMON_CONFIG_DIR}/imagecfg/*.cfg
+${LICHEE_COMMON_CONFIG_DIR}/partition/sys_partition_dump.fex
+${LICHEE_COMMON_CONFIG_DIR}/partition/sys_partition_private.fex
+${LICHEE_COMMON_CONFIG_DIR}/version/version_base.mk
+${LICHEE_CHIP_CONFIG_DIR}/configs/default/*
+${LICHEE_CHIP_CONFIG_DIR}/configs/${PACK_BOARD}/*.fex
+${LICHEE_CHIP_CONFIG_DIR}/configs/default/version_base.mk
+${LICHEE_CHIP_CONFIG_DIR}/dtbo/*
+${LICHEE_BOARD_CONFIG_DIR}/dtbo/*
+)
+
+product_configs_file_list=(
+${LICHEE_CHIP_CONFIG_DIR}/configs/${PACK_BOARD}/${PACK_PLATFORM}/*.fex
+${LICHEE_CHIP_CONFIG_DIR}/configs/${PACK_BOARD}/${PACK_PLATFORM}/*.cfg
+)
+
+boot_resource_list=(
+${LICHEE_CHIP_CONFIG_DIR}/boot-resource/boot-resource:${LICHEE_PACK_OUT_DIR}
+${LICHEE_CHIP_CONFIG_DIR}/boot-resource/boot-resource.ini:${LICHEE_PACK_OUT_DIR}
+${LICHEE_CHIP_CONFIG_DIR}/configs/${PACK_BOARD}/*.bmp:${LICHEE_PACK_OUT_DIR}/boot-resource/
+${LICHEE_CHIP_CONFIG_DIR}/configs/${PACK_BOARD}/bootlogo.bmp:${LICHEE_PACK_OUT_DIR}/bootlogo.bmp
+${LICHEE_CHIP_CONFIG_DIR}/configs/${PACK_BOARD}/${PACK_TYPE}/*.bmp:${LICHEE_PACK_OUT_DIR}/boot-resource/
+${LICHEE_CHIP_CONFIG_DIR}/boot-resource/boot-resource/bat/bempty.bmp:${LICHEE_PACK_OUT_DIR}/bempty.bmp
+${LICHEE_CHIP_CONFIG_DIR}/boot-resource/boot-resource/bat/battery_charge.bmp:${LICHEE_PACK_OUT_DIR}/battery_charge.bmp
+)
+
+boot_file_list=(
+${LICHEE_CHIP_CONFIG_DIR}/${BIN_PATH}/boot0_nand_${PACK_CHIP}.bin:${LICHEE_PACK_OUT_DIR}/boot0_nand.fex
+${LICHEE_CHIP_CONFIG_DIR}/${BIN_PATH}/boot0_sdcard_${PACK_CHIP}.bin:${LICHEE_PACK_OUT_DIR}/boot0_sdcard.fex
+${LICHEE_CHIP_CONFIG_DIR}/${BIN_PATH}/boot0_spinor_${PACK_CHIP}.bin:${LICHEE_PACK_OUT_DIR}/boot0_spinor.fex
+${LICHEE_CHIP_CONFIG_DIR}/${BIN_PATH}/fes1_${PACK_CHIP}.bin:${LICHEE_PACK_OUT_DIR}/fes1.fex
+${LICHEE_CHIP_CONFIG_DIR}/${BIN_PATH}/u-boot-${PACK_CHIP}.bin:${LICHEE_PACK_OUT_DIR}/u-boot.fex
+${LICHEE_CHIP_CONFIG_DIR}/${BIN_PATH}/u-boot-crashdump-${PACK_CHIP}.bin:${LICHEE_PACK_OUT_DIR}/u-boot-crash.fex
+${LICHEE_CHIP_CONFIG_DIR}/${BIN_PATH}/u-boot-crashdump-spinor-${PACK_CHIP}.bin:${LICHEE_PACK_OUT_DIR}/u-boot-spinor-crash.fex
+${LICHEE_CHIP_CONFIG_DIR}/${BIN_PATH}/bl31.bin:${LICHEE_PACK_OUT_DIR}/monitor.fex
+${LICHEE_CHIP_CONFIG_DIR}/${BIN_PATH}/scp.bin:${LICHEE_PACK_OUT_DIR}/scp.fex
+${LICHEE_CHIP_CONFIG_DIR}/${BIN_PATH}/optee_${PACK_CHIP}.bin:${LICHEE_PACK_OUT_DIR}/optee.fex
+${LICHEE_CHIP_CONFIG_DIR}/${BIN_PATH}/u-boot-spinor-${PACK_CHIP}.bin:${LICHEE_PACK_OUT_DIR}/u-boot-spinor.fex
+${LICHEE_CHIP_CONFIG_DIR}/${BIN_PATH}/boot0_nand_${PACK_CHIP}-${OTA_TEST_NAME}.bin:${LICHEE_PACK_OUT_DIR}/boot0_nand-${OTA_TEST_NAME}.fex
+${LICHEE_CHIP_CONFIG_DIR}/${BIN_PATH}/boot0_sdcard_${PACK_CHIP}-${OTA_TEST_NAME}.bin:${LICHEE_PACK_OUT_DIR}/boot0_sdcard-${OTA_TEST_NAME}.fex
+${LICHEE_CHIP_CONFIG_DIR}/${BIN_PATH}/boot0_spinor_${PACK_CHIP}-${OTA_TEST_NAME}.bin:${LICHEE_PACK_OUT_DIR}/boot0_spinor-${OTA_TEST_NAME}.fex
+${LICHEE_CHIP_CONFIG_DIR}/${BIN_PATH}/u-boot-${PACK_CHIP}-${OTA_TEST_NAME}.bin:${LICHEE_PACK_OUT_DIR}/u-boot-${OTA_TEST_NAME}.fex
+${LICHEE_CHIP_CONFIG_DIR}/${BIN_PATH}/u-boot-spinor-${PACK_CHIP}-${OTA_TEST_NAME}.bin:${LICHEE_PACK_OUT_DIR}/u-boot-spinor-${OTA_TEST_NAME}.fex
+)
+
+boot_file_secure=(
+${LICHEE_CHIP_CONFIG_DIR}/${BIN_PATH}/semelis_${PACK_CHIP}.bin:${LICHEE_PACK_OUT_DIR}/semelis.bin
+${LICHEE_CHIP_CONFIG_DIR}/${BIN_PATH}/optee_${PACK_CHIP}.bin:${LICHEE_PACK_OUT_DIR}/optee.bin
+${LICHEE_CHIP_CONFIG_DIR}/${BIN_PATH}/sboot_${PACK_CHIP}.bin:${LICHEE_PACK_OUT_DIR}/sboot.bin
+${LICHEE_CHIP_CONFIG_DIR}/${BIN_PATH}/sboot_${PACK_CHIP}-${OTA_TEST_NAME}.bin:${LICHEE_PACK_OUT_DIR}/sboot-${OTA_TEST_NAME}.bin
+)
+
+a64_boot_file_secure=(
+${LICHEE_CHIP_CONFIG_DIR}/${BIN_PATH}/optee_${PACK_CHIP}.bin:${LICHEE_PACK_OUT_DIR}/optee.fex
+${LICHEE_CHIP_CONFIG_DIR}/${BIN_PATH}/sboot_${PACK_CHIP}.bin:${LICHEE_PACK_OUT_DIR}/sboot.bin
+# ${LICHEE_CHIP_CONFIG_DIR}/${BIN_PATH}/sboot_${PACK_CHIP}-${OTA_TEST_NAME}.bin:pack_out/sboot-${OTA_TEST_NAME}.bin
+)
+
+#
+# This function can get the realpath between $SRC and $DST
+#
+function get_realpath()
+{
+	local src=$(cd $1; pwd);
+	local dst=$(cd $2; pwd);
+	local res="./";
+	local tmp="$dst"
+
+	while [ "${src##*$tmp}" == "${src}" ]; do
+		tmp=${tmp%/*};
+		res=$res"../"
+	done
+	res="$res${src#*$tmp/}"
+
+	printf "%s" $res
+}
+
+function show_boards()
+{
+	printf "\nAll avaiable chips, platforms and boards:\n\n"
+	printf "Chip            Board\n"
+	for chipdir in $(find chips/ -mindepth 1 -maxdepth 1 -type d) ; do
+		chip=`basename ${chipdir}`
+		printf "${chip}\n"
+		for boarddir in $(find chips/${chip}/configs/${platform} \
+			-mindepth 1 -maxdepth 1 -type d) ; do
+			board=`basename ${boarddir}`
+			printf "                ${board}\n"
+		done
+	done
+	printf "\nFor Usage:\n"
+	printf "     $(basename $0) -h\n\n"
+}
+
+function uart_switch()
+{
+	rm -rf ${LICHEE_PACK_OUT_DIR}/awk_debug_card0
+	touch ${LICHEE_PACK_OUT_DIR}/awk_debug_card0
+	TX=`awk  '$0~"'$PACK_CHIP'"{print $2}' ${LICHEE_COMMON_CONFIG_DIR}/debug/card_debug_pin`
+	RX=`awk  '$0~"'$PACK_CHIP'"{print $3}' ${LICHEE_COMMON_CONFIG_DIR}/debug/card_debug_pin`
+	PORT=`awk  '$0~"'$PACK_CHIP'"{print $4}' ${LICHEE_COMMON_CONFIG_DIR}/debug/card_debug_pin`
+	MS=`awk  '$0~"'$PACK_CHIP'"{print $5}' ${LICHEE_COMMON_CONFIG_DIR}/debug/card_debug_pin`
+	CK=`awk  '$0~"'$PACK_CHIP'"{print $6}' ${LICHEE_COMMON_CONFIG_DIR}/debug/card_debug_pin`
+	DO=`awk  '$0~"'$PACK_CHIP'"{print $7}' ${LICHEE_COMMON_CONFIG_DIR}/debug/card_debug_pin`
+	DI=`awk  '$0~"'$PACK_CHIP'"{print $8}' ${LICHEE_COMMON_CONFIG_DIR}/debug/card_debug_pin`
+
+	BOOT_UART_ST=`awk  '$0~"'$PACK_CHIP'"{print $2}' ${LICHEE_COMMON_CONFIG_DIR}/debug/card_debug_string`
+	BOOT_PORT_ST=`awk  '$0~"'$PACK_CHIP'"{print $3}' ${LICHEE_COMMON_CONFIG_DIR}/debug/card_debug_string`
+	BOOT_TX_ST=`awk  '$0~"'$PACK_CHIP'"{print $4}' ${LICHEE_COMMON_CONFIG_DIR}/debug/card_debug_string`
+	BOOT_RX_ST=`awk  '$0~"'$PACK_CHIP'"{print $5}' ${LICHEE_COMMON_CONFIG_DIR}/debug/card_debug_string`
+	UART0_ST=`awk  '$0~"'$PACK_CHIP'"{print $6}' ${LICHEE_COMMON_CONFIG_DIR}/debug/card_debug_string`
+	UART0_USED_ST=`awk  '$0~"'$PACK_CHIP'"{print $7}' ${LICHEE_COMMON_CONFIG_DIR}/debug/card_debug_string`
+	UART0_PORT_ST=`awk  '$0~"'$PACK_CHIP'"{print $8}' ${LICHEE_COMMON_CONFIG_DIR}/debug/card_debug_string`
+	UART0_TX_ST=`awk  '$0~"'$PACK_CHIP'"{print $9}' ${LICHEE_COMMON_CONFIG_DIR}/debug/card_debug_string`
+	UART0_RX_ST=`awk  '$0~"'$PACK_CHIP'"{print $10}' ${LICHEE_COMMON_CONFIG_DIR}/debug/card_debug_string`
+	UART1_ST=`awk  '$0~"'$PACK_CHIP'"{print $11}' ${LICHEE_COMMON_CONFIG_DIR}/debug/card_debug_string`
+	JTAG_ST=`awk  '$0~"'$PACK_CHIP'"{print $12}' ${LICHEE_COMMON_CONFIG_DIR}/debug/card_debug_string`
+	MS_ST=`awk  '$0~"'$PACK_CHIP'"{print $13}' ${LICHEE_COMMON_CONFIG_DIR}/debug/card_debug_string`
+	CK_ST=`awk  '$0~"'$PACK_CHIP'"{print $14}' ${LICHEE_COMMON_CONFIG_DIR}/debug/card_debug_string`
+	DO_ST=`awk  '$0~"'$PACK_CHIP'"{print $15}' ${LICHEE_COMMON_CONFIG_DIR}/debug/card_debug_string`
+	DI_ST=`awk  '$0~"'$PACK_CHIP'"{print $16}' ${LICHEE_COMMON_CONFIG_DIR}/debug/card_debug_string`
+	MMC0_ST=`awk  '$0~"'$PACK_CHIP'"{print $17}' ${LICHEE_COMMON_CONFIG_DIR}/debug/card_debug_string`
+	MMC0_USED_ST=`awk  '$0~"'$PACK_CHIP'"{print $18}' ${LICHEE_COMMON_CONFIG_DIR}/debug/card_debug_string`
+
+	if [ -z "$TX" ] || [ -z "$BOOT_UART_ST" ]; then
+		pack_error "$FUNCNAME: $PACK_CHIP not configured in card_debug_pin/card_debug_string!"
+		exit 1
+	fi
+
+	echo '$0!~";" && $0~"'$BOOT_TX_ST'"{if(C)$0="'$BOOT_TX_ST' = '$TX'"} \' >> ${LICHEE_PACK_OUT_DIR}/awk_debug_card0
+	echo '$0!~";" && $0~"'$BOOT_RX_ST'"{if(C)$0="'$BOOT_RX_ST' = '$RX'"} \' >> ${LICHEE_PACK_OUT_DIR}/awk_debug_card0
+	echo '$0!~";" && $0~"'$BOOT_PORT_ST'"{if(C)$0="'$BOOT_PORT_ST' = '$PORT'"} \' >> ${LICHEE_PACK_OUT_DIR}/awk_debug_card0
+	if [ "`grep "auto_print_used" "${LICHEE_PACK_OUT_DIR}/sys_config.fex" | grep "1"`" ]; then
+		echo '$0!~";" && $0~"'$MMC0_USED_ST'"{if(A)$0="'$MMC0_USED_ST' = 1";A=0} \' >> ${LICHEE_PACK_OUT_DIR}/awk_debug_card0
+	else
+	echo '$0!~";" && $0~"'$MMC0_USED_ST'"{if(A)$0="'$MMC0_USED_ST' = 0";A=0} \' >> ${LICHEE_PACK_OUT_DIR}/awk_debug_card0
+	fi
+	echo '$0!~";" && $0~"\\['$MMC0_ST'\\]"{A=1}  \' >> ${LICHEE_PACK_OUT_DIR}/awk_debug_card0
+	echo '$0!~";" && $0~"'$UART0_TX_ST'"{if(B)$0="'$UART0_TX_ST' = '$TX'"} \' >> ${LICHEE_PACK_OUT_DIR}/awk_debug_card0
+	echo '$0!~";" && $0~"'$UART0_RX_ST'"{if(B)$0="'$UART0_RX_ST' = '$RX'"} \' >> ${LICHEE_PACK_OUT_DIR}/awk_debug_card0
+	echo '$0!~";" && $0~"\\['$UART0_ST'\\]"{B=1} \' >> ${LICHEE_PACK_OUT_DIR}/awk_debug_card0
+	echo '$0!~";" && $0~"'$UART0_USED_ST'"{if(B)$0="'$UART0_USED_ST' = 1"}  \' >> ${LICHEE_PACK_OUT_DIR}/awk_debug_card0
+	echo '/^'$UART0_PORT_ST'/{next} \' >> ${LICHEE_PACK_OUT_DIR}/awk_debug_card0
+	echo '$0!~";" && $0~"\\['$UART1_ST'\\]"{B=0} \' >> ${LICHEE_PACK_OUT_DIR}/awk_debug_card0
+	echo '$0!~";" && $0~"\\['$BOOT_UART_ST'\\]"{C=1} \' >> ${LICHEE_PACK_OUT_DIR}/awk_debug_card0
+	echo '$0!~";" && $0~"\\['$JTAG_ST'\\]"{C=0} \' >> ${LICHEE_PACK_OUT_DIR}/awk_debug_card0
+	echo '$0!~";" && $0~"'$MS_ST'"{$0="'$MS_ST' = '$MS'"} \' >> ${LICHEE_PACK_OUT_DIR}/awk_debug_card0
+	echo '$0!~";" && $0~"'$CK_ST'"{$0="'$CK_ST' = '$CK'"} \' >> ${LICHEE_PACK_OUT_DIR}/awk_debug_card0
+	echo '$0!~";" && $0~"'$DO_ST'"{$0="'$DO_ST' = '$DO'"} \' >> ${LICHEE_PACK_OUT_DIR}/awk_debug_card0
+	echo '$0!~";" && $0~"'$DI_ST'"{$0="'$DI_ST' = '$DI'"} \' >> ${LICHEE_PACK_OUT_DIR}/awk_debug_card0
+	echo '1' >> ${LICHEE_PACK_OUT_DIR}/awk_debug_card0
+
+	if [ "`grep "auto_print_used" "${LICHEE_PACK_OUT_DIR}/sys_config.fex" | grep "1"`" ]; then
+		sed -i -e '/^uart0_rx/a\pinctrl-1=' ${LICHEE_PACK_OUT_DIR}/sys_config.fex
+		sed -i -e '/^uart0_rx/a\pinctrl-0=' ${LICHEE_PACK_OUT_DIR}/sys_config.fex
+	fi
+
+	awk -f ${LICHEE_PACK_OUT_DIR}/awk_debug_card0 ${LICHEE_PACK_OUT_DIR}/sys_config.fex > ${LICHEE_PACK_OUT_DIR}/sys_config_debug.fex
+	rm -f ${LICHEE_PACK_OUT_DIR}/sys_config.fex
+	mv ${LICHEE_PACK_OUT_DIR}/sys_config_debug.fex ${LICHEE_PACK_OUT_DIR}/sys_config.fex
+	echo "uart -> card0"
+}
+
+function copy_ota_test_file()
+{
+	printf "ota test bootloader by diff bootlogo\n"
+	mv ${LICHEE_PACK_OUT_DIR}/boot-resource/bootlogo_ota_test.bmp ${LICHEE_PACK_OUT_DIR}/boot-resource/bootlogo.bmp
+
+	printf "copying ota test boot file\n"
+	if [ -f sys_partition_nor.fex -o \
+		-f sys_partition_nor_${PACK_TYPE}.fex ];  then
+		mv ${LICHEE_PACK_OUT_DIR}/boot0_spinor-${OTA_TEST_NAME}.fex	${LICHEE_PACK_OUT_DIR}/boot0_spinor.fex
+		mv ${LICHEE_PACK_OUT_DIR}/u-boot-spinor-${OTA_TEST_NAME}.fex	${LICHEE_PACK_OUT_DIR}/u-boot-spinor.fex
+	else
+		mv ${LICHEE_PACK_OUT_DIR}/boot0_nand-${OTA_TEST_NAME}.fex	${LICHEE_PACK_OUT_DIR}/boot0_nand.fex
+		mv ${LICHEE_PACK_OUT_DIR}/boot0_sdcard-${OTA_TEST_NAME}.fex	${LICHEE_PACK_OUT_DIR}/boot0_sdcard.fex
+		mv ${LICHEE_PACK_OUT_DIR}/u-boot-${OTA_TEST_NAME}.fex		${LICHEE_PACK_OUT_DIR}/u-boot.fex
+	fi
+
+	if [ "x${PACK_SECURE}" = "xsecure" -o  "x${PACK_SIG}" = "prev_refurbish"] ; then
+		printf "Copying ota test secure boot file\n"
+		mv ${LICHEE_PACK_OUT_DIR}/sboot-${OTA_TEST_NAME}.bin ${LICHEE_PACK_OUT_DIR}/sboot.bin
+	fi
+
+	printf "OTA test env by bootdelay(10) and logolevel(8)\n"
+	sed -i 's/\(logolevel=\).*/\18/' ${LICHEE_PACK_OUT_DIR}/env.cfg
+	sed -i 's/\(bootdelay=\).*/\110/' ${LICHEE_PACK_OUT_DIR}/env.cfg
+}
+
+function add_lzma_header()
+{
+	lzma_file=$1
+	original_file=$2
+	file_size=$(printf "%.8x\n" `stat -c%s ${lzma_file}`)
+	original_file_size=$(printf "%.8x\n" `stat -c%s ${original_file}`)
+
+	bin_str=""
+
+	file_size_len=${#file_size}
+
+	#"LZMA"+size+origin_size
+	bin_str="\x4c\x5a\x4d\x41\x${file_size:6:2}\x${file_size:4:2}\x${file_size:2:2}\x${file_size:0:2}"
+	bin_str+="\x${original_file_size:6:2}\x${original_file_size:4:2}\x${original_file_size:2:2}\x${original_file_size:0:2}"
+
+
+	printf "%b" ${bin_str} > tempbin
+
+	cat ${lzma_file} >> tempbin
+
+	mv tempbin "${lzma_file}.head"
+}
+
+function do_prepare()
+{
+	if [ -z "${PACK_CHIP}" -o -z "${PACK_TYPE}" -o -z "${PACK_BOARD}" ] ; then
+		pack_error "Invalid parameters Chip: ${PACK_CHIP}, \
+			Platform: ${PACK_TYPE}, Board: ${PACK_BOARD}"
+		show_boards
+		exit 1
+	fi
+
+	if [ ! -d ${LICHEE_CHIP_CONFIG_DIR}/configs/${PACK_BOARD} ] ; then
+		pack_error "Board's directory \
+			\"${LICHEE_CHIP_CONFIG_DIR}/configs/${PACK_BOARD}\" is not exist."
+		show_boards
+		exit 1
+	fi
+
+	# Cleanup
+	if [ "x" != "x${LICHEE_PACK_OUT_DIR}" ]; then
+		rm -rf ${LICHEE_PACK_OUT_DIR}
+	fi
+	mkdir -p ${LICHEE_PACK_OUT_DIR}
+
+	printf "copying tools file\n"
+	for file in ${tools_file_list[@]} ; do
+		cp -f $file ${LICHEE_PACK_OUT_DIR} 2> /dev/null
+	done
+
+	if [ "x${PACK_KERN}" = "xlinux-3.4" ]; then
+		cp -f ${LICHEE_COMMON_CONFIG_DIR}/tools/cardscript.fex ${LICHEE_PACK_OUT_DIR} 2> /dev/null
+	fi
+
+	printf "copying configs file\n"
+	for file in ${configs_file_list[@]} ; do
+		cp -f $file ${LICHEE_PACK_OUT_DIR} 2> /dev/null
+	done
+
+	printf "copying product configs file\n"
+	for file in ${product_configs_file_list[@]}; do
+		cp -f $file ${LICHEE_PACK_OUT_DIR} 2>/dev/null
+	done
+
+	# If platform config files exist, we will cover the default files
+	# For example, mv pack_out/image_linux.cfg pack_out/image.cfg
+	if [ ${PACK_PLATFORM} != "android" ]; then
+		cp -f ${LICHEE_BOARD_CONFIG_DIR}/${PACK_PLATFORM}/* ${LICHEE_PACK_OUT_DIR} 2> /dev/null
+		if [ ${PACK_PLATFORM} = "bsp" -o "x${PACK_PLATFORM}" = "xsata" ] ; then
+			find ${LICHEE_PACK_OUT_DIR}/* -type f -a \( -name "*.fex" -o -name "*.cfg" \) -print | \
+			sed "s#\(.*\)_linux\(\..*\)#mv -fv & \1\2#e"
+		else
+			find ${LICHEE_PACK_OUT_DIR}/* -type f -a \( -name "*.fex" -o -name "*.cfg" \) -print | \
+			sed "s#\(.*\)_${PACK_PLATFORM}\(\..*\)#mv -fv & \1\2#e"
+		fi
+	else
+		find ${LICHEE_PACK_OUT_DIR}/* -type f -a \( -name "*.fex" -o -name "*.cfg" \) -print | \
+			sed "s#\(.*\)_${PACK_TYPE}\(\..*\)#mv -fv & \1\2#e"
+	fi
+
+	if [ "x${PACK_NOR}" = "xnor" ] ; then
+		cp -vf ${LICHEE_PACK_OUT_DIR}/image_nor.cfg ${LICHEE_PACK_OUT_DIR}/image.cfg
+	fi
+
+	if [ "x${PACK_MODE}" = "xdump" ] ; then
+		cp -vf ${LICHEE_PACK_OUT_DIR}/sys_partition_dump.fex ${LICHEE_PACK_OUT_DIR}/sys_partition.fex
+		cp -vf ${LICHEE_PACK_OUT_DIR}/usbtool_test.fex ${LICHEE_PACK_OUT_DIR}/usbtool.fex
+	elif [ "x${PACK_FUNC}" = "xprvt" ] ; then
+		cp -vf ${LICHEE_PACK_OUT_DIR}/sys_partition_private.fex ${LICHEE_PACK_OUT_DIR}/sys_partition.fex
+	fi
+
+	printf "copying boot resource\n"
+	for file in ${boot_resource_list[@]} ; do
+		cp -rf $(echo $file | sed -e 's/:/ /g') 2>/dev/null
+	done
+
+	if [ ! -f ${LICHEE_PACK_OUT_DIR}/bootlogo.bmp ]; then
+		cp ${LICHEE_PACK_OUT_DIR}/boot-resource/bootlogo.bmp ${LICHEE_PACK_OUT_DIR}/bootlogo.bmp
+	fi
+
+	lzma -k ${LICHEE_PACK_OUT_DIR}/bootlogo.bmp
+	lzma -k ${LICHEE_PACK_OUT_DIR}/bempty.bmp
+	lzma -k ${LICHEE_PACK_OUT_DIR}/battery_charge.bmp
+
+	if [ -f ${LICHEE_PACK_OUT_DIR}/bootlogo.bmp.lzma ]; then
+		add_lzma_header "${LICHEE_PACK_OUT_DIR}/bootlogo.bmp.lzma" "${LICHEE_PACK_OUT_DIR}/bootlogo.bmp"
+		(cd ${LICHEE_PACK_OUT_DIR}; ln -sf bootlogo.bmp.lzma.head  bootlogo.fex)
+	fi
+
+	printf "copying boot file\n"
+	for file in ${boot_file_list[@]} ; do
+		cp -f $(echo $file | sed -e 's/:/ /g') 2>/dev/null
+	done
+
+	if [ "x${LICHEE_ARCH}" != "xarm64" ] ; then
+		if [ "x${PACK_SECURE}" = "xsecure" -o "x${PACK_SIG}" = "xsecure" -o  "x${PACK_SIG}" = "xprev_refurbish" ] ; then
+			printf "copying secure boot file\n"
+			for file in ${boot_file_secure[@]} ; do
+				cp -f $(echo $file | sed -e 's/:/ /g') 2>/dev/null
+			done
+		fi
+	else
+		if [ "x${PACK_SECURE}" = "xsecure" -o "x${PACK_SIG}" = "xsecure" -o  "x${PACK_SIG}" = "xprev_refurbish" ] ; then
+			printf "copying arm64 secure boot file\n"
+			for file in ${a64_boot_file_secure[@]} ; do
+				cp -f $(echo $file | sed -e 's/:/ /g') 2>/dev/null
+			done
+		fi
+	fi
+
+	# If platform config use
+	if [ -f ${LICHEE_CHIP_CONFIG_DIR}/tools/plat_config.sh ] ; then
+		${LICHEE_CHIP_CONFIG_DIR}/tools/plat_config.sh
+	fi
+
+	if [ "x${PACK_SECURE}" = "xsecure"  -o "x${PACK_SIG}" = "xsecure" ] ; then
+		printf "add burn_secure_mode in target in sys config\n"
+		sed -i -e '/^\[target\]/a\burn_secure_mode=1' ${LICHEE_PACK_OUT_DIR}/sys_config.fex
+		sed -i -e '/^\[platform\]/a\secure_without_OS=0' ${LICHEE_PACK_OUT_DIR}/sys_config.fex
+	elif [ "x${PACK_SIG}" = "xprev_refurbish" ] ; then
+		printf "add burn_secure_mode in target in sys config\n"
+		sed -i -e '/^\[target\]/a\burn_secure_mode=1' ${LICHEE_PACK_OUT_DIR}/sys_config.fex
+		sed -i -e '/^\[platform\]/a\secure_without_OS=1' ${LICHEE_PACK_OUT_DIR}/sys_config.fex
+	else
+		sed -i '/^burn_secure_mod/d' ${LICHEE_PACK_OUT_DIR}/sys_config.fex
+		sed -i '/^secure_without_OS/d' ${LICHEE_PACK_OUT_DIR}/sys_config.fex
+	fi
+
+	if [ "x${PACK_VSP}" = "xvsp" ] ; then
+		printf "change usb_port_type to device...\n"
+		printf "disable usb_serial_unique...\n"
+		printf "change usb_serial_number to ${PACK_TYPE}_android...\n"
+		sed -i 's/^usb_port_type.*/usb_port_type = 0/g' ${LICHEE_PACK_OUT_DIR}/sys_config.fex
+		sed -i 's/^usb_serial_unique.*/usb_serial_unique = 0/g' ${LICHEE_PACK_OUT_DIR}/sys_config.fex
+		sed -i 's/^usb_serial_number.*/usb_serial_number = "'"${PACK_CHIP}"'_android"/g' ${LICHEE_PACK_OUT_DIR}/sys_config.fex
+	fi
+
+	if [ "x${PACK_MODE}" = "xota_test" ] ; then
+		printf "copy ota test file\n"
+		copy_ota_test_file
+	fi
+
+	if [ "x${PACK_PROGRAMMER}" = "xprogrammer" ]; then
+		printf "add programmer img info target in sys config\n"
+		sed -i -e '/^\[target\]/a\programmer=1' ${LICHEE_PACK_OUT_DIR}/sys_config.fex
+	fi
+
+	# Here, we can switch uart to card or normal
+	if [ "x${PACK_DEBUG}" = "xcard0" -a "x${PACK_MODE}" != "xdump" \
+		-a "x${PACK_FUNC}" != "xprvt" ] ; then \
+		uart_switch
+	else
+		sed -i -e '/^auto_print_used/s\1\0\' ${LICHEE_PACK_OUT_DIR}/sys_config.fex
+	fi
+
+	sed -i 's/\\boot-resource/\/boot-resource/g' ${LICHEE_PACK_OUT_DIR}/boot-resource.ini
+	sed -i 's/\\\\/\//g' ${LICHEE_PACK_OUT_DIR}/image.cfg
+	sed -i 's/^imagename/;imagename/g' ${LICHEE_PACK_OUT_DIR}/image.cfg
+
+	IMG_NAME="${PACK_IC}_${PACK_TYPE}${PACK_PLATFORM_VERSION}_${PACK_BOARD}_${PACK_DEBUG}"
+
+	if [ "x${PACK_SIG}" != "xnone" ]; then
+		IMG_NAME="${IMG_NAME}_${PACK_SIG}"
+	fi
+
+	if [ "x${PACK_MODE}" = "xdump" -o "x${PACK_MODE}" = "xota_test" ] ; then
+		IMG_NAME="${IMG_NAME}_${PACK_MODE}"
+	fi
+
+	if [ "x${PACK_FUNC}" = "xprvt" ] ; then
+		IMG_NAME="${IMG_NAME}_${PACK_FUNC}"
+	fi
+
+	if [ "x${PACK_SECURE}" = "xsecure" ] ; then
+		IMG_NAME="${IMG_NAME}_${PACK_SECURE}"
+	fi
+
+	if [ "x${PACK_FUNC}" = "xprev_refurbish" ] ; then
+		IMG_NAME="${IMG_NAME}_${PACK_FUNC}"
+	fi
+
+	if [ "x${PACK_NOR}" = "xnor" ] ; then
+		IMG_NAME="${IMG_NAME}_${PACK_NOR}"
+	fi
+
+	IMG_PROGRAMMER_NAME="${IMG_NAME}_programmer.img"
+
+	if [ "x${PACK_SECURE}" != "xnone" -o "x${PACK_SIG}" != "xnone" ]; then
+		MAIN_VERION="$(echo '__unique:;@echo ${MAIN_VERSION}' | make -f - -f ${LICHEE_PACK_OUT_DIR}/version_base.mk --no-print-directory __unique)"
+
+		IMG_NAME="${IMG_NAME}_v${MAIN_VERION}.img"
+	else
+		IMG_NAME="${IMG_NAME}.img"
+	fi
+
+	echo "imagename = $IMG_NAME" >> ${LICHEE_PACK_OUT_DIR}/image.cfg
+	echo "" >> ${LICHEE_PACK_OUT_DIR}/image.cfg
+}
+
+function img_to_programmer()
+{
+	local out_img=$1
+	local in_img=$2
+
+	cd ${LICHEE_PACK_OUT_DIR}/
+
+	if [ "x${PACK_SIG}" = "xprev_refurbish" -o "x${PACK_SIG}" = "xsecure" ]; then
+		programmer_img toc0.fex toc1.fex ${out_img} > /dev/null
+	else
+		programmer_img boot0_sdcard.fex boot_package.fex ${out_img} > /dev/null
+	fi
+
+	if [ -f sunxi_gpt.fex ] ; then
+		#create_img for sunxi_gpt.fex
+		programmer_img sys_partition.bin sunxi_mbr.fex ${out_img} ${in_img} sunxi_gpt.fex > /dev/null
+	else
+		#create_img for sunxi_mbr.fex
+		programmer_img sys_partition.bin sunxi_mbr.fex ${out_img} ${in_img} > /dev/null
+	fi
+}
+
+function do_ini_to_dts()
+{
+	if [ "x${PACK_KERN}" == "xlinux-3.4" ]; then
+		return
+	fi
+	local DTC_SRC_PATH=${LICHEE_PLAT_OUT}
+	local DTC_COMPILER=${LICHEE_PLAT_OUT}/dtc
+
+	local DTC_DEP_BOARD1=${DTC_SRC_PATH}/.board.dtb.d.dtc.tmp
+	local DTC_SRC_BOARD1=${DTC_SRC_PATH}/.board.dtb.dts.tmp
+	local DTC_DEP_BOARD=${DTC_SRC_PATH}/.${PACK_CHIP}-${PACK_BOARD}.dtb.d.dtc.tmp
+	local DTC_SRC_BOARD=${DTC_SRC_PATH}/.${PACK_CHIP}-${PACK_BOARD}.dtb.dts.tmp
+	local DTC_DEP_BUSSINESS=${DTC_SRC_PATH}/.${PACK_CHIP}-${LICHEE_BUSSINESS}.dtb.d.dtc.tmp
+	local DTC_SRC_BUSSINESS=${DTC_SRC_PATH}/.${PACK_CHIP}-${LICHEE_BUSSINESS}.dtb.dts.tmp
+	local DTC_DEP_COMMON=${DTC_SRC_PATH}/.${PACK_CHIP}-soc.dtb.d.dtc.tmp
+	local DTC_SRC_COMMON=${DTC_SRC_PATH}/.${PACK_CHIP}-soc.dtb.dts.tmp
+
+	local DTC_INI_FILE_BASE=${LICHEE_PACK_OUT_DIR}/sys_config.fex
+	local DTC_INI_FILE=${LICHEE_PACK_OUT_DIR}/sys_config_fix.fex
+
+	cp $DTC_INI_FILE_BASE $DTC_INI_FILE
+	sed -i "s/\(\[dram\)_para\(\]\)/\1\2/g" $DTC_INI_FILE
+	sed -i "s/\(\[nand[0-9]\)_para\(\]\)/\1\2/g" $DTC_INI_FILE
+
+	if [ ! -f $DTC_COMPILER ]; then
+		pack_error "Script_to_dts: Can not find dtc compiler.\n"
+		exit 1
+	fi
+
+	if [ -f $DTC_DEP_BOARD1 ]; then
+		printf "Script_to_dts: use board special dts file board.dts\n"
+		DTC_DEP_FILE=${DTC_DEP_BOARD1}
+		DTC_SRC_FILE=${DTC_SRC_BOARD1}
+	elif [ -f $DTC_DEP_BOARD ]; then
+		printf "Script_to_dts: use board special dts file ${PACK_CHIP}-${PACK_BOARD}.dts\n"
+		DTC_DEP_FILE=${DTC_DEP_BOARD}
+		DTC_SRC_FILE=${DTC_SRC_BOARD}
+	elif [ -f $DTC_DEP_BUSSINESS ]; then
+		printf "Script_to_dts: use bussiness special dts file ${PACK_CHIP}-${LICHEE_BUSSINESS}.dts\n"
+		DTC_DEP_FILE=${DTC_DEP_BUSSINESS}
+		DTC_SRC_FILE=${DTC_SRC_BUSSINESS}
+	else
+		printf "Script_to_dts: use common dts file ${PACK_CHIP}-soc.dts\n"
+		DTC_DEP_FILE=${DTC_DEP_COMMON}
+		DTC_SRC_FILE=${DTC_SRC_COMMON}
+	fi
+
+	#Disbale noisy checks
+	if [ "x${PACK_KERN}" == "xlinux-4.9" ]; then
+	local DTC_FLAGS="-W no-unit_address_vs_reg"
+	fi
+
+	echo "sunxi_dtb create"
+	$DTC_COMPILER -p 2048 ${DTC_FLAGS} -@ -O dtb -o ${LICHEE_PLAT_OUT}/sunxi.dtb	\
+		-b 0			\
+		-i $DTC_SRC_PATH	\
+		-F $DTC_INI_FILE	\
+		-d $DTC_DEP_FILE $DTC_SRC_FILE
+
+	if [ $? -ne 0 ]; then
+		pack_error "Conver script to dts failed"
+		exit 1
+	fi
+
+	#restore the orignal dtsi
+	if [ "x${PACK_TYPE}" = "xdragonboard" \
+		-o "x${PACK_TYPE}" = "xdragonmat" ]; then
+		local DTS_PATH=${LICHEE_KERN_DIR}/arch/${LICHEE_ARCH}/boot/dts
+		[ "x${LICHEE_ARCH}" = "xarm64" ] && DTS_PATH=${LICHEE_KERN_DIR}/arch/${LICHEE_ARCH}/boot/dts/sunxi
+		if [ -f ${DTS_PATH}/${PACK_CHIP}_bak.dtsi ];then
+			rm -f ${DTS_PATH}/${PACK_CHIP}.dtsi
+			mv  ${DTS_PATH}/${PACK_CHIP}_bak.dtsi  ${DTS_PATH}/${PACK_CHIP}.dtsi
+		fi
+	fi
+
+	printf "Conver script to dts ok.\n"
+
+	# It'is used for debug dtb
+	$DTC_COMPILER ${DTC_FLAGS} -I dtb -O dts -o ${LICHEE_PLAT_OUT}/.sunxi.dts ${LICHEE_PLAT_OUT}/sunxi.dtb
+
+	return
+}
+
+function do_common()
+{
+	cd ${LICHEE_PACK_OUT_DIR}/
+
+	if [ ! -f board_config.fex ]; then
+		echo "[empty]" > board_config.fex
+	fi
+
+	busybox unix2dos sys_config.fex
+	busybox unix2dos board_config.fex
+	script  sys_config.fex > /dev/null
+	cp -f   sys_config.bin config.fex
+	script  board_config.fex > /dev/null
+	cp -f board_config.bin board.fex
+
+	busybox unix2dos sys_partition.fex
+	script  sys_partition.fex > /dev/null
+
+
+	if [ "x${PACK_TYPE}" = "xdragonboard" ] ; then
+		busybox dos2unix test_config.fex
+		cp test_config.fex boot-resource/
+		busybox unix2dos test_config.fex
+		script test_config.fex > /dev/null
+		cp test_config.bin boot-resource/
+	fi
+
+	# Those files for SpiNor. We will try to find sys_partition_nor.fex
+	if [ "x${PACK_NOR}" = "xnor" ] ; then
+
+		if [ ! -f sys_partition_nor.fex ];  then
+			echo "sys partition for nor not exist"
+			exit 1
+		fi
+
+		if [ -f "${LICHEE_PLAT_OUT}/sunxi.dtb" ]; then
+			cp ${LICHEE_PLAT_OUT}/sunxi.dtb sunxi.fex
+		fi
+
+		if [ -f "scp.fex" ]; then
+			echo "update scp"
+			update_scp scp.fex sunxi.fex >/dev/null
+		fi
+
+		# Here, will create sys_partition_nor.bin
+		busybox unix2dos sys_partition_nor.fex
+		script  sys_partition_nor.fex > /dev/null
+		update_boot0 boot0_spinor.fex   sys_config.bin SPINOR_FLASH > /dev/null
+		update_chip boot0_spinor.fex > /dev/null
+		if [ "x${PACK_KERN}" = "xlinux-3.4" ] ; then
+			update_uboot -merge u-boot-spinor.fex  sys_config.bin > /dev/null
+		else
+			update_uboot -no_merge u-boot-spinor.fex  sys_config.bin > /dev/null
+		fi
+
+		if [ -f boot_package_nor.cfg ]; then
+			mv u-boot-spinor-crash.fex u-boot-crash.fex
+			echo "pack boot package"
+			busybox unix2dos boot_package.cfg
+			dragonsecboot -pack boot_package_nor.cfg
+			cp boot_package.fex boot_package_nor.fex
+		fi
+		# Ugly, but I don't have a better way to change it.
+		# We just set env's downloadfile name to env_nor.cfg in sys_partition_nor.fex
+		# And if env_nor.cfg is not exist, we should copy one.
+		if [ ! -f env_nor.cfg ]; then
+			cp -f env.cfg env_nor.cfg >/dev/null 2<&1
+		fi
+
+		# Fixup boot mode for SPINor, just can bootm
+		sed -i '/^boot_normal/s#\<boota\>#bootm#g' env_nor.cfg
+
+		u_boot_env_gen env_nor.cfg env_nor.fex >/dev/null
+	else
+		update_boot0 boot0_nand.fex     sys_config.bin NAND > /dev/null
+		update_boot0 boot0_sdcard.fex   sys_config.bin SDMMC_CARD > /dev/null
+		update_chip boot0_nand.fex >/dev/null
+		update_chip boot0_sdcard.fex >/dev/null
+	fi
+
+	if [ ! -f "u-boot-crash.fex" ]; then
+		touch "u-boot-crash.fex"
+		echo "ensure u-boot-crash.fex is not empty" > u-boot-crash.fex
+	fi
+
+	if [ -f "${LICHEE_PLAT_OUT}/sunxi.dtb" ]; then
+		cp ${LICHEE_PLAT_OUT}/sunxi.dtb sunxi.fex
+		update_dtb sunxi.fex 4096
+	fi
+
+	if [ -f "scp.fex" ]; then
+		echo "update scp"
+		update_scp scp.fex sunxi.fex >/dev/null
+	fi
+
+	# Those files for Nand or Card
+	if [ "x${PACK_KERN}" = "xlinux-3.4" ] ; then
+		update_uboot -merge u-boot.fex sys_config.bin > /dev/null
+	else
+		update_uboot -no_merge u-boot.fex sys_config.bin > /dev/null
+	fi
+	update_fes1  fes1.fex           sys_config.bin > /dev/null
+	if [ -f ${LICHEE_TOOLS_DIR}/pack/pctools/linux/mod_update/update_sboot ];then
+		update_sboot sboot.bin  sys_config.bin
+		if [ $? -ne 0 ]
+		then
+			pack_error "update sboot run error"
+			exit 1
+		fi
+	fi
+	fsbuild      boot-resource.ini  split_xxxx.fex > /dev/null
+
+	if [ -f boot_package.cfg ]; then
+			echo "pack boot package"
+			busybox unix2dos boot_package.cfg
+			dragonsecboot -pack boot_package.cfg
+
+		if [ $? -ne 0 ]
+		then
+			pack_error "dragon pack run error"
+			exit 1
+		fi
+	fi
+
+	if [ "x${PACK_FUNC}" = "xprvt" ] ; then
+		u_boot_env_gen env_burn.cfg env.fex > /dev/null
+	else
+		u_boot_env_gen env.cfg env.fex > /dev/null
+	fi
+
+	if [ -f "$LICHEE_PLAT_OUT/arisc" ]; then
+		ln -sf $(get_realpath $LICHEE_PLAT_OUT ./)/arisc arisc.fex
+	fi
+
+	if [ "x""`grep "deal_verity)" ${LICHEE_KERN_DIR}/scripts/build.sh`" != "x" ]; then
+		#if possable, clean verity utils anyway
+		#make sure DO NOT do_mount_verity when dm-verity not set-up
+		(
+		cd ${LICHEE_KERN_DIR}
+		./scripts/build.sh deal_verity clean ||
+		{ pack_error "deal verity utils failed";exit 1; }
+		)
+	fi
+
+	if [ "x${PACK_SIGNFEL}" = "x${FLAGS_TRUE}" ]; then
+		do_signature_fel
+	fi
+}
+
+function do_finish()
+{
+	# Yeah, it should contain all files into full_img.fex for spinor
+	# Because, as usually, spinor image size is very small.
+	# If fail to create full_img.fex, we should fake it empty.
+
+	# WTF, it is so ugly!!! It must be sunxi_mbr.fex & sys_partition.bin,
+	# not sunxi_mbr_xxx.fex & sys_partition_xxx.bin. In order to advoid this
+	# loathsome thing, we need to backup & copy files. Check whether
+	# sys_partition_nor.bin is exist, and create sunxi_mbr.fex for Nor.
+
+	local toc_size
+	if [ "x${PACK_SIG}" = "xprev_refurbish" -o "x${PACK_SIG}" = "xsecure" ]; then
+		toc_size=`stat toc1.fex --format="%s"`
+	else
+		toc_size=`stat boot_package.fex --format="%s"`
+	fi
+
+	if [ ${toc_size} -gt 2097152 ];then
+		pack_error "boot_package.fex/toc1.fex More than 2097152 bytes limit too large!!!"
+		exit 1
+	fi
+
+	if [ "x${PACK_NOR}" = "xnor" ] ; then
+
+		update_mbr sys_partition_nor.bin 1 sunxi_mbr_nor.fex
+		if [ $? -ne 0 ]; then
+			pack_error "update_mbr failed"
+			exit 1
+		fi
+		#when use devicetree, the size of uboot+dtb is larger then 256K
+		if [ "x${PACK_KERN}" = "xlinux-3.4" ] ; then
+
+			#BOOT1_FILE=u-boot-spinor.fex
+			#LOGIC_START=240 #240+16=256K
+			#merge_package full_img.fex boot0_spinor.fex \
+			#        u-boot-spinor.fex sunxi_mbr_nor.fex sys_partition_nor.bin
+			merge_full_img --out full_img.fex --boot0 boot0_spinor.fex --boot1 u-boot-spinor.fex \
+							--mbr sunxi_mbr_nor.fex  --partition sys_partition_nor.bin \
+							--logic_start 240 > /dev/null
+		fi
+		mv sys_partition_nor.fex sys_partition.fex
+	fi
+
+	if [ ! -f sys_partition_nor.bin ]; then
+		update_mbr          sys_partition.bin 4
+		if [ $? -ne 0 ]; then
+			pack_error "update_mbr failed"
+			exit 1
+		fi
+
+		#15269888 is from emmc datasheet, sec_count in Extended CSD is 0xe90000 = 15269888.
+		# 0x1CE8000 for ISOCOM MEMA016G, 0x1CE8000 = 30310400
+		#20 is the mbr location for emmc
+		#0  is emmc/nand ; 1 is spinor
+		#update_mbr sys_partition.bin 4 sunxi_mbr.fex dlinfo.fex 30310400 20 0
+		update_mbr sys_partition.bin 4 sunxi_mbr.fex dlinfo.fex 15269888 20 0
+		if [ $? -ne 0 ]; then
+			pack_error "update_mbr_gpt failed"
+			exit 1
+		fi
+	fi
+
+	dragon image.cfg    sys_partition.fex
+		if [ $? -eq 0 ]; then
+		if [ -e ${IMG_NAME} ]; then
+			mv ${IMG_NAME} $LICHEE_OUT_DIR/${IMG_NAME}
+			echo '----------image is at----------'
+			echo -e '\033[0;31;1m'
+			echo ${LICHEE_OUT_DIR}/${IMG_NAME}
+			echo -e '\033[0m'
+		fi
+		fi
+	cd ..
+
+	if [ -n "$PACK_HOOK" ] && [ -x "$PACK_HOOK" ]; then
+		$PACK_HOOK ${LICHEE_OUT_DIR}/${IMG_NAME}
+	fi
+
+	if [ "x${PACK_PROGRAMMER}" = "xprogrammer" ]; then
+		echo "waiting to ceate programmer img..."
+		img_to_programmer ${IMG_PROGRAMMER_NAME} ../${IMG_NAME}
+		if [ $? -eq 0 ]; then
+			if [ -e ${IMG_PROGRAMMER_NAME} ]; then
+				mv ${IMG_PROGRAMMER_NAME} ../${IMG_PROGRAMMER_NAME}
+				echo '----------programmer image is at----------'
+				echo -e '\033[0;31;1m'
+				echo ${LICHEE_OUT_DIR}/${IMG_PROGRAMMER_NAME}
+				echo -e '\033[0m'
+			fi
+		fi
+	fi
+	cd ..
+	do_finish_SATA
+	printf "pack finish\n"
+}
+
+function do_finish_SATA()
+{
+	if [ "x$BUILD_SATA" = "xtrue" ];then
+		SATA_TAR=$LICHEE_TOP_DIR/SATA/linux/${LICHEE_CHIP}.tar
+		if [ -f $SATA_TAR ];then
+			echo '----------SATA is at----------'
+			echo -e '\033[0;31;1m'
+			echo $SATA_TAR
+			echo -e '\033[0m'
+		else
+			echo PACK SATA failed!
+		fi
+	fi
+}
+
+function dmverity_get_blk_count()
+{
+	local size=`du -b $1 | awk '{print $1}'`
+	local BLK_SIZE=$2
+
+	if [ `expr ${size} % ${BLK_SIZE}` = "0" ]; then
+			local blks=`(expr ${size} / ${BLK_SIZE})`
+	else
+			local blks=`(expr ${size} / ${BLK_SIZE} + 1 )`
+	fi
+
+	echo $blks
+}
+
+function dmverity_determ_blk_size()
+{
+	local type_info=`file -L $1`
+
+	#check rootfs file system type to determ block size
+	if [ "x""`echo ${type_info}| grep "ext4 filesystem"`" != "x" ];then
+		block_size=`tune2fs -l $1|grep "Block size"|awk {'print $3'}`
+		echo ${block_size}
+	else
+		echo "not support file system type"
+		return -1
+	fi
+
+}
+function dmverity_genHashTable()
+{
+	local fs_name=$1
+	local tree_name=$2
+	local table_name=$3
+	local block_size=`dmverity_determ_blk_size ${fs_name}`
+	if [ ${block_size} -lt 0 ];then
+		return -1
+	fi
+	veritysetup format --data-block-size=${block_size} --hash-block-size=${block_size} ${fs_name} ${tree_name} > ${table_name}
+	return $?
+}
+
+function dmverity_genDownloadFile()
+{
+	local fs_name=$1
+	local sign_name=$2
+	local table_name=$3
+	local tree_name=$4
+	local download_file_name=$5
+
+	local BLK_SIZE=`dmverity_determ_blk_size ${fs_name}`
+	if [ ${BLK_SIZE} -lt 0 ];then
+		return -1
+	fi
+	local SIGN_BLK=`dmverity_get_blk_count ${sign_name} ${BLK_SIZE}`
+	local TABLE_BLK=`dmverity_get_blk_count ${table_name} ${BLK_SIZE}`
+	local TREE_BLK=`dmverity_get_blk_count ${tree_name} ${BLK_SIZE}`
+
+	# 3.1 copy sign
+	dd if=${sign_name} of=${download_file_name}"tmp" bs=${BLK_SIZE} count=${SIGN_BLK} >/dev/null 2>&1
+
+	# 3.2 copy table size
+	local TABLE_SIZE=`du -b ${table_name} | awk '{print $1}'`
+	local HIGH_BYTES=`expr $TABLE_SIZE / 256 `
+	local LOW_BYTES=`expr $TABLE_SIZE % 256 `
+	if [ $HIGH_BYTES -gt 256 ]; then
+		echo "ERROR rootfs_hash_table size should < 64KB"
+		return -1
+	fi
+	local HIGH_BYTES_H=`echo "obase=16;ibase=10;$HIGH_BYTES" | bc`
+	local LOW_BYTES_H=`echo "obase=16;ibase=10;$LOW_BYTES" | bc`
+	echo -e -n "\x$LOW_BYTES_H\x$HIGH_BYTES_H" >> ${download_file_name}"tmp"
+
+	# 3.3 copy rootfs_hash_table
+	dd if=${table_name} of=${download_file_name}"tmp"  bs=${BLK_SIZE} seek=${SIGN_BLK} count=${TABLE_BLK} > /dev/null 2>&1
+
+	# 3.4 copy rootfs_hash_tree.bin
+	dd if=${tree_name} of=${download_file_name}"tmp"  bs=${BLK_SIZE} seek=`expr ${SIGN_BLK} + ${TABLE_BLK}` count=${TREE_BLK} > /dev/null 2>&1
+
+	dd of=${download_file_name} if=${download_file_name}"tmp" bs=${BLK_SIZE} count=`expr ${SIGN_BLK} + ${TABLE_BLK} + ${TREE_BLK}`>/dev/null 2>&1
+	rm ${download_file_name}"tmp"
+}
+
+function do_signature_fel()
+{
+	printf "prepare for signature for fex tools\n"
+	local  ROOT_KEY_NAME="";
+	if [ -f ${CFG_KEY_DIR}/RootKey_Level_0.bin ]; then
+		ROOT_KEY_NAME=${CFG_KEY_DIR}/RootKey_Level_0.bin
+	elif [ -f ${CFG_KEY_DIR}/Trustkey.bin ]; then
+		ROOT_KEY_NAME=${CFG_KEY_DIR}/Trustkey.bin
+	else
+		pack_error "can not found root key to sign fex tool"
+		exit 1
+	fi
+	echo rootkeyname ${ROOT_KEY_NAME}
+	sig_fel_image --input fes1.fex --rsakey ${ROOT_KEY_NAME} --output fes1_sign.fex --version_base ${LICHEE_PACK_OUT_DIR}/version_base.mk
+	if [ $? -ne 0 ]
+	then
+		pack_error "sig_fel_image fes fail"
+		exit 1
+	fi
+	sig_fel_image --input u-boot.fex --rsakey ${ROOT_KEY_NAME} --output u-boot_sign.fex --version_base ${LICHEE_PACK_OUT_DIR}/version_base.mk
+	if [ $? -ne 0 ]
+	then
+		pack_error "sig_fel_image uboot fail"
+	fi
+	mv fes1_sign.fex fes1.fex
+	mv u-boot_sign.fex u-boot.fex
+}
+
+function do_signature()
+{
+	printf "prepare for signature by openssl\n"
+	if [ "x${PACK_SIG}" = "xprev_refurbish" ] ; then
+		if [ "x${LICHEE_ARCH}" = "xarm64" ] ; then
+			cp -v ${LICHEE_COMMON_CONFIG_DIR}/sign_config/dragon_toc_a64_no_secureos.cfg dragon_toc.cfg
+		else
+			cp -v ${LICHEE_COMMON_CONFIG_DIR}/sign_config/dragon_toc_no_secureos.cfg dragon_toc.cfg
+		fi
+	else
+		if [ "x${LICHEE_ARCH}" = "xarm64" ] ; then
+			if [ -f ${LICHEE_CHIP_CONFIG_DIR}/configs/default/dragon_toc.cfg ] ; then
+				cp -v ${LICHEE_CHIP_CONFIG_DIR}/configs/default/dragon_toc.cfg dragon_toc.cfg
+			else
+				cp -v ${LICHEE_COMMON_CONFIG_DIR}/sign_config/dragon_toc_a64.cfg dragon_toc.cfg
+			fi
+		else
+			if [ -f ${LICHEE_CHIP_CONFIG_DIR}/configs/default/dragon_toc.cfg ] ; then
+				cp -v ${LICHEE_CHIP_CONFIG_DIR}/configs/default/dragon_toc.cfg dragon_toc.cfg
+			else
+				cp -v ${LICHEE_COMMON_CONFIG_DIR}/sign_config/dragon_toc.cfg dragon_toc.cfg
+			fi
+		fi
+	fi
+
+	if [ $? -ne 0 ]
+	then
+		pack_error "dragon toc config file is not exist"
+		exit 1
+	fi
+
+	rm -f cardscript.fex
+	mv cardscript_secure.fex cardscript.fex
+	if [ $? -ne 0 ]
+	then
+		pack_error "dragon cardscript_secure.fex file is not exist"
+		exit 1
+	fi
+
+	if [ "x""`grep "deal_verity)" ${LICHEE_KERN_DIR}/scripts/build.sh`" = "x" ]; then
+		if [ "x${PACK_VERITY}" = "x${FLAGS_TRUE}" ]; then
+			pack_error "verity utils for kernal not provided"
+			exit 1
+		fi
+	else
+		if [ "x${PACK_VERITY}" = "x${FLAGS_TRUE}" ]; then
+			# generate verity data
+			(dmverity_genHashTable rootfs.fex rootfsHashTree.fex rootfsHashTable.fex &&
+			openssl dgst -sha256 -binary -sign $CFG_KEY_DIR/SCPFirmwareContentCertPK.pem rootfsHashTable.fex > rootfsHashSign.fex &&
+			openssl rsa -in $CFG_KEY_DIR/SCPFirmwareContentCertPK.pem -pubout -out rootfsPubKey.pk &&
+			dmverity_genDownloadFile rootfs.fex rootfsHashSign.fex rootfsHashTable.fex rootfsHashTree.fex VerityInfo.fex) ||
+			{ pack_error "generate verity data failed";exit 1; }
+			# add partition for verity data
+			(add_partition -2 rootfsverityInfo 4096 "VerityInfo.fex" &&
+			busybox unix2dos sys_partition.fex &&
+			script  sys_partition.fex > /dev/null) ||
+			{ pack_error "add verity info part failed";exit 1; }
+			# add verity tools into ramdisk
+			local rootfsPath=`readlink -f rootfs.fex`
+			local keyPath=`readlink -f rootfsPubKey.pk`
+			(
+			cd ${LICHEE_KERN_DIR}
+			./scripts/build.sh deal_verity `dmverity_determ_blk_size ${rootfsPath}` rootfsverityInfo ext4 $keyPath ||
+			{ pack_error "deal verity utils failed";exit 1; }
+			)
+		else
+			#clean verity tools in ramdisk
+			(
+			cd ${LICHEE_KERN_DIR}
+			./scripts/build.sh deal_verity clean ||
+			{ pack_error "deal verity utils failed";exit 1; }
+			)
+		fi
+	fi
+
+	update_chip sboot.bin > /dev/null
+	dragonsecboot -toc0 dragon_toc.cfg $CFG_KEY_DIR ${LICHEE_PACK_OUT_DIR}/version_base.mk > /dev/null
+	if [ $? -ne 0 ]
+	then
+		pack_error "dragon toc0 run error"
+		exit 1
+	fi
+
+	update_toc0  toc0.fex           sys_config.bin
+	if [ $? -ne 0 ]
+	then
+		pack_error "update toc0 run error"
+		exit 1
+	fi
+
+	dragonsecboot -toc1 dragon_toc.cfg $CFG_KEY_DIR ${LICHEE_COMMON_CONFIG_DIR}/sign_config/cnf_base.cnf ${LICHEE_PACK_OUT_DIR}/version_base.mk
+	if [ $? -ne 0 ]
+	then
+		pack_error "dragon toc1 run error"
+		exit 1
+	fi
+
+	sigbootimg --image boot.fex --cert toc1/cert/boot.der --output boot_sig.fex
+	if [ $? -ne 0 ] ; then
+		pack_error "Pack cert to image error"
+		exit 1
+	else
+		mv -f boot_sig.fex boot.fex
+	fi
+
+	echo "secure signature ok!"
+}
+
+function do_android_signature()
+{
+	printf "prepare for signature by openssl\n"
+	if [ "x${PACK_SIG}" = "xprev_refurbish" ]; then
+		if [ "x${LICHEE_ARCH}" = "xarm64" ]; then
+			cp -v ${LICHEE_COMMON_CONFIG_DIR}/sign_config/dragon_toc_a64_no_secureos.cfg dragon_toc.cfg
+		else
+			cp -v ${LICHEE_COMMON_CONFIG_DIR}/sign_config/dragon_toc_no_secureos.cfg dragon_toc.cfg
+		fi
+	else
+		if [ "x${LICHEE_ARCH}" = "xarm64" ]; then
+			if [ -f ${LICHEE_CHIP_CONFIG_DIR}/configs/default/dragon_toc_android.cfg ] ; then
+				cp -v ${LICHEE_CHIP_CONFIG_DIR}/configs/default/dragon_toc_android.cfg dragon_toc.cfg
+			else
+				cp -v ${LICHEE_COMMON_CONFIG_DIR}/sign_config/dragon_toc_a64_android.cfg dragon_toc.cfg
+			fi
+		else
+			if [ -f ${LICHEE_CHIP_CONFIG_DIR}/configs/default/dragon_toc_android.cfg ] ; then
+				cp -v ${LICHEE_CHIP_CONFIG_DIR}/configs/default/dragon_toc_android.cfg dragon_toc.cfg
+			else
+				cp -v ${LICHEE_COMMON_CONFIG_DIR}/sign_config/dragon_toc_android.cfg dragon_toc.cfg
+			fi
+		fi
+	fi
+
+	if [ $? -ne 0 ]
+	then
+		pack_error "dragon toc config file is not exist"
+		exit 1
+	fi
+
+	rm -f cardscript.fex
+	mv cardscript_secure.fex cardscript.fex
+	if [ $? -ne 0 ]
+	then
+		pack_error "dragon cardscript_secure.fex file is not exist"
+		exit 1
+	fi
+
+	update_chip sboot.bin > /dev/null
+	dragonsecboot -toc0 dragon_toc.cfg $CFG_KEY_DIR  > /dev/null
+	if [ $? -ne 0 ]
+	then
+		pack_error "dragon toc0 run error"
+		exit 1
+	fi
+
+	update_toc0  toc0.fex           sys_config.bin
+	if [ $? -ne 0 ]
+	then
+		pack_error "update toc0 run error"
+		exit 1
+	fi
+
+	dragonsecboot -toc1 dragon_toc.cfg $CFG_KEY_DIR ${LICHEE_COMMON_CONFIG_DIR}/sign_config/cnf_base.cnf ${LICHEE_PACK_OUT_DIR}/version_base.mk
+	if [ $? -ne 0 ]
+	then
+		pack_error "dragon toc1 run error"
+		exit 1
+	fi
+
+	echo "secure android signature ok!"
+}
+
+################################ Platform func ################################
+function do_pack_android()
+{
+	local link_real=$(get_realpath ${ANDROID_IMAGE_OUT} ./)
+
+	printf "packing for android\n"
+
+	if [ -z "${ANDROID_IMAGE_OUT}" ] ; then
+		pack_error "please specify ANDROID_IMAGE_OUT env"
+		exit 1
+	fi
+
+	local fex_list="$(\gawk '$0~"^[[:space:]]*downloadfile[[:space:]]*="{print $NF}' sys_partition.fex | sed 's/[",\r,\n]//g')"
+	local img_name=""
+	for fex_name in ${fex_list}; do
+		img_name=${fex_name%\.fex}.img
+		if [ -f ${ANDROID_IMAGE_OUT}/${img_name} ]; then
+			if [ "x${PACK_PROGRAMMER}" = "xprogrammer" -a "x${fex_name%\.fex}" = "xsuper" ]; then
+				simg2img ${link_real}/${img_name} ${link_real}/${img_name}.tempbin
+				img_name=${img_name}.tempbin
+				ln -sf ${link_real}/${img_name} ${fex_name}
+			else
+				ln -sf ${link_real}/${img_name} ${fex_name}
+			fi
+			echo "link ${img_name} -> ${fex_name}"
+		fi
+	done
+
+	if [ "x${PACK_SIG}" = "xsig" ] ; then
+		echo "signature sunxi mbr"
+		signature sunxi_mbr.fex dlinfo.fex
+		echo "signature over"
+	elif [ "x${PACK_SECURE}" = "xsecure" ] ; then
+		echo "secure"
+		do_android_signature
+	elif [ "x${PACK_SIG}" = "xprev_refurbish" ] ; then
+		echo "prev_refurbish"
+		do_android_signature
+	else
+		echo "normal"
+	fi
+}
+
+function do_pack_camdroid()
+{
+	local link_real=$(get_realpath ${CAMLINUX_IMAGE_OUT} ./)
+
+	printf "packing for camdroid\n"
+
+	if [ -z "${CAMLINUX_IMAGE_OUT}" ] ; then
+		pack_error "please specify CAMLINUX_IMAGE_OUT env"
+		exit 1
+	fi
+
+	ln -sf ${link_real}/boot.img boot.fex
+	ln -sf ${link_real}/system.img rootfs.fex
+}
+
+function do_pack_dragonboard()
+{
+	local link_real=$(get_realpath ${LICHEE_PLAT_OUT} ./)
+	printf "packing for dragonboard\n"
+
+	ln -sf ${link_real}/boot.img boot.fex
+	ln -sf ${link_real}/rootfs.ext4 rootfs.fex
+
+	if [ "x${PACK_SIG}" = "xsecure" ] ; then
+		do_signature
+	else
+		echo "normal"
+	fi
+}
+
+build_ramfs_secure()
+{
+	local bss_sz=0;
+	local bss_offset=0;
+	local bss_size=0;
+	local CHIP=${LICHEE_CHIP%w*};
+
+	local BIMAGE="${LICHEE_PLAT_OUT}/bImage";
+	local RAMDISK="${LICHEE_BUILD_DIR}/ramdisk/rootfs_32bit_${PACK_KERN##*-}.cpio.gz";
+	local BASE="";
+	local RAMDISK_OFFSET="";
+	local KERNEL_OFFSET="";
+	local vmlinux=${LICHEE_PLAT_OUT}/vmlinux
+	local GCC=$(find ${LICHEE_TOOLCHAIN_PATH} -perm /a+x -a -regex '.*-gcc');
+	local CROSS_COMPILE="${GCC%-*}-";
+	local MKBOOTIMG=${LICHEE_TOOLS_DIR}/pack/pctools/linux/android/mkbootimg
+
+	if [ ${LICHEE_FLASH} = "nor" ]; then
+		BIMAGE="${LICHEE_PLAT_OUT}/zImage";
+		RAMDISK="${LICHEE_BUILD_DIR}/ramdisk/ramdisk.img";
+	fi
+
+	if [ "${CHIP}" = "sun9i" ]; then
+		BASE="0x20000000";
+	else
+		BASE="0x40000000";
+	fi
+
+	if [ "${LICHEE_ARCH}" = "arm" ]; then
+		KERNEL_OFFSET="0x8000";
+	elif [ "${LICHEE_ARCH}" = "arm64" ]; then
+		KERNEL_OFFSET="0x80000";
+	fi
+
+	if [ -f ${vmlinux} ]; then
+		bss_offset=`${CROSS_COMPILE}readelf -S ${vmlinux} | \
+			awk  '/\.bss/ {print $5}'`;
+		bss_size=`${CROSS_COMPILE}readelf -S ${vmlinux} | \
+			awk  '/\.bss/ {print $6}'`;
+
+		# If linux-4.9 the bss_size will be in next line
+		if [ -z "$bss_size" ]; then
+			bss_size=`${CROSS_COMPILE}readelf -S ${vmlinux} | \
+				awk  '/\.bss/ {getline var; print var}' | awk '{print $1}'`;
+		fi
+
+		bss_sz=$[ $((16#$bss_offset))+$((16#$bss_size))]
+	fi
+
+	# If the size of bImage larger than 16M, will offset 0x02000000
+	if [ ${bss_sz} -gt $((16#1000000)) ]; then
+		RAMDISK_OFFSET="0x02000000";
+	else
+		RAMDISK_OFFSET="0x01000000";
+	fi
+
+	${MKBOOTIMG} --kernel ${BIMAGE} \
+		--ramdisk ${RAMDISK} \
+		--board ${CHIP}_${LICHEE_ARCH} \
+		--base ${BASE} \
+		--kernel_offset ${KERNEL_OFFSET} \
+		--ramdisk_offset ${RAMDISK_OFFSET} \
+		-o ${LICHEE_PLAT_OUT}/boot.img
+}
+
+function do_pack_linux()
+{
+	local link_real=$(get_realpath ${LICHEE_PLAT_OUT} ./)
+
+	printf "packing for linux\n"
+
+	ln -sf ${link_real}/vmlinux.tar.bz2 vmlinux.fex
+	ln -sf ${link_real}/boot.img        boot.fex
+	ln -sf ${link_real}/rootfs.ext4     rootfs.fex
+	ln -sf ${link_real}/rootfs.ubifs     rootfs-ubifs.fex
+
+	# Those files is ready for SPINor.
+	ln -sf ${link_real}/uImage          kernel.fex
+	ln -sf ${link_real}/rootfs.squashfs rootfs_nor.fex
+
+	if [ "x${PACK_SIG}" = "xsecure" ] ; then
+		echo "secure"
+		do_signature
+	elif [ "x${PACK_SIG}" = "xprev_refurbish" ] ; then
+		echo "prev_refurbish"
+		do_signature
+	else
+		echo "normal"
+	fi
+}
+do_prepare
+do_ini_to_dts
+do_common
+do_pack_${PACK_TYPE}
+do_finish
