@@ -27,4 +27,10 @@
 # As self design rootfs developer, if not manager buildroot, please reference to buildroot manual
 #
 
+export LICHEE_TOP_DIR=`pwd`
+
+cd ${LICHEE_TOP_DIR}/build
+[[ ! -d toolchain ]] && sudo cat toolchain.tar.gz* | sudo tar zx
+cd ..
+
 build/mkcommon.sh $@

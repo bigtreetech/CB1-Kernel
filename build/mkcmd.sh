@@ -49,9 +49,6 @@ export LICHEE_OUT_DIR=$LICHEE_TOP_DIR/out
 export LICHEE_PACK_OUT_DIR=${LICHEE_OUT_DIR}/pack_out
 export LICHEE_TOOLCHAIN_PATH=${LICHEE_OUT_DIR}/external-toolchain/gcc-arm
 
-cd $LICHEE_BUILD_DIR
-[[ ! -d toolchain ]] && sudo cat toolchain.tar.gz* | sudo tar zx
-
 # make surce at the top directory of lichee
 if [ ! -d ${LICHEE_BUILD_DIR} -o \
 	! -d ${LICHEE_DEVICE_DIR} ] ; then
@@ -515,6 +512,8 @@ function parse_cross_compiler()
 		done
 	done
 
+    echo "===$LICHEE_COMPILER_TAR ==="
+
 	if [ -z ${LICHEE_COMPILER_TAR} ] ; then
 		mk_error "can not match LICHEE_COMPILER_TAR."
 		exit 1
@@ -873,7 +872,9 @@ function prepare_toolchain()
 	fi
 
 	toolchain_archive=${LICHEE_COMPILER_TAR}
-	toolchain_archivedir=${LICHEE_BUILD_DIR}/toolchain/${toolchain_archive}
+
+	# toolchain_archivedir=${LICHEE_BUILD_DIR}/toolchain/${toolchain_archive}
+    toolchain_archivedir=${LICHEE_BUILD_DIR}/toolchain/gcc-linaro-5.3.1-2016.05-x86_64_arm-linux-gnueabi.tar.xz
 	if [ ! -f ${toolchain_archivedir} ]; then
 		mk_error "Prepare toolchain error!"
 		exit 1
