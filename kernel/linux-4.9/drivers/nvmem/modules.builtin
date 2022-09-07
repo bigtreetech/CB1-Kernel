@@ -1,0 +1,3 @@
+kernel/drivers/nvmem/nvmem_core.ko
+kernel/drivers/nvmem/nvmem_sun50i_sid.ko
+kernel/drivers/nvmem/nvmem_axp.ko

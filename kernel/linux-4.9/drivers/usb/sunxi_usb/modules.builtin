@@ -1,0 +1,2 @@
+kernel/drivers/usb/sunxi_usb/sunxi_usbc.ko
+kernel/drivers/usb/sunxi_usb/sunxi_usb_udc.ko

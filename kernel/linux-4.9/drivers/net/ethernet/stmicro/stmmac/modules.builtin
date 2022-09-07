@@ -1,0 +1,4 @@
+kernel/drivers/net/ethernet/stmicro/stmmac/stmmac.ko
+kernel/drivers/net/ethernet/stmicro/stmmac/stmmac-platform.ko
+kernel/drivers/net/ethernet/stmicro/stmmac/dwmac-sunxi.ko
+kernel/drivers/net/ethernet/stmicro/stmmac/dwmac-generic.ko

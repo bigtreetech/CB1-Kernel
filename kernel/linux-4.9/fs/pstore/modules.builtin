@@ -1,0 +1,2 @@
+kernel/fs/pstore/pstore.ko
+kernel/fs/pstore/ramoops.ko

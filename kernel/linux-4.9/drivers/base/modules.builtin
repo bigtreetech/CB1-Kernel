@@ -1,0 +1,4 @@
+kernel/drivers/base/firmware_class.ko
+kernel/drivers/base/regmap/regmap-i2c.ko
+kernel/drivers/base/regmap/regmap-spi.ko
+kernel/drivers/base/regmap/regmap-mmio.ko

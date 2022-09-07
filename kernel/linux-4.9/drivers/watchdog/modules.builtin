@@ -1,0 +1,2 @@
+kernel/drivers/watchdog/pretimeout_noop.ko
+kernel/drivers/watchdog/sunxi_wdt.ko

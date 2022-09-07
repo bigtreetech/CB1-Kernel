@@ -1,0 +1,2 @@
+kernel/drivers/dma/virt-dma.ko
+kernel/drivers/dma/sunxi-dma.ko

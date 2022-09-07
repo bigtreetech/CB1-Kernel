@@ -1,0 +1,3 @@
+kernel/sound/soc/snd-soc-core.ko
+kernel/sound/soc/sunxi/sun50iw9-codec.ko
+kernel/sound/soc/sunxi/sun50iw9-sndcodec.ko

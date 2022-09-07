@@ -1,0 +1,4 @@
+kernel/drivers/i2c/muxes/i2c-arb-gpio-challenge.ko
+kernel/drivers/i2c/muxes/i2c-demux-pinctrl.ko
+kernel/drivers/i2c/muxes/i2c-mux-gpio.ko
+kernel/drivers/i2c/muxes/i2c-mux-pinctrl.ko

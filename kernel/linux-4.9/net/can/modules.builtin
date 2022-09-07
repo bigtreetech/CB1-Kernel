@@ -1,0 +1,4 @@
+kernel/net/can/can.ko
+kernel/net/can/can-raw.ko
+kernel/net/can/can-bcm.ko
+kernel/net/can/can-gw.ko

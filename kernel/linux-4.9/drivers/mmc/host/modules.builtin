@@ -1,0 +1,3 @@
+kernel/drivers/mmc/host/mmc_spi.ko
+kernel/drivers/mmc/host/of_mmc_spi.ko
+kernel/drivers/mmc/host/sunxi_mmc_host.ko

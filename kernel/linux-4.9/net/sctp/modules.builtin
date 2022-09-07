@@ -1,0 +1,2 @@
+kernel/net/sctp/sctp.ko
+kernel/net/sctp/sctp_diag.ko

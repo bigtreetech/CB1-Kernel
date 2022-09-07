@@ -1,0 +1,9 @@
+Release Note：
+1. 编译配置，需设置MTK_COMBO_CHIP=MT7663，hif=sdio
+2. Log默认级别设置为：CFG_DEFAULT_DBG_LEVEL=0xF
+3. PC上的编译方式：make -f Makefile.x86
+4. Makefile可支持kernel build方式
+5. Partial build 方式可参考make.sh设置LINUX_SRC和CROSS_COMPILE路径
+6. 默认已关闭WPA3，若需开启，修改Makefile中CONFIG_MTK_WPA3_SUPPORT=y
+7. 默认支持修改interface name，详细使用见Makefile CFG_DRIVER_INF_NAME_CHANGE=y注释
+8. IC HW参数读取路径可通过wifi.cfg中EfuseBufferModeCal修改，0或默认时从Efuse读取，1值从EEPROM_MT7663.bin中读取

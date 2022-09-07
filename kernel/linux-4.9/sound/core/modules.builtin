@@ -1,0 +1,4 @@
+kernel/sound/core/snd.ko
+kernel/sound/core/snd-timer.ko
+kernel/sound/core/snd-pcm.ko
+kernel/sound/core/snd-pcm-dmaengine.ko

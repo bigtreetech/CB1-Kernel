@@ -1,0 +1,5 @@
+config MT7663
+        tristate "MediaTek MT7663 SDIO WiFi/Bluetooth"
+        ---help---
+          Help message of MT7663
+

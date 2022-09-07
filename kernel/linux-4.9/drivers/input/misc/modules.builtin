@@ -1,0 +1,7 @@
+kernel/drivers/input/misc/gpio_event.ko
+kernel/drivers/input/misc/gpio_matrix.ko
+kernel/drivers/input/misc/gpio_input.ko
+kernel/drivers/input/misc/gpio_output.ko
+kernel/drivers/input/misc/gpio_axis.ko
+kernel/drivers/input/misc/axp2101-pek.ko
+kernel/drivers/input/misc/uinput.ko

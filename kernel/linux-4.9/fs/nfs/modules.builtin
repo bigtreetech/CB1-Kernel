@@ -1,0 +1,5 @@
+kernel/fs/nfs/nfs.ko
+kernel/fs/nfs/nfsv2.ko
+kernel/fs/nfs/nfsv3.ko
+kernel/fs/nfs/nfsv4.ko
+kernel/fs/nfs/filelayout/nfs_layout_nfsv41_files.ko

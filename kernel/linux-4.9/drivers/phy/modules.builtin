@@ -1,0 +1,2 @@
+kernel/drivers/phy/phy-sun4i-usb.ko
+kernel/drivers/phy/phy-sun9i-usb.ko

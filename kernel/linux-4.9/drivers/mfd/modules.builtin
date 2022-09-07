@@ -1,0 +1,3 @@
+kernel/drivers/mfd/mfd-core.ko
+kernel/drivers/mfd/axp2101.ko
+kernel/drivers/mfd/axp2101-i2c.ko

@@ -1,0 +1,2 @@
+kernel/drivers/crypto/ccp/ccp.ko
+kernel/drivers/crypto/ccp/ccp-crypto.ko

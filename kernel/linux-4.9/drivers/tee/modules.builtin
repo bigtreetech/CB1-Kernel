@@ -1,0 +1,2 @@
+kernel/drivers/tee/tee.ko
+kernel/drivers/tee/optee/optee.ko

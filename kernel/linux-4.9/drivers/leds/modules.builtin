@@ -1,0 +1,3 @@
+kernel/drivers/leds/led-class.ko
+kernel/drivers/leds/leds-gpio.ko
+kernel/drivers/leds/trigger/ledtrig-heartbeat.ko

@@ -1,0 +1,2 @@
+kernel/fs/fat/fat.ko
+kernel/fs/fat/vfat.ko

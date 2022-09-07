@@ -1,0 +1,2 @@
+kernel/fs/fuse/fuse.ko
+kernel/fs/fuse/cuse.ko

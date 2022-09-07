@@ -1,0 +1,2 @@
+kernel/mm/zpool.ko
+kernel/mm/zsmalloc.ko

@@ -1,0 +1,4 @@
+kernel/drivers/input/mouse/appletouch.ko
+kernel/drivers/input/mouse/psmouse.ko
+kernel/drivers/input/mouse/sermouse.ko
+kernel/drivers/input/mouse/synaptics_usb.ko

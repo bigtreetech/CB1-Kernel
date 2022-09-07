@@ -1,0 +1,2 @@
+kernel/drivers/net/wireless/rndis_wlan.ko
+kernel/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu.ko
