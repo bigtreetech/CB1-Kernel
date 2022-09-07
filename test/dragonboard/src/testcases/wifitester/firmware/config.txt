@@ -1,0 +1,11 @@
+#Note default open channel 1-13
+#For most country, channel 1-13
+ccode=CN
+regrev=0
+
+#For North America, channel 1-11
+#ccode=US
+#regrev=3
+
+#Disable SDIO auto sleep mode
+dhd_slpauto=0

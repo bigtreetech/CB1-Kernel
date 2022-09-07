@@ -1,0 +1,115 @@
+Version 0.0.22:
+	* Fix a bug of list handling in snd_async_del_handler()
+	  (thanks to maarten van es).
+	
+Version 0.0.21:
+	* Make snd_config non-NULL when snd_config_update() is called
+	  so that apps can check the value.  Reset in
+	  snd_config_free_global()
+	* Correct hwdep path, and fix the device number handling of hwdep
+
+Version 0.0.20:
+	* Add missing _snd_pcm_hw_param_test() called by
+	  snd_pcm_hw_params_test_*() API functions.
+	
+Version 0.0.19:
+	* Fix return value of snd_ctl_subscribe_events()
+	* Fix snd_card_get_index() to parse the string "x,y" correctly
+	* Add snd_pcm_avail() and snd_pcm_avail_delay() to be compatible
+	  with alsa-lib 1.0.18
+	* Mark snd_pcm_hwsync() as deprecated, as of alsa-lib 1.0.18
+
+Version 0.0.18:
+	* Fix unclosable snd_rawmidi_open() (fix by Sam O'Connor)
+
+Version 0.0.17:
+	* Fix snd_pcm_link() calling a wrong ioctl
+
+Version 0.0.16:
+	* Fix memory leaks in error paths of PCM
+
+version 0.0.15:
+	* Add the missing snd_pcm_get_params().  snd_pcm_set_params()
+	  isn't implemented (returns -ENXIO), though.
+	* Add snd_pcm_htimestamp() from alsa-lib 1.0.16.
+	  Also added some new PCM open bit flags.
+	* Make the default alsa-lib compat-version to 1.0.16.
+
+Version 0.0.14:
+	* Fixed the memset size in snd_*_alloca() macros (more
+	  exactly, __snd_alloca() macro).  What a shame.
+
+Version 0.0.13:
+	* Suppress "deprecated" compile warnings when built without
+	  TLV support (patch by J. Scott Merritt)
+
+Version 0.0.12:
+	* Fix a typo in snd_pcm_drain().  It called DROP instead of
+	  DRAIN.
+	* Fix for capture -- fix the initialization of pcm->stream
+	  field in snd_pcm_open()
+
+Version 0.0.11:
+	* Fix a typo in fnctl() argument in snd_pcm_open (for blocking
+	  mode)
+	* Fix the parse of secondary and third arguments of the device
+	  name (i.e. PCM device and subdevice numbers)
+
+Version 0.0.10:
+	* Due to popular demands, make salsa-lib compile with C++ now
+	  People tend to like what I don't :)
+	* Rewrite memory allocation, free, copy, etc with helper macros
+	* Fix missing function declarations for snd_ctl_elem_add*()
+	  and snd_mixer_selem_get_enum_item_name()
+	* Async is disabled as default (as written in README)
+	  Fix build without async
+	
+Version 0.0.9:
+	* Add --with-alsa-devdir configure option to specify the
+	  non-standard device path (patch by Clemens Ladisch)
+	* Fix some description in README
+
+Version 0.0.8:
+	* Add --disable-deprecated configure option to turn off the
+	  "deprecated" attribute for non-working functions.
+	* Move snd_config_update_free_global() to global.h to fix
+	  compilation of aplay without conf.h.
+	* Add missing declaration of snd_pcm_format_value().
+	* Output hw_params and sw_params in snd_pcm_dump().
+	* Fix the array size of strings for PCM mask parameters.
+
+Version 0.0.7a:
+	* Fix asoundlib.h without PCM support.
+	* Fix README about async.
+	* Show the determined configurations at the end of configure
+	  script.
+
+Version 0.0.7:
+	* Add optional async handler support.  Disabled as default.
+	* Allow to disable PCM component via configure option.
+	
+Version 0.0.6:
+	* Fix channel_info parameter called from _snd_pcm_mmap().
+	* More notes in README about known problems.
+	
+Version 0.0.5:
+	* Fix the bug that avail_min is cleared, which screwed up poll
+	  return condition
+
+Version 0.0.4:
+	* Fix the missing return from _snd_mixer_selem_get_volume_range()
+	* Fix the check of stop_threshold in snd_pcm_avail_update().
+	* Removed unused fields (of snd_pcm_sw_params_t) from snd_pcm_t
+	  structure
+
+Version 0.0.3:
+	* Fix the stupid bug of wrong sizeof() usage in *_malloc()
+	  functions.
+
+Version 0.0.2:
+	* Fix the libtool option to use -version-info instead of
+	  -version-number
+	* Add a brief description about cross-compiling
+	
+Version 0.0.1:
+	* Initial release

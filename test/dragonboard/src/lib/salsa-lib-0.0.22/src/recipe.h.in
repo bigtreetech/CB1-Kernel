@@ -1,0 +1,18 @@
+#ifndef __ALSA_RECIPE_H
+#define __ALSA_RECIPE_H
+
+/* Build with TLV support */
+#define SALSA_HAS_TLV_SUPPORT	@SALSA_HAS_TLV_SUPPORT@
+
+/* Build with async support */
+#define SALSA_HAS_ASYNC_SUPPORT	@SALSA_HAS_ASYNC_SUPPORT@
+
+/* Build with dummy conf support */
+#define SALSA_HAS_DUMMY_CONF	@SALSA_HAS_DUMMY_CONF@
+
+/* Enable deprecated attribute for non-working functions */
+#define SALSA_MARK_DEPRECATED	@SALSA_MARK_DEPRECATED@
+
+#define SALSA_DEVPATH "@DEVPATH@"
+
+#endif /* __ALSA_RECIPE_H */

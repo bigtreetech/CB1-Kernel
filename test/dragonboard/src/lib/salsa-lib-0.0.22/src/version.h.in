@@ -1,0 +1,21 @@
+#ifndef __ALSA_VERSION_H
+#define __ALSA_VERSION_H
+
+#define SND_LIB_MAJOR		@SND_LIB_MAJOR@
+#define SND_LIB_MINOR		@SND_LIB_MINOR@
+#define SND_LIB_SUBMINOR	@SND_LIB_SUBMINOR@
+#define SND_LIB_EXTRAVER	@SND_LIB_EXTRAVER@
+/** library version */
+#define SND_LIB_VERSION		((SND_LIB_MAJOR<<16)|\
+				 (SND_LIB_MINOR<<8)|\
+				  SND_LIB_SUBMINOR)
+/** library version (string) */
+#define SND_LIB_VERSION_STR	"@SND_LIB_VERSION@"
+
+static inline
+const char *snd_asoundlib_version(void)
+{
+	return SND_LIB_VERSION_STR;
+}
+
+#endif /* __ALSA_VERSION_H */

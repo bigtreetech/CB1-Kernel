@@ -1,0 +1,598 @@
+#ifndef __SUNXI_DISPLAY2_H__
+#define __SUNXI_DISPLAY2_H__
+
+#include <stdbool.h>
+
+typedef signed char         __s8;
+typedef unsigned char       __u8;
+typedef signed short        __s16;
+typedef unsigned short      __u16;
+typedef signed int          __s32;
+typedef unsigned int        __u32;
+typedef unsigned int        u32;
+typedef signed long long    __s64;
+typedef unsigned long long  __u64;
+typedef struct {unsigned char  alpha;unsigned char red;unsigned char green; unsigned char blue; }disp_color;
+typedef struct {int x; int y; unsigned int width; unsigned int height;}disp_rect;
+typedef struct {unsigned int width;unsigned int height;                   }disp_rectsz;
+typedef struct {int x; int y;                           }disp_position;
+
+typedef enum
+{
+	DISP_FORMAT_ARGB_8888                    = 0x00,//MSB  A-R-G-B  LSB
+	DISP_FORMAT_ABGR_8888                    = 0x01,
+	DISP_FORMAT_RGBA_8888                    = 0x02,
+	DISP_FORMAT_BGRA_8888                    = 0x03,
+	DISP_FORMAT_XRGB_8888                    = 0x04,
+	DISP_FORMAT_XBGR_8888                    = 0x05,
+	DISP_FORMAT_RGBX_8888                    = 0x06,
+	DISP_FORMAT_BGRX_8888                    = 0x07,
+	DISP_FORMAT_RGB_888                      = 0x08,
+	DISP_FORMAT_BGR_888                      = 0x09,
+	DISP_FORMAT_RGB_565                      = 0x0a,
+	DISP_FORMAT_BGR_565                      = 0x0b,
+	DISP_FORMAT_ARGB_4444                    = 0x0c,
+	DISP_FORMAT_ABGR_4444                    = 0x0d,
+	DISP_FORMAT_RGBA_4444                    = 0x0e,
+	DISP_FORMAT_BGRA_4444                    = 0x0f,
+	DISP_FORMAT_ARGB_1555                    = 0x10,
+	DISP_FORMAT_ABGR_1555                    = 0x11,
+	DISP_FORMAT_RGBA_5551                    = 0x12,
+	DISP_FORMAT_BGRA_5551                    = 0x13,
+
+	/* SP: semi-planar, P:planar, I:interleaved
+	 * UVUV: U in the LSBs;     VUVU: V in the LSBs */
+	DISP_FORMAT_YUV444_I_AYUV                = 0x40,//MSB  A-Y-U-V  LSB, reserved
+	DISP_FORMAT_YUV444_I_VUYA                = 0x41,//MSB  V-U-Y-A  LSB
+	DISP_FORMAT_YUV422_I_YVYU                = 0x42,//MSB  Y-V-Y-U  LSB
+	DISP_FORMAT_YUV422_I_YUYV                = 0x43,//MSB  Y-U-Y-V  LSB
+	DISP_FORMAT_YUV422_I_UYVY                = 0x44,//MSB  U-Y-V-Y  LSB
+	DISP_FORMAT_YUV422_I_VYUY                = 0x45,//MSB  V-Y-U-Y  LSB
+	DISP_FORMAT_YUV444_P                     = 0x46,//MSB  P3-2-1-0 LSB,  YYYY UUUU VVVV, reserved
+	DISP_FORMAT_YUV422_P                     = 0x47,//MSB  P3-2-1-0 LSB   YYYY UU   VV
+	DISP_FORMAT_YUV420_P                     = 0x48,//MSB  P3-2-1-0 LSB   YYYY U    V
+	DISP_FORMAT_YUV411_P                     = 0x49,//MSB  P3-2-1-0 LSB   YYYY U    V
+	DISP_FORMAT_YUV422_SP_UVUV               = 0x4a,//MSB  V-U-V-U  LSB
+	DISP_FORMAT_YUV422_SP_VUVU               = 0x4b,//MSB  U-V-U-V  LSB
+	DISP_FORMAT_YUV420_SP_UVUV               = 0x4c,
+	DISP_FORMAT_YUV420_SP_VUVU               = 0x4d,
+	DISP_FORMAT_YUV411_SP_UVUV               = 0x4e,
+	DISP_FORMAT_YUV411_SP_VUVU               = 0x4f,
+}disp_pixel_format;
+
+typedef enum
+{
+	DISP_3D_OUT_MODE_CI_1 = 0x5,//column interlaved 1
+	DISP_3D_OUT_MODE_CI_2 = 0x6,//column interlaved 2
+	DISP_3D_OUT_MODE_CI_3 = 0x7,//column interlaved 3
+	DISP_3D_OUT_MODE_CI_4 = 0x8,//column interlaved 4
+	DISP_3D_OUT_MODE_LIRGB = 0x9,//line interleaved rgb
+
+	DISP_3D_OUT_MODE_TB = 0x0,//top bottom
+	DISP_3D_OUT_MODE_FP = 0x1,//frame packing
+	DISP_3D_OUT_MODE_SSF = 0x2,//side by side full
+	DISP_3D_OUT_MODE_SSH = 0x3,//side by side half
+	DISP_3D_OUT_MODE_LI = 0x4,//line interleaved
+	DISP_3D_OUT_MODE_FA = 0xa,//field alternative
+}disp_3d_out_mode;
+
+typedef enum
+{
+	DISP_BT601  = 0,
+	DISP_BT709  = 1,
+	DISP_YCC    = 2,
+}disp_color_space;
+
+typedef enum
+{
+	DISP_CSC_TYPE_RGB        = 0,
+	DISP_CSC_TYPE_YUV1       = 1,//HDMI
+	DISP_CSC_TYPE_YUV2       = 2,//TV
+}disp_csc_type;
+
+typedef enum
+{
+	DISP_COLOR_RANGE_16_255 = 0,
+	DISP_COLOR_RANGE_0_255  = 1,
+	DISP_COLOR_RANGE_16_235 = 2,
+}disp_color_range;
+
+typedef enum
+{
+	DISP_OUTPUT_TYPE_NONE   = 0,
+	DISP_OUTPUT_TYPE_LCD    = 1,
+	DISP_OUTPUT_TYPE_TV     = 2,
+	DISP_OUTPUT_TYPE_HDMI   = 4,
+	DISP_OUTPUT_TYPE_VGA    = 8,
+}disp_output_type;
+
+typedef enum
+{
+	DISP_TV_MOD_480I                = 0,
+	DISP_TV_MOD_576I                = 1,
+	DISP_TV_MOD_480P                = 2,
+	DISP_TV_MOD_576P                = 3,
+	DISP_TV_MOD_720P_50HZ           = 4,
+	DISP_TV_MOD_720P_60HZ           = 5,
+	DISP_TV_MOD_1080I_50HZ          = 6,
+	DISP_TV_MOD_1080I_60HZ          = 7,
+	DISP_TV_MOD_1080P_24HZ          = 8,
+	DISP_TV_MOD_1080P_50HZ          = 9,
+	DISP_TV_MOD_1080P_60HZ          = 0xa,
+	DISP_TV_MOD_1080P_24HZ_3D_FP    = 0x17,
+	DISP_TV_MOD_720P_50HZ_3D_FP     = 0x18,
+	DISP_TV_MOD_720P_60HZ_3D_FP     = 0x19,
+	DISP_TV_MOD_1080P_25HZ          = 0x1a,
+	DISP_TV_MOD_1080P_30HZ          = 0x1b,
+	DISP_TV_MOD_PAL                 = 0xb,
+	DISP_TV_MOD_PAL_SVIDEO          = 0xc,
+	DISP_TV_MOD_NTSC                = 0xe,
+	DISP_TV_MOD_NTSC_SVIDEO         = 0xf,
+	DISP_TV_MOD_PAL_M               = 0x11,
+	DISP_TV_MOD_PAL_M_SVIDEO        = 0x12,
+	DISP_TV_MOD_PAL_NC              = 0x14,
+	DISP_TV_MOD_PAL_NC_SVIDEO       = 0x15,
+	DISP_TV_MOD_3840_2160P_30HZ     = 0x1c,
+	DISP_TV_MOD_3840_2160P_25HZ     = 0x1d,
+	DISP_TV_MOD_3840_2160P_24HZ     = 0x1e,
+	DISP_TV_MODE_NUM                = 0x1f,
+}disp_tv_mode;
+
+
+//FIXME:still need?
+typedef enum
+{
+	DISP_EXIT_MODE_CLEAN_ALL    = 0,
+	DISP_EXIT_MODE_CLEAN_PARTLY = 1,//only clean interrupt temply
+}disp_exit_mode;
+
+typedef enum
+{
+	DISP_BF_NORMAL        = 0,//non-stereo
+	DISP_BF_STEREO_TB     = 1 << 0,//stereo top-bottom
+	DISP_BF_STEREO_FP     = 1 << 1,//stereo frame packing
+	DISP_BF_STEREO_SSH    = 1 << 2,//stereo side by side half
+	DISP_BF_STEREO_SSF    = 1 << 3,//stereo side by side full
+	DISP_BF_STEREO_LI     = 1 << 4,//stereo line interlace
+}disp_buffer_flags;
+
+typedef enum
+{
+	LAYER_MODE_BUFFER = 0,
+	LAYER_MODE_COLOR = 1,
+}disp_layer_mode;
+
+typedef enum
+{
+	DISP_SCAN_PROGRESSIVE                 = 0,//non interlace
+	DISP_SCAN_INTERLACED_ODD_FLD_FIRST    = 1 << 0,//interlace ,odd field first
+	DISP_SCAN_INTERLACED_EVEN_FLD_FIRST   = 1 << 1,//interlace,even field first
+}disp_scan_flags;
+
+typedef enum {
+	DISP_EOTF_RESERVED = 0x000,
+	DISP_EOTF_BT709 = 0x001,
+	DISP_EOTF_UNDEF = 0x002,
+	DISP_EOTF_GAMMA22 = 0x004, /* SDR */
+	DISP_EOTF_GAMMA28 = 0x005,
+	DISP_EOTF_BT601 = 0x006,
+	DISP_EOTF_SMPTE240M = 0x007,
+	DISP_EOTF_LINEAR = 0x008,
+	DISP_EOTF_LOG100 = 0x009,
+	DISP_EOTF_LOG100S10 = 0x00a,
+	DISP_EOTF_IEC61966_2_4 = 0x00b,
+	DISP_EOTF_BT1361 = 0x00c,
+	DISP_EOTF_IEC61966_2_1 = 0X00d,
+	DISP_EOTF_BT2020_0 = 0x00e,
+	DISP_EOTF_BT2020_1 = 0x00f,
+	DISP_EOTF_SMPTE2084 = 0x010, /* HDR10 */
+	DISP_EOTF_SMPTE428_1 = 0x011,
+	DISP_EOTF_ARIB_STD_B67 = 0x012, /* HLG */
+}disp_eotf;
+
+enum disp_atw_mode {
+	NORMAL_MODE,
+	LEFT_RIGHT_MODE,
+	UP_DOWN_MODE,
+};
+
+enum disp_transform {
+	DISP_TRANSFORM_ROT_0         = 0x00,
+	DISP_TRANSFORM_ROT_90        = 0x01,
+	DISP_TRANSFORM_ROT_180       = 0x02,
+	DISP_TRANSFORM_ROT_270       = 0x03,
+	DISP_TRANSFORM_FLIP_H        = 0x04,
+	DISP_TRANSFORM_ROT_90_FLIP_H = 0x05,
+	DISP_TRANSFORM_FLIP_V        = 0x06,
+	DISP_TRANSFORM_ROT_90_FLIP_V = 0x07,
+};
+
+typedef struct
+{
+	long long x;
+	long long y;
+	long long width;
+	long long height;
+}disp_rect64;
+
+typedef struct
+{
+	unsigned long long   addr[3];          /* address of frame buffer,
+																						single addr for interleaved fomart,
+																						double addr for semi-planar fomart
+																						triple addr for planar format */
+	disp_rectsz           size[3];          //size for 3 component,unit: pixels
+	unsigned int          align[3];         //align for 3 comonent,unit: bits(align=2^n,i.e. 1/2/4/8/16/32..)
+	disp_pixel_format     format;
+	disp_color_space      color_space;      //color space
+	unsigned int          trd_right_addr[3];/* right address of 3d fb,
+																						used when in frame packing 3d mode */
+	bool                  pre_multiply;     //true: pre-multiply fb
+	disp_rect64           crop;             //crop rectangle boundaries
+	disp_buffer_flags     flags;            //indicate stereo or non-stereo buffer
+	disp_scan_flags       scan;             //scan type & scan order
+}disp_fb_info;
+
+
+typedef struct {
+	int                      fd;
+	disp_rectsz              size[3];
+	unsigned int             align[3];
+	disp_pixel_format        format;
+	disp_color_space         color_space;
+	int                      trd_right_fd;
+	bool                     pre_multiply;
+	disp_rect64              crop;
+	disp_buffer_flags        flags;
+	disp_scan_flags          scan;
+	disp_eotf                eotf;
+	int                      depth;
+	unsigned int             fbd_en;
+	int                      metadata_fd;
+	unsigned int             metadata_size;
+	unsigned int             metadata_flag;
+}disp_fb_info2;
+
+typedef struct
+{
+	disp_layer_mode           mode;
+	unsigned char             zorder;      /*specifies the front-to-back ordering of the layers on the screen,
+											 the top layer having the highest Z value
+											 can't set zorder, but can get */
+	unsigned char             alpha_mode;  //0: pixel alpha;  1: global alpha;  2: global pixel alpha
+	unsigned char             alpha_value; //global alpha value
+	disp_rect                 screen_win;  //display window on the screen
+	bool                      b_trd_out;   //3d display
+	disp_3d_out_mode          out_trd_mode;//3d display mode
+	union {
+		unsigned int            color;       //valid when LAYER_MODE_COLOR
+		disp_fb_info            fb;          //framebuffer, valid when LAYER_MODE_BUFFER
+	};
+
+	unsigned int              id;          /* frame id, can get the id of frame display currently
+																						by DISP_LAYER_GET_FRAME_ID */
+}disp_layer_info;
+
+
+/* disp_atw_info - asynchronous time wrap infomation
+ *
+ * @used: indicate if the atw funtion is used
+ * @mode: atw mode
+ * @b_row: the row number of the micro block
+ * @b_col: the column number of the micro block
+ * @cof_fd: dma_buf fd for the buffer contaied coefficient for atw
+ */
+struct disp_atw_info {
+	bool used;
+	enum disp_atw_mode mode;
+	unsigned int b_row;
+	unsigned int b_col;
+	int cof_fd;
+};
+
+/**
+ * disp_snr_info
+ */
+struct disp_snr_info {
+	unsigned char en;
+	unsigned char demo_en;
+	disp_rect demo_win;
+	unsigned char y_strength;
+	unsigned char u_strength;
+	unsigned char v_strength;
+	unsigned char th_ver_line;
+	unsigned char th_hor_line;
+};
+
+/* disp_layer_info2 - layer info v2
+ *
+ * @mode: buffer/clolor mode, when in color mode, the layer is widthout buffer
+ * @zorder: the zorder of layer, 0~max-layer-number
+ * @alpha_mode:
+ *	0: pixel alpha;
+ *	1: global alpha
+ *	2: mixed alpha, compositing width pixel alpha before global alpha
+ * @alpha_value: global alpha value, valid when alpha_mode is not pixel alpha
+ * @screen_win: the rectangle on the screen for fb to be display
+ * @b_trd_out: indicate if 3d display output
+ * @out_trd_mode: 3d output mode, valid when b_trd_out is true
+ * @color: the color value to be display, valid when layer is in color mode
+ * @fb: the framebuffer info related width the layer, valid when in buffer mode
+ * @id: frame id, the user could get the frame-id display currently by
+ *	DISP_LAYER_GET_FRAME_ID ioctl
+ * @atw: asynchronous time wrap information
+ */
+typedef struct {
+	disp_layer_mode      	  mode;
+	unsigned char             zorder;
+	unsigned char             alpha_mode;
+	unsigned char             alpha_value;
+	disp_rect          screen_win;
+	bool                      b_trd_out;
+	disp_3d_out_mode          out_trd_mode;
+	union {
+		unsigned int            color;
+		disp_fb_info2    fb;
+	};
+
+	unsigned int              id;
+	struct disp_atw_info      atw;
+	enum disp_transform transform;
+	struct disp_snr_info snr;
+}disp_layer_info2;
+
+
+/* disp_layer_config2 - layer config v2
+ *
+ * @info: layer info
+ * @enable: indicate to enable/disable the layer
+ * @channel: the channel index of the layer, 0~max-channel-number
+ * @layer_id: the layer index of the layer widthin it's channel
+ */
+typedef struct {
+	disp_layer_info2 info;
+	bool enable;
+	unsigned int channel;
+	unsigned int layer_id;
+}disp_layer_config2;
+
+typedef struct
+{
+	disp_layer_info info;
+	bool enable;
+	unsigned int channel;
+	unsigned int layer_id;
+}disp_layer_config;
+
+typedef struct
+{
+    disp_color      ck_max;
+    disp_color      ck_min;
+    unsigned int    red_match_rule;//0/1:always match; 2:match if min<=color<=max; 3:match if color>max or color<min
+    unsigned int    green_match_rule;//0/1:always match; 2:match if min<=color<=max; 3:match if color>max or color<min
+    unsigned int    blue_match_rule;//0/1:always match; 2:match if min<=color<=max; 3:match if color>max or color<min
+}disp_colorkey;
+
+typedef struct
+{
+	disp_pixel_format format;
+	disp_rectsz size[3];
+	disp_rect crop;
+	unsigned long long addr[3];
+}disp_s_frame;
+
+typedef struct
+{
+	disp_rect window;  // capture window, rectangle of screen to be captured
+	                          //capture the whole screen if window eq ZERO
+	disp_s_frame out_frame;
+}disp_capture_info;
+
+typedef struct
+{
+	disp_s_frame s_frame;
+	disp_s_frame d_frame;
+	enum disp_transform tr;
+}disp_transform_info;
+
+typedef struct
+{
+	unsigned int    vic;  //video infomation code
+	unsigned int    pixel_clk;//khz
+	unsigned int    pixel_repeat;//pixel repeat (pixel_repeat+1) times
+	unsigned int    x_res;
+	unsigned int    y_res;
+	unsigned int    hor_total_time;
+	unsigned int    hor_back_porch;
+	unsigned int    hor_front_porch;
+	unsigned int    hor_sync_time;
+	unsigned int    ver_total_time;
+	unsigned int    ver_back_porch;
+	unsigned int    ver_front_porch;
+	unsigned int    ver_sync_time;
+	unsigned int    hor_sync_polarity;//0: negative, 1: positive
+	unsigned int    ver_sync_polarity;//0: negative, 1: positive
+	bool            b_interlace;
+	unsigned int    vactive_space;
+	unsigned int    trd_mode;
+}disp_video_timings;
+
+typedef enum
+{
+	FB_MODE_SCREEN0 = 0,
+	FB_MODE_SCREEN1 = 1,
+	FB_MODE_SCREEN2 = 2,
+	FB_MODE_DUAL_SAME_SCREEN_TB = 3,//two screen, top buffer for screen0, bottom buffer for screen1
+	FB_MODE_DUAL_DIFF_SCREEN_SAME_CONTENTS = 4,//two screen, they have same contents;
+}disp_fb_mode;
+
+typedef struct
+{
+	disp_fb_mode       fb_mode;
+	disp_layer_mode    mode;
+	unsigned int       buffer_num;
+	unsigned int       width;
+	unsigned int       height;
+
+	unsigned int       output_width;//used when scaler mode
+	unsigned int       output_height;//used when scaler mode
+}disp_fb_create_info;
+
+typedef enum
+{
+	DISP_INIT_MODE_SCREEN0 = 0,//fb0 for screen0
+	DISP_INIT_MODE_SCREEN1 = 1,//fb0 for screen1
+	DISP_INIT_MODE_SCREEN2 = 2,//fb0 for screen1
+	DISP_INIT_MODE_TWO_DIFF_SCREEN = 3,//fb0 for screen0 and fb1 for screen1
+	DISP_INIT_MODE_TWO_SAME_SCREEN = 4,//fb0(up buffer for screen0, down buffer for screen1)
+	DISP_INIT_MODE_TWO_DIFF_SCREEN_SAME_CONTENTS = 5,//fb0 for two different screen(screen0 layer is normal layer, screen1 layer is scaler layer);
+}disp_init_mode;
+
+typedef struct
+{
+	int (*hdmi_open)(void);
+	int (*hdmi_close)(void);
+	int (*hdmi_set_mode)(disp_tv_mode mode);
+	int (*hdmi_mode_support)(disp_tv_mode mode);
+	int (*hdmi_get_HPD_status)(void);
+	int (*hdmi_set_pll)(unsigned int pll, unsigned int clk);
+	int (*hdmi_dvi_enable)(unsigned int mode);
+	int (*hdmi_dvi_support)(void);
+	int (*hdmi_get_input_csc)(void);
+	int (*hdmi_get_hdcp_enable)(void);
+	int (*hdmi_get_video_timing_info)(disp_video_timings **video_info);
+	int (*hdmi_suspend)(void);
+	int (*hdmi_resume)(void);
+	int (*hdmi_early_suspend)(void);
+	int (*hdmi_late_resume)(void);
+}disp_hdmi_func;
+
+typedef enum tag_DISP_CMD
+{
+	//----disp global----
+	DISP_RESERVE0 = 0x00,
+	DISP_RESERVE1 = 0x01,
+	DISP_SET_BKCOLOR = 0x03,
+	DISP_GET_BKCOLOR = 0x04,
+	DISP_SET_COLORKEY = 0x05,
+	DISP_GET_COLORKEY = 0x06,
+	DISP_GET_SCN_WIDTH = 0x07,
+	DISP_GET_SCN_HEIGHT = 0x08,
+	DISP_GET_OUTPUT_TYPE = 0x09,
+	DISP_SET_EXIT_MODE = 0x0A,
+	DISP_VSYNC_EVENT_EN = 0x0B,
+	DISP_BLANK = 0x0C,
+	DISP_SHADOW_PROTECT = 0x0D,
+	DISP_HWC_COMMIT = 0x0E,
+	DISP_DEVICE_SWITCH = 0x0F,
+	DISP_GET_OUTPUT = 0x10,
+	DISP_SET_COLOR_RANGE = 0x11,
+	DISP_GET_COLOR_RANGE = 0x12,
+	DISP_HWC_CUSTOM = 0x13,
+	DISP_DEVICE_SET_CONFIG = 0x14,
+	DISP_DEVICE_GET_CONFIG = 0x15,
+	DISP_SET_KSC_PARA = 0x16,
+
+	//----layer----
+	DISP_LAYER_ENABLE = 0x40,
+	DISP_LAYER_DISABLE = 0x41,
+	DISP_LAYER_SET_INFO = 0x42,
+	DISP_LAYER_GET_INFO = 0x43,
+	DISP_LAYER_TOP = 0x44,
+	DISP_LAYER_BOTTOM = 0x45,
+	DISP_LAYER_GET_FRAME_ID = 0x46,
+	DISP_LAYER_SET_CONFIG = 0x47,
+	DISP_LAYER_GET_CONFIG = 0x48,
+	DISP_LAYER_SET_CONFIG2 = 0x49,
+	//----hdmi----
+	DISP_HDMI_ENABLE = 0xc0,
+	DISP_HDMI_DISABLE = 0xc1,
+	DISP_HDMI_SET_MODE = 0xc2,
+	DISP_HDMI_GET_MODE = 0xc3,
+	DISP_HDMI_SUPPORT_MODE = 0xc4,
+	DISP_HDMI_GET_HPD_STATUS = 0xc5,
+	DISP_HDMI_SET_SRC = 0xc6,
+
+	//----lcd----
+	DISP_LCD_ENABLE = 0x100,
+	DISP_LCD_DISABLE = 0x101,
+	DISP_LCD_SET_BRIGHTNESS = 0x102,
+	DISP_LCD_GET_BRIGHTNESS = 0x103,
+	DISP_LCD_BACKLIGHT_ENABLE  = 0x104,
+	DISP_LCD_BACKLIGHT_DISABLE  = 0x105,
+	DISP_LCD_SET_SRC = 0x106,
+	DISP_LCD_SET_FPS  = 0x107,
+	DISP_LCD_GET_FPS  = 0x108,
+	DISP_LCD_GET_SIZE = 0x109,
+	DISP_LCD_GET_MODEL_NAME = 0x10a,
+	DISP_LCD_SET_GAMMA_TABLE = 0x10b,
+	DISP_LCD_GAMMA_CORRECTION_ENABLE = 0x10c,
+	DISP_LCD_GAMMA_CORRECTION_DISABLE = 0x10d,
+	DISP_LCD_USER_DEFINED_FUNC = 0x10e,
+	DISP_LCD_CHECK_OPEN_FINISH = 0x10f,
+	DISP_LCD_CHECK_CLOSE_FINISH = 0x110,
+
+	//---- capture ---
+	DISP_CAPTURE_START = 0x140,//caputre screen and scaler to dram
+	DISP_CAPTURE_STOP = 0x141,
+	DISP_CAPTURE_COMMIT = 0x142,
+
+	//---enhance ---
+	DISP_ENHANCE_ENABLE = 0x180,
+	DISP_ENHANCE_DISABLE = 0x181,
+	DISP_ENHANCE_GET_EN = 0x182,
+	DISP_ENHANCE_SET_WINDOW = 0x183,
+	DISP_ENHANCE_GET_WINDOW = 0x184,
+	DISP_ENHANCE_SET_MODE = 0x185,
+	DISP_ENHANCE_GET_MODE = 0x186,
+
+	//---smart backlight ---
+	DISP_SMBL_ENABLE = 0x200,
+	DISP_SMBL_DISABLE = 0x201,
+	DISP_SMBL_GET_EN = 0x202,
+	DISP_SMBL_SET_WINDOW = 0x203,
+	DISP_SMBL_GET_WINDOW = 0x204,
+
+	//---- for test
+	DISP_FB_REQUEST = 0x280,
+	DISP_FB_RELEASE = 0x281,
+
+	DISP_MEM_REQUEST = 0x2c0,
+	DISP_MEM_RELEASE = 0x2c1,
+	DISP_MEM_GETADR = 0x2c2,
+}__DISP_t;
+
+enum {
+	ROTATION_SW_0 = 0,
+	ROTATION_SW_90 = 1,
+	ROTATION_SW_180 = 2,
+	ROTATION_SW_270 = 3,
+};
+
+/* struct disp_ksc_info - keystone correction struct
+ *
+ * @enable: 1:enable; 0:disable
+ * @first_line_width: the width in pixel of first line you want
+ * @ration: ration is 12-bit Fixed point decimal with 5-bit interger (<= 256)
+ *	    direction = 0:
+ *	    last_line_width = first_line_width + (lcd_y-1)*ration_double
+ *	    ration_double = (last_line_width - first_line_width) / (lcd_y -1)
+ *	    direction = 1:
+ *	    last_line_width = first_line_width - (lcd_y-1)*ration_double
+ *	    ration_double = (first_line_width - last_line_width) / (lcd_y -1)
+ *	    ration = int(ration_double * pow(2, 12))
+ * @direction: see above
+ *
+ */
+struct disp_ksc_info {
+	unsigned int enable;
+	unsigned int first_line_width;
+	unsigned int ration;
+	unsigned int direction;
+};
+
+#define FBIOGET_LAYER_HDL_0 0x4700
+#define FBIOGET_LAYER_HDL_1 0x4701
+
+#endif
+
