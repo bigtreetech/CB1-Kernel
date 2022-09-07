@@ -18,6 +18,8 @@
 output
 out
 
+toolchain
+
 toolchains/libexec/
 
 *.changes
