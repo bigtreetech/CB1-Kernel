@@ -1,0 +1,91 @@
+/dts-v1/;
+/plugin/;
+/ {
+  /* As DTS design, these properties only for loader, won't overlay */
+  compatible = "board_manufacturer,board_model";
+
+  /* These properties are examples */
+  board_id = <0x00020000>;
+  board_rev = <0x00020001>;
+  another_hw_information = "some_data";
+  soc_id = <0x68000000>;
+
+	fragment@1 {
+		target = <&twi5>;
+		__overlay__ {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			no_suspend = <1>;
+			status = "okay";
+
+			pmu0: pmu{
+				compatible = "x-powers,axp1530";
+				reg = <0x36>;
+/*				interrupt-parent = <&nmi_intc>;
+				interrupts = <0 IRQ_TYPE_LEVEL_LOW>;
+				interrupt-controller;
+				#interrupt-cells = <1>;*/
+
+				wakeup-source;
+
+				standby_param: standby_param {
+					vcc-dram = <0x4>;
+				};
+
+				regulators{
+					reg_dcdc1: dcdc1 {
+						regulator-name = "axp1530-dcdc1";
+						regulator-min-microvolt = <500000>;
+						regulator-max-microvolt = <3400000>;
+						regulator-step-delay-us = <25>;
+						regulator-final-delay-us = <50>;
+						regulator-always-on;
+					};
+
+					reg_dcdc2: dcdc2 {
+						regulator-name = "axp1530-dcdc2";
+						regulator-min-microvolt = <500000>;
+						regulator-max-microvolt = <1540000>;
+						regulator-step-delay-us = <25>;
+						regulator-final-delay-us = <50>;
+						regulator-ramp-delay = <200>; /* FIXME */
+						regulator-always-on;
+					};
+
+					reg_dcdc3: dcdc3 {
+						regulator-name = "axp1530-dcdc3";
+						regulator-min-microvolt = <1500000>;
+						regulator-max-microvolt = <1500000>;
+						regulator-step-delay-us = <25>;
+						regulator-final-delay-us = <50>;
+						regulator-always-on;
+					};
+
+					reg_aldo1: ldo1 {
+						regulator-name = "axp1530-aldo1";
+						regulator-min-microvolt = <1800000>;
+						regulator-max-microvolt = <1800000>;
+						regulator-step-delay-us = <25>;
+						regulator-final-delay-us = <50>;
+						regulator-always-on;
+					};
+
+					reg_dldo1: ldo2 {
+						regulator-name = "axp1530-dldo1";
+						regulator-min-microvolt = <3300000>;
+						regulator-max-microvolt = <3300000>;
+						regulator-step-delay-us = <25>;
+						regulator-final-delay-us = <50>;
+						regulator-always-on;
+					};
+				};
+			};
+		};
+	};
+	fragment@2 {
+		target = <&cpu0>;
+		__overlay__{
+			cpu-supply = <&reg_dcdc2>;
+		};
+	};
+};

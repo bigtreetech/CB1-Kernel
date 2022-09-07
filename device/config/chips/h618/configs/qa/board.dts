@@ -1,0 +1,997 @@
+/*
+ * Allwinner Technology CO., Ltd. sun8iw19p1 soc board.
+ *
+ * soc board support.
+ */
+
+/dts-v1/;
+
+#include "sun50iw9p1.dtsi"
+
+/{
+	model = "sun50iw9";
+	compatible = "allwinner,h616", "arm,sun50iw9p1";
+
+	soc@03000000 {
+		sdc2: sdmmc@04022000 {
+			pinctrl-0 = <&sdc2_pins_a &sdc2_pins_c>;
+			non-removable;
+			bus-width = <8>;
+			mmc-ddr-1_8v;
+			mmc-hs200-1_8v;
+			mmc-hs400-1_8v;
+			no-sdio;
+			no-sd;
+			cap-mmc-highspeed;
+			sunxi-power-save-mode;
+			sunxi-dis-signal-vol-sw;
+			max-frequency = <100000000>;
+			status = "disabled";
+		};
+
+		sdc0: sdmmc@04020000 {
+			pinctrl-0 = <&sdc0_pins_a>;
+			bus-width = <4>;
+			cd-gpios = <&pio PF 6 6 1 3 0xffffffff>;
+			/*non-removable;*/
+			/*broken-cd;*/
+			/*cd-inverted*/
+			/*data3-detect;*/
+			cap-sd-highspeed;
+			/*sd-uhs-sdr50;*/
+			/*sd-uhs-ddr50;*/
+			/*sd-uhs-sdr104;*/
+			no-sdio;
+			no-mmc;
+			sunxi-power-save-mode;
+			/*sunxi-dis-signal-vol-sw;*/
+			max-frequency = <50000000>;
+			ctl-spec-caps = <0x8>;
+			status = "okay";
+		};
+
+		sdc1: sdmmc@04021000 {
+			pinctrl-0 = <&sdc1_pins_a>;
+			bus-width = <4>;
+			no-mmc;
+			no-sd;
+			cap-sd-highspeed;
+			/*sd-uhs-sdr12*/
+			/*sd-uhs-sdr25*/
+			/*sd-uhs-sdr50;*/
+			/*sd-uhs-ddr50;*/
+			/*sd-uhs-sdr104*/
+			/*sunxi-power-save-mode;*/
+			/*sunxi-dis-signal-vol-sw;*/
+			cap-sdio-irq;
+			keep-power-in-suspend;
+			ignore-pm-notify;
+			max-frequency = <50000000>;
+			ctl-spec-caps = <0x8>;
+			status = "okay";
+		};
+
+		uart1: uart@05000400 {
+			status = "okay";
+		};
+
+		gmac1: eth@05030000 {
+			phy-mode = "rmii";
+			status = "okay";
+		};
+
+		ac200: ac200 {
+			tv_used = <1>;
+			tv_twi_used = <1>;
+			tv_twi_id = <3>;
+			tv_twi_addr = <16>;
+			tv_pwm_ch = <5>;
+			status = "okay";
+		};
+
+		wlan:wlan {
+			compatible    = "allwinner,sunxi-wlan";
+			clocks        = <&clk_losc_out>;
+			pinctrl-0     = <&clk_losc_pins_a>;
+			pinctrl-names = "default";
+			wlan_busnum   = <0x1>;
+			wlan_power;
+			wlan_io_regulator;
+			wlan_regon    = <&pio PG 18 1 0xffffffff 0xffffffff 0>;
+			wlan_hostwake = <&pio PG 15 6 0xffffffff 0xffffffff 0>;
+			chip_en;
+			power_en;
+			status        = "okay";
+		};
+
+		bt:bt {
+			compatible    = "allwinner,sunxi-bt";
+			clocks        = <&clk_losc_out>;
+			bt_power;
+			bt_io_regulator;
+			bt_rst_n      = <&pio PG 19 1 0xffffffff 0xffffffff 0>;
+			status        = "okay";
+		};
+
+		btlpm:btlpm {
+			compatible  = "allwinner,sunxi-btlpm";
+			uart_index  = <0x1>;
+			bt_wake     = <&pio PG 17 1 0xffffffff 0xffffffff 1>;
+			bt_hostwake = <&pio PG 16 6 0xffffffff 0xffffffff 0>;
+			status      = "okay";
+		};
+
+		addr_mgt:addr_mgt {
+			compatible     = "allwinner,sunxi-addr_mgt";
+			type_addr_wifi = <0x0>;
+			type_addr_bt   = <0x0>;
+			type_addr_eth  = <0x0>;
+			status         = "okay";
+		};
+
+		r_pio: pinctrl@07022000 {
+
+			s_twi0_pins_a: s_twi0@0 {
+				allwinner,pins = "PL0", "PL1";
+				allwinner,pname = "s_twi0_scl", "s_twi0_sda";
+				allwinner,function = "s_twi0";
+				allwinner,muxsel = <3>;
+				allwinner,drive = <1>;
+				allwinner,pull = <1>;
+			};
+
+			s_twi0_pins_b: s_twi0@1 {
+				allwinner,pins = "PL0", "PL1";
+				allwinner,function = "io_disabled";
+				allwinner,muxsel = <7>;
+				allwinner,drive = <1>;
+				allwinner,pull = <0>;
+			};
+		};
+
+		pio: pinctrl@0300b000 {
+
+			spi1_pins_a: spi1@0 {
+				allwinner,pins = "PH6", "PH7", "PH8";
+				allwinner,pname = "spi1_sclk", "spi1_mosi", "spi1_miso";
+				allwinner,function = "spi1";
+			};
+
+			spi1_pins_b: spi1@1 {
+				allwinner,pins = "PH5", "PH9";
+				allwinner,pname = "spi1_cs0", "spi1_cs1";
+				allwinner,function = "spi1";
+			};
+
+			spi1_pins_c: spi1@2 {
+				allwinner,pins = "PH5", "PH6", "PH7", "PH8", "PH9";
+				allwinner,function = "io_disabled";
+			};
+
+			twi0_pins_a: twi0@0 {
+				allwinner,pins = "PA0", "PA1";
+				allwinner,pname = "twi0_scl", "twi0_sda";
+				allwinner,function = "twi0";
+				allwinner,muxsel = <4>;
+				allwinner,drive = <1>;
+				allwinner,pull = <0>;
+			};
+
+			twi0_pins_b: twi0@1 {
+				allwinner,pins = "PA0", "PA1";
+				allwinner,function = "io_disabled";
+				allwinner,muxsel = <7>;
+				allwinner,drive = <1>;
+				allwinner,pull = <0>;
+			};
+
+			twi1_pins_a: twi1@0 {
+				allwinner,pins = "PA2", "PA3";
+				allwinner,pname = "twi1_scl", "twi1_sda";
+				allwinner,function = "twi1";
+				allwinner,muxsel = <4>;
+				allwinner,drive = <1>;
+				allwinner,pull = <0>;
+			};
+
+			twi1_pins_b: twi1@1 {
+				allwinner,pins = "PA2", "PA3";
+				allwinner,function = "io_disabled";
+				allwinner,muxsel = <7>;
+				allwinner,drive = <1>;
+				allwinner,pull = <0>;
+			};
+
+			twi2_pins_a: twi2@0 {
+				allwinner,pins = "PE20", "PE21";
+				allwinner,pname = "twi2_scl", "twi2_sda";
+				allwinner,function = "twi2";
+				allwinner,muxsel = <5>;
+				allwinner,drive = <1>;
+				allwinner,pull = <0>;
+			};
+
+			twi2_pins_b: twi2@1 {
+				allwinner,pins = "PE20", "PE21";
+				allwinner,function = "io_disabled";
+				allwinner,muxsel = <7>;
+				allwinner,drive = <1>;
+				allwinner,pull = <0>;
+			};
+
+			twi3_pins_a: twi3@0 {
+				allwinner,pins = "PA10", "PA11";
+				allwinner,pname = "twi3_scl", "twi3_sda";
+				allwinner,function = "twi3";
+				allwinner,muxsel = <2>;
+				allwinner,drive = <1>;
+				allwinner,pull = <1>;
+			};
+
+			twi3_pins_b: twi3@1 {
+				allwinner,pins = "PA10", "PA11";
+				allwinner,function = "io_disabled";
+				allwinner,muxsel = <7>;
+				allwinner,drive = <1>;
+				allwinner,pull = <0>;
+			};
+
+			twi4_pins_a: twi4@0 {
+				allwinner,pins = "PG15", "PG16";
+				allwinner,pname = "twi4_scl", "twi4_sda";
+				allwinner,function = "twi4";
+				allwinner,muxsel = <5>;
+				allwinner,drive = <1>;
+				allwinner,pull = <0>;
+			};
+
+			twi4_pins_b: twi4@1 {
+				allwinner,pins = "PG15", "PG16";
+				allwinner,function = "io_disabled";
+				allwinner,muxsel = <7>;
+				allwinner,drive = <1>;
+				allwinner,pull = <0>;
+			};
+			sdc0_pins_a: sdc0@0 {
+				allwinner,pins = "PF0", "PF1", "PF2",
+						 "PF3", "PF4", "PF5";
+				allwinner,function = "sdc0";
+				allwinner,muxsel = <2>;
+				allwinner,drive = <3>;
+				allwinner,pull = <1>;
+			};
+			sdc1_pins_a: sdc1@0 {
+				allwinner,pins = "PG0", "PG1", "PG2",
+						 "PG3", "PG4", "PG5";
+				allwinner,function = "sdc1";
+				allwinner,muxsel = <2>;
+				allwinner,drive = <3>;
+				allwinner,pull = <1>;
+			};
+			sdc2_pins_a: sdc2@0 {
+				allwinner,pins = "PC1", "PC5", "PC6",
+						 "PC8", "PC9", "PC10", "PC11",
+						 "PC13", "PC14", "PC15", "PC16";
+				allwinner,function = "sdc2";
+				allwinner,muxsel = <3>;
+				allwinner,drive = <2>;
+				allwinner,pull = <1>;
+			};
+			sdc2_pins_b: sdc2@1 {
+				allwinner,pins = "PC0", "PC1", "PC5", "PC6",
+						 "PC8", "PC9", "PC10", "PC11",
+						 "PC13", "PC14", "PC15", "PC16";
+				allwinner,function = "io_disabled";
+				allwinner,muxsel = <7>;
+				allwinner,drive = <1>;
+				allwinner,pull = <1>;
+			};
+			sdc2_pins_c: sdc2@2 {
+				allwinner,pins = "PC0";
+				allwinner,function = "sdc2";
+				allwinner,muxsel = <3>;
+				allwinner,drive = <2>;
+				allwinner,pull = <2>;
+			};
+			pwm5_pin_a: pwm5@0 {
+				allwinner,pins = "PA12";
+				allwinner,function = "pwm5";
+				allwinner,muxsel = <0x02>;
+				allwinner,drive = <0xffffffff>;
+				allwinner,pull = <0>;
+				allwinner,data = <0xffffffff>;
+			};
+			pwm5_pin_b: pwm5@1 {
+				allwinner,pins = "PA12";
+				allwinner,function = "io_disabled";
+				allwinner,muxsel = <0x07>;
+				allwinner,drive = <0xffffffff>;
+				allwinner,pull = <0>;
+				allwinner,data = <0xffffffff>;
+			};
+			standby_red: standby@0 {
+				allwinner,pins = "PH6";
+				allwinner,function = "gpio_out";
+				allwinner,muxsel = <1>;
+				allwinner,data = <1>;
+				allwinner,drive = <0>;
+				allwinner,pull = <0>;
+			};
+			standby_blue: standby@1 {
+				allwinner,pins = "PH7";
+				allwinner,function = "gpio_out";
+				allwinner,muxsel = <1>;
+				allwinner,data = <0>;
+				allwinner,drive = <2>;
+				allwinner,pull = <2>;
+			};
+			standby_bt: standby@2 {
+				allwinner,pins = "PG16";
+				allwinner,function = "gpio_in";
+				allwinner,muxsel = <0>;
+				allwinner,data = <0>;
+				allwinner,drive = <0>;
+				allwinner,pull = <0>;
+			};
+		};
+
+		spi1: spi@05011000 {
+			pinctrl-0 = <&spi1_pins_a &spi1_pins_b>;
+			pinctrl-1 = <&spi1_pins_c>;
+			spi_slave_mode = <0>;
+			status = "disabled";
+			spi_board1 {
+				device_type = "spi_board1";
+				compatible = "rohm,dh2228fv";
+				spi-max-frequency = <0x5f5e100>;
+				reg = <0x0>;
+				spi-rx-bus-width = <0x1>;
+				spi-tx-bus-width = <0x1>;
+			};
+		};
+
+		twi0: twi@0x05002000{
+			clock-frequency = <400000>;
+			pinctrl-0 = <&twi0_pins_a>;
+			pinctrl-1 = <&twi0_pins_b>;
+			status = "disabled";
+		};
+
+		twi1: twi@0x05002400{
+			clock-frequency = <200000>;
+			pinctrl-0 = <&twi1_pins_a>;
+			pinctrl-1 = <&twi1_pins_b>;
+			status = "disabled";
+		};
+
+		twi2: twi@0x05002800{
+			clock-frequency = <200000>;
+			pinctrl-0 = <&twi2_pins_a>;
+			pinctrl-1 = <&twi2_pins_b>;
+			status = "disabled";
+		};
+
+		twi3: twi@0x05002c00{
+			clock-frequency = <200000>;
+			pinctrl-0 = <&twi3_pins_a>;
+			pinctrl-1 = <&twi3_pins_b>;
+			status = "okay";
+		};
+
+		twi4: twi@0x05003000{
+			clock-frequency = <200000>;
+			pinctrl-0 = <&twi4_pins_a>;
+			pinctrl-1 = <&twi4_pins_b>;
+			status = "disabled";
+		};
+
+		twi5: twi@0x07081400{
+			clock-frequency = <200000>;
+			pinctrl-0 = <&s_twi0_pins_a>;
+			pinctrl-1 = <&s_twi0_pins_b>;
+			status = "okay";
+		};
+
+		pwm5: pwm5@0300a000 {
+			pinctrl-names = "active", "sleep";
+			pinctrl-0 = <&pwm5_pin_a>;
+			pinctrl-1 = <&pwm5_pin_b>;
+			/*internal pwm as clock,no ouput*/
+			clk_bypass_output = <0x01>;
+		};
+
+	      /*----------------------------------------------------------------------------------
+	       *resistance gpadc configuration
+	       *channel_num:   Maxinum number of channels supported on the platform.
+	       *channel_select:   channel enable setection. channel0:0x01  channel1:0x02 channel2:0x04 channel3:0x08
+	       *channel_data_select:  channel data enable.  channel0:0x01  channel1:0x02 channel2:0x04 channel3:0x08.
+	       *channel_compare_select:   compare function enable channel0:0x01  channel1:0x02 channel2:0x04 channel3:0x08.
+	       *channel_cld_select:  compare function low data enable setection: channel0:0x01  channel1:0x02 channel2:0x04 channel3:0x08.
+	       *channel_chd_select:  compare function hig data enable setection: channel0:0x01  channel1:0x02 channel2:0x04 channel3:0x08.
+	       *----------------------------------------------------------------------------------*/
+		gpadc:gpadc{
+			channel_num = <1>;
+			channel_select = <0x01>;
+			channel_data_select = <0>;
+			channel_compare_select = <0x01>;
+			channel_cld_select = <0x01>;
+			channel_chd_select = <0>;
+			channel0_compare_lowdata = <1700000>;
+			channel0_compare_higdata = <1200000>;
+			key_cnt = <5>;
+			key0_vol = <115>;
+			key0_val = <115>;
+			key1_vol = <240>;
+			key1_val = <114>;
+			key2_vol = <360>;
+			key2_val = <139>;
+			key3_vol = <480>;
+			key3_val = <28>;
+			key4_vol = <600>;
+			key4_val = <102>;
+			status = "okay";
+		};
+
+/*
+ *usb_used: usb controller enable. 0-disable, 1-enable.
+ *usb_port_type: usb mode. 0-device, 1-host, 2-otg.
+ *usb_detect_type: usb hotplug detect mode. 0-none, 1-vbus/id detect, 2-id/dpdm detect.
+ */
+		usbc0:usbc0@0 {
+			device_type		= "usbc0";
+			usb_port_type		= <0x0>;
+			usb_detect_type		= <0x1>;
+			usb_detect_mode		= <0x0>;
+			usb_id_gpio;
+			usb_det_vbus_gpio;
+			usb_drv_vbus_gpio;
+			usb_host_init_state	= <0x0>;
+			usb_regulator_io	= "nocare";
+			usb_wakeup_suspend	= <0x0>;
+			usb_luns		= <0x3>;
+			usb_serial_unique	= <0x0>;
+			usb_serial_number	= "20080411";
+			status			= "okay";
+		};
+
+		usbc1:usbc1@0 {
+			device_type		= "usbc1";
+			usb_drv_vbus_gpio	= <&pio PH 8 0 1 0xffffffff 0xffffffff>;
+			usb_host_init_state	= <0x1>;
+			usb_regulator_io	= "nocare";
+			usb_wakeup_suspend	= <0x1>;
+			status			= "okay";
+		};
+
+		usbc2:usbc2@0 {
+			device_type		= "usbc2";
+			usb_drv_vbus_gpio;
+			usb_host_init_state	= <0x1>;
+			usb_regulator_io	= "nocare";
+			usb_wakeup_suspend	= <0x1>;
+			status			= "okay";
+		};
+
+		usbc3:usbc3@0 {
+			device_type		= "usbc3";
+			usb_drv_vbus_gpio;
+			usb_host_init_state	= <0x1>;
+			usb_regulator_io	= "nocare";
+			usb_wakeup_suspend	= <0x1>;
+			status			= "okay";
+		};
+
+		/* audio dirver module */
+		codec:codec@0x05096000 {
+			adcdrc_cfg  = <0x00>;
+			adchpf_cfg  = <0x00>;
+			dacdrc_cfg  = <0x00>;
+			dachpf_cfg  = <0x00>;
+			fmin_gain   = <0x03>;
+			linein_gain = <0x03>;
+			digital_vol = <0x00>;
+			lineout_vol = <0x1a>;
+			/* CVBS audio output enable control */
+			gpio-spk = <&pio PH 5 1 1 1 1>;
+			pa_ctl_level   = <0x01>;
+			pa_msleep_time = <0xC8>;
+			/* codec regulator about */
+			avcc-supply = <&reg_aldo1>;
+			vcc33_audio-supply = <&reg_dldo1>;
+			status = "okay";
+		};
+
+		spdif:spdif-controller@0x05093000{
+			status = "okay";
+		};
+
+		dmic:dmic-controller@0x05095000{
+			status = "disabled";
+		};
+
+		ahub_codec:ahub_codec@0x05097000{
+			status = "okay";
+		};
+
+		ahub_daudio0:ahub_daudio0@0x05097000{
+			/* for choose the corresponding pins */
+			pinctrl-0 = <&ahub_daudio0_pins_c>;
+			pinctrl-1 = <&ahub_daudio0_pins_d>;
+			pinconfig 		= <0x01>;
+			frametype 		= <0x00>;
+			pcm_lrck_period		= <0x20>;
+			slot_width_select	= <0x20>;
+			daudio_master		= <0x04>;
+			audio_format  		= <0x01>;
+			signal_inversion 	= <0x01>;
+			tdm_config		= <0x01>;
+			mclk_div 		= <0x00>;
+			status = "okay";
+		};
+
+		ahub_daudio1:ahub_daudio1@0x05097000{
+			pinconfig 		= <0x00>;
+			frametype 		= <0x00>;
+			pcm_lrck_period 	= <0x20>;
+			slot_width_select 	= <0x20>;
+			daudio_master 		= <0x04>;
+			audio_format 		= <0x01>;
+			signal_inversion 	= <0x01>;
+			tdm_config 		= <0x01>;
+			mclk_div 		= <0x01>;
+			status = "okay";
+		};
+
+		ahub_daudio2:ahub_daudio2@0x05097000{
+			pinconfig 		= <0x01>;
+			frametype 		= <0x00>;
+			pcm_lrck_period 	= <0x20>;
+			slot_width_select 	= <0x20>;
+			daudio_master 		= <0x04>;
+			audio_format 		= <0x01>;
+			signal_inversion 	= <0x01>;
+			tdm_config 		= <0x01>;
+			mclk_div 		= <0x04>;
+			status = "disabled";
+		};
+
+		ahub_daudio3:ahub_daudio3@0x05097000{
+			pinconfig 		= <0x01>;
+			frametype 		= <0x00>;
+			pcm_lrck_period 	= <0x20>;
+			slot_width_select 	= <0x20>;
+			daudio_master 		= <0x04>;
+			audio_format 		= <0x01>;
+			signal_inversion 	= <0x01>;
+			tdm_config 		= <0x01>;
+			mclk_div 		= <0x04>;
+			status = "disabled";
+		};
+
+		snddaudio0:sound@0{
+			status = "okay";
+		};
+
+		sndhdmi:sound@1{
+			status = "okay";
+		};
+
+		snddaudio2:sound@2{
+			status = "disabled";
+		};
+
+		snddaudio3:sound@3{
+			/* acx00-codec throught mfd_add_devices */
+			/*
+			sunxi,snddaudio-codec = "acx00-codec";
+			sunxi,snddaudio-codec-dai = "acx00-dai";
+			*/
+			status = "disabled";
+		};
+
+		sndspdif:sound@4{
+			status = "okay";
+		};
+
+		snddmic:sound@5{
+			status = "disabled";
+		};
+
+		sndcodec:sound@6{
+			status = "okay";
+		};
+
+		sndahub:sound@7{
+			status = "okay";
+		};
+		gpio_para {
+			device_type = "gpio_para";
+			status = "okay";
+			compatible = "allwinner,sunxi-init-gpio";
+			gpio_num = <2>;
+			gpio_pin_1 = <&pio PH 6 1 0xffffffff 0xffffffff 1>;
+			gpio_pin_2 = <&pio PH 7 1 0xffffffff 0xffffffff 0>;
+			normal_led = "gpio_pin_1";
+			standby_led = "gpio_pin_2";
+			easy_light_used = <1>;
+			normal_led_light = <1>;
+			standby_led_light = <1>;
+		};
+
+		/*----------------------------------------------------------------------------------
+		disp init configuration
+
+		disp_mode             (0:screen0<screen0,fb0>)
+		screenx_output_type   (0:none; 1:lcd; 2:tv; 3:hdmi;5:vdpo)
+		screenx_output_mode   (used for hdmi output, 0:480i 1:576i 2:480p 3:576p 4:720p50)
+		                      (5:720p60 6:1080i50 7:1080i60 8:1080p24 9:1080p50 10:1080p60)
+		screenx_output_format (for hdmi, 0:RGB 1:yuv444 2:yuv422 3:yuv420)
+		screenx_output_bits   (for hdmi, 0:8bit 1:10bit 2:12bit 2:16bit)
+		screenx_output_eotf   (for hdmi, 0:reserve 4:SDR 16:HDR10 18:HLG)
+		screenx_output_cs     (for hdmi, 0:undefined  257:BT709 260:BT601  263:BT2020)
+		screenx_output_dvi_hdmi (for hdmi, 0:undefined 1:dvi mode 2:hdmi mode)
+		screen0_output_range   (for hdmi, 0:default 1:full 2:limited)
+		screen0_output_scan    (for hdmi, 0:no data 1:overscan 2:underscan)
+		screen0_output_aspect_ratio  (for hdmi, 8-same as original picture 9-4:3 10-16:9 11-14:9)
+		fbx format            (4:RGB655 5:RGB565 6:RGB556 7:ARGB1555 8:RGBA5551 9:RGB888 10:ARGB8888 12:ARGB4444)
+		fbx pixel sequence    (0:ARGB 1:BGRA 2:ABGR 3:RGBA)
+		fb0_scaler_mode_enable(scaler mode enable, used FE)
+		fbx_width,fbx_height  (framebuffer horizontal/vertical pixels, fix to output resolution while equal 0)
+		lcdx_backlight        (lcd init backlight,the range:[0,256],default:197
+		lcdx_yy               (lcd init screen bright/contrast/saturation/hue, value:0~100, default:50/50/57/50)
+		lcd0_contrast         (LCD contrast, 0~100)
+		lcd0_saturation       (LCD saturation, 0~100)
+		lcd0_hue              (LCD hue, 0~100)
+		framebuffer software rotation setting:
+		disp_rotation_used:   (0:disable; 1:enable,you must set fbX_width to lcd_y,
+		set fbX_height to lcd_x)
+		degreeX:              (X:screen index; 0:0 degree; 1:90 degree; 3:270 degree)
+		degreeX_Y:            (X:screen index; Y:layer index 0~15; 0:0 degree; 1:90 degree; 3:270 degree)
+		----------------------------------------------------------------------------------*/
+		disp: disp@01000000 {
+			disp_init_enable         = <1>;
+			disp_mode                = <0>;
+
+			screen0_output_type      = <3>;
+			screen0_output_mode      = <10>;
+			screen0_output_format    = <0>;
+			screen0_output_bits      = <0>;
+			screen0_output_eotf      = <4>;
+			screen0_output_cs        = <257>;
+			screen0_output_dvi_hdmi  = <2>;
+			screen0_output_range     = <2>;
+			screen0_output_scan      = <0>;
+			screen0_output_aspect_ratio = <8>;
+
+			screen1_output_type      = <2>;
+			screen1_output_mode      = <11>;
+			screen1_output_format    = <1>;
+			screen1_output_bits      = <0>;
+			screen1_output_eotf      = <4>;
+			screen1_output_cs        = <260>;
+			screen1_output_dvi_hdmi  = <0>;
+			screen1_output_range     = <2>;
+			screen1_output_scan      = <0>;
+			screen1_output_aspect_ratio = <8>;
+			dev0_output_type         = <4>;
+			dev0_output_mode         = <10>;
+			dev0_screen_id           = <0>;
+			dev0_do_hpd              = <1>;
+
+			dev1_output_type         = <2>;
+			dev1_output_mode         = <11>;
+			dev1_screen_id           = <1>;
+			dev1_do_hpd              = <1>;
+
+			dev2_output_type         = <0>;
+			def_output_dev           = <0>;
+			hdmi_mode_check          = <1>;
+
+			fb0_format               = <0>;
+			fb0_width                = <1280>;
+			fb0_height               = <720>;
+
+			fb1_format               = <0>;
+			fb1_width                = <0>;
+			fb1_height               = <0>;
+
+			chn_cfg_mode             = <1>;
+
+			disp_para_zone           = <1>;
+			/* VCC-LCD */
+			/*dc1sw-supply = <&reg_sw>;*/
+			/* VCC-LVDS and VCC-HDMI */
+			/*bldo1-supply = <&reg_bldo1>;*/
+			/* VCC-TV */
+			/*cldo4-supply = <&reg_cldo4>;*/
+
+		};
+
+		/*----------------------------------------------------------------------------------
+		;tv configuration
+		;dac_src            (dac no,support dac_src0~dac_src3,dac num max is 4)
+		;interface          (interface type,1<->cvbs,2<->YPBPR,4<->SVIDEO)
+		;dac_type           (0<->composite,1<->luma,2<->chroma,3<->reserved,4<->y/green,
+		;                    5<->u/pb/blue,6<->v/pr/red)
+		;NOTE:              tv0,tv1 can not use the same dac_src.
+		;---------------------------------------------------------------------------------*/
+
+		tv0: tv0@01c94000 {
+			status =  "okay";
+
+			dac_src0        = <0>;
+			dac_type0       = <0>;
+
+			interface       = <1>;
+			/*tv_power = "cldo4";*/
+		};
+
+		/*----------------------------------------------------------------------------------
+		;lcd0 configuration
+
+		;lcd_if:               0:hv(sync+de); 1:8080; 2:ttl; 3:lvds; 4:dsi; 5:edp; 6:extend dsi
+		;lcd_hv_if             0:Parallel RGB; 8:Serial RGB; 10:Dummy RGB; 11: RGB Dummy;12:CCIR656
+		;lcd_hv_clk_phase      0:0 degree;1:90 degree;2:180 degree;3:270 degree
+		;lcd_hv_sync_polarity  0:vs low,hs low; 1:vs high,hslow; 2:vs low,hs high; 3:vs high,hs high
+		;lcd_hv_syuv_seq       0:YUYV; 1:YVYU; 2:UYVY; 3:VYUY
+		;lcd_cpu_if            0:18bit/1 cycle parallel(RGB666); 4:16bit/1cycle parallel (RGB565)
+		;                      6:18bit/3 cycle parallel(RGB666); 7:16bit/2cycle parallel (RGB565)
+		;lcd_cpu_te            0:frame auto trigger; 1:frame triggered by te rising edge; 2:frame triggered by te falling edge;
+		;lcd_dsi_if            0:video mode; 1: Command mode; 2:video burst mode
+		;lcd_dsi_te            0:frame auto trigger; 1:frame triggered by te rising edge; 2:frame triggered by te falling edge;
+		;lcd_x:                lcd horizontal resolution
+		;lcd_y:                lcd vertical resolution
+		;lcd_width:            width of lcd in mm
+		;lcd_height:           height of lcd in mm
+		;lcd_dclk_freq:        in MHZ unit
+		;lcd_pwm_freq:         in HZ unit
+		;lcd_pwm_pol:          lcd backlight PWM polarity
+		;lcd_pwm_max_limit     lcd backlight PWM max limit(<=255)
+		;lcd_hbp:              hsync back porch(pixel) + hsync plus width(pixel);
+		;lcd_ht:               hsync total cycle(pixel)
+		;lcd_vbp:              vsync back porch(line) + vysnc plus width(line)
+		;lcd_vt:               vysnc total cycle(line)
+		;lcd_hspw:             hsync plus width(pixel)
+		;lcd_vspw:             vysnc plus width(pixel)
+		;lcd_lvds_if:          0:single link;  1:dual link
+		;lcd_lvds_colordepth:  0:8bit; 1:6bit
+		;lcd_lvds_mode:        0:NS mode; 1:JEIDA mode
+		;lcd_frm:              0:disable; 1:enable rgb666 dither; 2:enable rgb656 dither
+		;lcd_io_phase:         0:noraml; 1:intert phase(0~3bit: vsync phase; 4~7bit:hsync phase;
+		;                      8~11bit:dclk phase; 12~15bit:de phase)
+		;lcd_gamma_en          lcd gamma correction enable
+		;lcd_bright_curve_en   lcd bright curve correction enable
+		;lcd_cmap_en           lcd color map function enable
+		;deu_mode              0:smoll lcd screen; 1:large lcd screen(larger than 10inch)
+		;lcdgamma4iep:         Smart Backlight parameter, lcd gamma vale * 10;
+		;                      decrease it while lcd is not bright enough; increase while lcd is too bright
+		;smart_color           90:normal lcd screen 65:retina lcd screen(9.7inch)
+		;Pin setting for special function ie.LVDS, RGB data or vsync
+		;   name(donot care) = port:PD12<pin function><pull up or pull down><drive ability><output level>
+		;Pin setting for gpio:
+		;   lcd_gpio_X     = port:PD12<pin function><pull up or pull down><drive ability><output level>
+		;Pin setting for backlight enable pin
+		;   lcd_bl_en     = port:PD12<pin function><pull up or pull down><drive ability><output level>
+		;fsync setting, pulse to csi
+		;lcd_fsync_en          (0:disable fsync,1:enable)
+		;lcd_fsync_act_time    (active time of fsync, unit:pixel)
+		;lcd_fsync_pol         (0:positive;1:negative)
+		;gpio config: <&pio for cpu or &r_pio for cpus, port, port num, pio function,
+		pull up or pull down(default 0), driver level(default 1), data>
+		;For dual link lvds: use lvds2link_pins_a  and lvds2link_pins_b instead
+		;For rgb24: use rgb24_pins_a  and rgb24_pins_b instead
+		;For lvds1: use lvds1_pins_a  and lvds1_pins_b instead
+		;For lvds0: use lvds0_pins_a  and lvds0_pins_b instead
+		;----------------------------------------------------------------------------------*/
+		lcd0: lcd0@01c0c000 {
+			lcd_used            = <0>;
+
+			lcd_driver_name     = "default_lcd";
+			lcd_backlight       = <50>;
+			lcd_if              = <0>;
+
+			lcd_x               = <1280>;
+			lcd_y               = <800>;
+			lcd_width           = <150>;
+			lcd_height          = <94>;
+			lcd_dclk_freq       = <70>;
+
+			lcd_pwm_used        = <0>;
+			lcd_pwm_ch          = <0>;
+			lcd_pwm_freq        = <50000>;
+			lcd_pwm_pol         = <0>;
+			lcd_pwm_max_limit   = <255>;
+
+
+			lcd_hbp             = <20>;
+			lcd_ht              = <1418>;
+			lcd_hspw            = <10>;
+			lcd_vbp             = <10>;
+			lcd_vt              = <814>;
+			lcd_vspw            = <5>;
+
+			lcd_lvds_if         = <0>;
+			lcd_lvds_colordepth = <0>;
+			lcd_lvds_mode       = <0>;
+			lcd_frm             = <0>;
+			lcd_hv_clk_phase    = <0>;
+			lcd_hv_sync_polarity= <0>;
+			lcd_gamma_en        = <0>;
+			lcd_bright_curve_en = <0>;
+			lcd_cmap_en         = <0>;
+
+			deu_mode            = <0>;
+			lcdgamma4iep        = <22>;
+			smart_color         = <90>;
+
+			lcd_pin_power = "bldo1";
+
+			lcd_power = "dc1sw";
+			/*lcd_bl_en        = <&pio PD 27 1 0 3 1>;*/
+			pinctrl-0 = <&rgb24_pins_a>;
+			pinctrl-1 = <&rgb24_pins_b>;
+
+		};
+
+		/*----------------------------------------------------------------------------------
+		;hdmi configuration
+		;hdmi_used:             if hdmi is used
+		;hdmi_hdcp_enable:      if hdmi hdcp function enable
+		;hdmi_cts_compatibility:if hdmi cts test compatibility enable
+		;hdmi_power:            power name for hdmi
+		;--------------------------------------------------------------------------------*/
+		hdmi: hdmi@06000000 {
+			hdmi_used = <1>;
+			hdmi_power_cnt = <2>;
+			hdmi_power0 = "vcc-hdmi";
+			hdmi_power1 = "vdd-hdmi";
+			hdmi_hdcp_enable = <1>;
+			hdmi_hdcp22_enable = <1>;
+			hdmi_cts_compatibility = <0>;
+			hdmi_cec_support = <1>;
+			hdmi_cec_super_standby = <0>;
+			hdmi_skip_bootedid = <1>;
+
+			ddc_en_io_ctrl = <0>;
+			power_io_ctrl = <0>;
+		};
+
+	};
+	box_start_os: box_start_os0 {
+		compatible = "allwinner,box_start_os";
+		start_type = <0x1>; /* 1 : normal boot*/
+		irkey_used = <0x0>;
+		pmukey_used = <0x0>;
+		pmukey_num = <0x0>;
+		led_power = <0x0>;
+		led_state = <0x0>;
+		pinctrl-0 = <&standby_blue>;
+		pinctrl-1 = <&standby_red>;
+/*		pinctrl-2 = <&standby_bt>;*/
+	};
+	gpu: gpu@0x01800000 {
+			gpu_idle = <1>;
+			dvfs_status = <1>;
+			operating-points = <
+				 /* KHz   uV */
+				600000 950000
+				576000 950000
+				540000 950000
+				504000 950000
+				456000 950000
+				420000 950000
+				384000 950000
+				360000 950000
+				336000 950000
+				306000 950000
+			 >;
+	};
+};
+
+&aliases {
+	pmu0 = &pmu0;
+	standby_param = &standby_param;
+};
+
+&s_cir0 {
+	s_cir0_used = <1>;
+	ir_power_key_code0 = <0x40>;
+	ir_addr_code0 = <0xfe01>;
+	ir_power_key_code1 = <0x1a>;
+	ir_addr_code1 = <0xfb04>;
+	ir_power_key_code2 = <0xf2>;
+	ir_addr_code2 = <0x2992>;
+	ir_power_key_code3 = <0x57>;
+	ir_addr_code3 = <0x9f00>;
+	ir_power_key_code4 = <0xdc>;
+	ir_addr_code4 = <0x4cb3>;
+	ir_power_key_code5 = <0x18>;
+	ir_addr_code5 = <0xff00>;
+	ir_power_key_code6 = <0xdc>;
+	ir_addr_code6 = <0xdd22>;
+	ir_power_key_code7 = <0x0d>;
+	ir_addr_code7 = <0xbc00>;
+	ir_power_key_code8 = <0x4d>;
+	ir_addr_code8 = <0x4040>;
+	wakeup-source;
+};
+
+&cpu_trips{
+	cpu_crit: cpu_crit@0 {
+		temperature = <115000>;
+		type = "critical";
+		hysteresis = <0>;
+	};
+};
+
+&twi5 {
+	no_suspend = <1>;
+	status = "okay";
+
+	pmu0: pmu{
+		compatible = "x-powers,axp1530";
+		reg = <0x36>;
+/*		interrupt-parent = <&nmi_intc>;
+		interrupts = <0 IRQ_TYPE_LEVEL_LOW>;
+		interrupt-controller;
+		#interrupt-cells = <1>;*/
+
+		wakeup-source;
+
+		standby_param: standby_param {
+			vcc-dram = <0x4>;
+		};
+
+		regulators{
+			reg_dcdc1: dcdc1 {
+				regulator-name = "axp1530-dcdc1";
+				regulator-min-microvolt = <500000>;
+				regulator-max-microvolt = <3400000>;
+				regulator-step-delay-us = <25>;
+				regulator-final-delay-us = <50>;
+				regulator-always-on;
+			};
+
+			reg_dcdc2: dcdc2 {
+				regulator-name = "axp1530-dcdc2";
+				regulator-min-microvolt = <500000>;
+				regulator-max-microvolt = <1540000>;
+				regulator-step-delay-us = <25>;
+				regulator-final-delay-us = <50>;
+				regulator-ramp-delay = <200>; /* FIXME */
+				regulator-always-on;
+			};
+
+			reg_dcdc3: dcdc3 {
+				regulator-name = "axp1530-dcdc3";
+				regulator-min-microvolt = <500000>;
+				regulator-max-microvolt = <1840000>;
+				regulator-step-delay-us = <25>;
+				regulator-final-delay-us = <50>;
+				regulator-always-on;
+			};
+
+			reg_aldo1: ldo1 {
+				regulator-name = "axp1530-aldo1";
+				regulator-min-microvolt = <500000>;
+				regulator-max-microvolt = <3500000>;
+				regulator-step-delay-us = <25>;
+				regulator-final-delay-us = <50>;
+				regulator-always-on;
+			};
+
+			reg_dldo1: ldo2 {
+				regulator-name = "axp1530-dldo1";
+				regulator-min-microvolt = <500000>;
+				regulator-max-microvolt = <3500000>;
+				regulator-step-delay-us = <25>;
+				regulator-final-delay-us = <50>;
+				regulator-always-on;
+			};
+		};
+	};
+};
+
+&cpu0 {
+	cpu-supply = <&reg_dcdc2>;
+};

@@ -1,0 +1,57 @@
+**免责声明**
+
+**全志**提醒您，本文件夹所提供的交付件仅供客户开发参考。在使用本文件夹所提供的交付件前，请您务必仔细阅读并透彻理解本声明。您可以选择不使用本文件夹中的交付件，但如果您使用，您的使用行为将被视为对本声明全部内容的认可。
+
+本文件夹所提供的交付件按“现状”提供，不附有任何种类的陈述与保证，在法律允许的最大限度内，全志明确表示不做出任何明示、默示和强制的担保，包括但不限于特定用途、正确性、条件性、完整性、适销性、品质或不侵犯所有权的担保。
+
+本交付件所提供的数据在不同的测试环境下可能存在一定的偏差，因其使用而导致的设计、开发错误，或可能遭致的意外、疏忽、侵权及其造成的损失（包括但不限于直接的、间接的、后果性的或附带性的损失），其后果由您自行承担，全志对其概不负责，亦不承担任何法律责任。
+
+本交付件所包含的版权声明和软件许可证，一旦使用，您必须严格遵守，全志事先书面同意，您不得删除、掩盖或更改全志的版权声明或其它权利声明。
+
+本交付件未经全志事先书面许可不得擅自更改、复制、反向操作、销售、散发或进行其他商业活动。如您需在本交付件上集成第三方技术时（如Sony、DTS、杜比、AVS、MPEGLA等），请自行向权利人获取合法授权。全
+
+志不为您的上述集成行为支付任何许可费用或提供任何技术支持，也不承担任何保证责任。请您自行为其后续使用行为负责。
+
+本声明一经发布，适用于声明前后全志通过其发放渠道交付您的所有软件产品。
+
+本声明中英文两个版本，如有不一致，以中文版本为准。
+
+```
+
+声明单位：珠海全志科技股份有限公司  日    期：2018-11-21
+
+
+```
+
+**Disclaimer**
+
+**Allwinner** here by declares and reminds you that the software(s) or deliverable(s) (“SDK”) provided by Allwinner is（are） just as a reference or typical applications only. You acknowledge that you have read, understood and accepted all the Terms and Conditions of this Disclaimer once you voluntarily download, install and use the SDK. You may choose not to use the SDK, however, once you use it, you are deemed to accept and agree to this Disclaimer provided herein.
+
+The SDK is provided “as is” and to the maximum extent permitted by law, Allwinner expressly disclaims all warranties of any kind, whether express, implied or statutory, including without limitation regarding their title, non-infringement, accuracy, condition, completeness, performance or merchantability and fitness for a particular purpose.
+The data or information included in the SDK may be biased in different test environments. In no event shall Allwinner be liable for any direct, indirect, incidental, special, exemplary, or consequential damages (including, but not limited to, procurement of substitute goods or services; loss of use, data, or profits; or business interruption) however caused and on any theory of liability, whether in contract, strict liability, or tort (including negligence or otherwise) arising in any way out of the use of the SDK, even if advised of the possibility of such damage. You are solely responsible for your own usage.
+
+You shall obey to any applicable Open Source License(s) or any Copyright declaration during your usage of the SDK. Without obtaining (a) prior written consent(s) from Allwinner, you shall not delete, cover or revise any Allwinner’s or any third party’s Declaration(s) of Rights or License Notice(s).
+
+Without obtaining (a) prior written consent(s) from Allwinner, you shall not modify or reverse engineer the SDK, or sell, copy, distribute the SDK or engage in any other business activities, for any commercial purpose(s). If you need to integrate third party’s technology (Sony, DTS, Dolby, AVS or MPEGLA, etc.) in Allwinners’SDK or products, you shall be solely responsible to obtain all appropriately required third party licences. Allwinner shall not be liable for any licence fee or royalty due in respect of any required third party licence. Allwinner shall have no warranty, indemnity or other obligations with respect to matters covered under any required third party license. You are solely responsible for your usage of third party’s technology.
+
+This Disclaimer shall applies to all the SDKs that are voluntarily delivered through Allwinner’s distribution channels, whether before or after the issue of this Disclaimer.
+
+This Disclaimer is available in both Chinese and English. In case of discrepancy between both versions, the Chinese version shall prevail.
+
+[cert]
+MIIDWDCCAkCgAwIBAgIBAjANBgkqhkiG9w0BAQsFADA1MQswCQYDVQQGEwJaRzESMBAGA1UECAwJ
+R3VhbmdEb25nMRIwEAYDVQQKDAlBbGx3aW5uZXIwHhcNMjEwNDEyMDEzMjUyWhcNNDEwNDE3MDEz
+MjUyWjA1MQswCQYDVQQGEwJaRzESMBAGA1UECAwJR3VhbmdEb25nMRIwEAYDVQQKDAlBbGx3aW5u
+ZXIwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvutDg24eCuHrNR65rBIfP4aQFwMv4
+jFC5SnFxV14euvJrnnvf4Kn1Ml2T+Ed7dnaOKYiW0TCutOuPfv0YHxgpe3mixsPdFESyG2dOgzxf
+yAmzK2z0pQxnpIB2dcrhEdPwaMup94Jg97DSZ7LXBcs0VvI8AoI21xc5PdLn1NhoeRFhZEmiuYrP
+5yHpnBUfR/0JMiYHS4no3ibfFrxp+qvXymJxbVDD+Of2Me7eHCDE/mtoOCwpGLlLsqL53dsrqC3f
+DpP2pFS8ByIpP4HoW+xrQvxbANFqQ+3oOeuFiS5GUnreya5YiJ2sxEGAWPD0+05WPwa22T9aT7P8
+Fm5oK7nrAgMBAAGjczBxMAkGA1UdEwQCMAAwJAYJYIZIAYb4QgENBBcWFUFXc3VuNTBpdzlwMWg2
+MTgtMjAwMDAdBgNVHQ4EFgQUfBLDZ3PchDihPUKpSbQ4gzRiQIowHwYDVR0jBBgwFoAUqa3f5frn
+gbM7zcZkvCjMOtAA1DIwDQYJKoZIhvcNAQELBQADggEBAHscPrL3jnbk6q3gHetAPzMsQ5msLxJB
+axPn/zLdyBLU3iM4iH2ydyoMcGDQHvWuXcIjFZeq3BMQnpjYbzXBdW2/DHssFjXSKHe8mQcJ4vSf
+ffqpFbEO6ccU/mKr0+SojWrolzK5fPjFFoZ3V/k+icKIp1JGiTfY+IkF1I7cZqjqn49u572vExtv
+k/6uG82SwoeygPKyFqD+5zmAw4rCCNdbHW3aF4BW1PBth2yOW5whAwuJm1XU25RtTTzpIGr/ro/v
+CbTkCz1UR97NXlQgFXgLuPrnOoyt5UJPe1mW1Iv1Y12WMTIe4pjdTWVDe2FlAHHFULHQmXe8SjNO
+43dTOss=
