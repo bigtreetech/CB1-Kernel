@@ -15,6 +15,7 @@ sudo apt-get install ccache debian-archive-keyring debootstrap device-tree-compi
 
 1. Configuring the board-level environment
 
+
 Run directly from the project home directory
 ``` bash
 ./build.sh config
