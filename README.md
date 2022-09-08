@@ -28,3 +28,19 @@ Run directly from the project home directory
 ``` bash
 ./build.sh
 ```
+
+3. Image Packaging
+
+Run directly from the project home directory
+``` bash
+./build.sh pack
+```
+
+> Image output directory: `./out/h616_linux_p2_uart0.img`
+
+4. Image flash
+
+Allwinner flash tools: `./tools/FlashTools/PhoenixCard.rar`
+
+Use this tool to burn the image packaged in `step 3` to the sd card.
+
