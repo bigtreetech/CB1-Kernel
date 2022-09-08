@@ -1,0 +1,4 @@
+sboot_entry.o: sboot_entry.S \
+ /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/include/config.h \
+ /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/include/configs/sun50iw9p1.h \
+ /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/include/asm/mode.h

@@ -1,0 +1,1 @@
+/home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/commit_info.h

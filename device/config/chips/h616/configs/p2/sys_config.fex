@@ -46,8 +46,8 @@ dldo1_vol                  = 1003300
 
 [axp806_power_sply]
 dcdcc_vol                  = 1000960
-aldo1_vol		   = 1003300
-bldo1_vol		   = 1001800
+aldo1_vol		           = 1003300
+bldo1_vol		           = 1001800
 dcdcd_vol                  = 1001350
 
 [card_boot]
@@ -93,7 +93,7 @@ ir_addr_code3               = 0xfe01
 ;   recovery_key_used :  模块使能端，    1：开启，0：关闭
 ;   press_mode_enable :  长短按模式使能，1：开启，0：关闭
 ;                        a)如果开启了该模式，则key_work_mode失效，short_press_mode和long_press_mode生>效,
-    ;                      recovery按键可以通过长按和短按来触发两种不同的模式;
+;                          recovery按键可以通过长按和短按来触发两种不同的模式;
 ;                        b)如果关闭了该模式，则key_work_mode生效，recovery按键只能触发一种模式.
 ;   key_work_mode     :  模式选择
 ;                        0: 刷机,
@@ -1299,7 +1299,7 @@ uart0_tx         = port:PH00<2><1><default><default>
 uart0_rx         = port:PH01<2><1><default><default>
 
 [nand0_para]
-nand0_support_2ch    = 0
+nand0_support_2ch   = 0
 
 nand0_used          = 0
 nand0_we            = port:PC00<2><0><1><default>
@@ -1308,20 +1308,20 @@ nand0_cle           = port:PC02<2><0><1><default>
 nand0_ce0           = port:PC03<2><1><1><default>
 nand0_nre           = port:PC04<2><0><1><default>
 nand0_rb0           = port:PC05<2><1><1><default>
-nand0_d0           = port:PC06<2><0><1><default>
-nand0_d1           = port:PC07<2><0><1><default>
+nand0_d0            = port:PC06<2><0><1><default>
+nand0_d1            = port:PC07<2><0><1><default>
 nand0_d2            = port:PC08<2><0><1><default>
 nand0_d3            = port:PC09<2><0><1><default>
 nand0_d4            = port:PC10<2><0><1><default>
 nand0_d5            = port:PC11<2><0><1><default>
 nand0_d6            = port:PC12<2><0><1><default>
 nand0_d7            = port:PC13<2><0><1><default>
-nand0_ndqs            = port:PC14<2><0><1><default>
-nand0_ce1            = port:PC15<2><1><1><default>
-nand0_rb1          = port:PC16<2><1><1><default>
+nand0_ndqs          = port:PC14<2><0><1><default>
+nand0_ce1           = port:PC15<2><1><1><default>
+nand0_rb1           = port:PC16<2><1><1><default>
 
-nand0_regulator1 		= "vcc-nand"
-nand0_regulator2 		= "none"
+nand0_regulator1 = "vcc-nand"
+nand0_regulator2 = "none"
 nand0_cache_level = 0x55aaaa55
 nand0_flush_cache_num = 0x55aaaa55
 nand0_capacity_level = 0x55aaaa55

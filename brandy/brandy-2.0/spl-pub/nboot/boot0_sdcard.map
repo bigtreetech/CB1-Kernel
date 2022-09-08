@@ -1,0 +1,1459 @@
+Archive member included to satisfy reference by file (symbol)
+
+/home/lodge/Allwinner-H616/brandy/brandy-2.0/tools/toolchain/gcc-linaro-7.2.1-2017.11-x86_64_arm-linux-gnueabi/bin/../lib/gcc/arm-linux-gnueabi/7.2.1/libgcc.a(_udivsi3.o)
+                              /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a (__aeabi_uidiv)
+/home/lodge/Allwinner-H616/brandy/brandy-2.0/tools/toolchain/gcc-linaro-7.2.1-2017.11-x86_64_arm-linux-gnueabi/bin/../lib/gcc/arm-linux-gnueabi/7.2.1/libgcc.a(_divsi3.o)
+                              /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a (__aeabi_idiv)
+/home/lodge/Allwinner-H616/brandy/brandy-2.0/tools/toolchain/gcc-linaro-7.2.1-2017.11-x86_64_arm-linux-gnueabi/bin/../lib/gcc/arm-linux-gnueabi/7.2.1/libgcc.a(_dvmd_lnx.o)
+                              /home/lodge/Allwinner-H616/brandy/brandy-2.0/tools/toolchain/gcc-linaro-7.2.1-2017.11-x86_64_arm-linux-gnueabi/bin/../lib/gcc/arm-linux-gnueabi/7.2.1/libgcc.a(_udivsi3.o) (__aeabi_idiv0)
+
+Discarded input sections
+
+ .text.__msdelay
+                0x0000000000000000        0x4 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.timer_init
+                0x0000000000000000        0x4 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.sdelay   0x0000000000000000        0x6 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.timer_exit
+                0x0000000000000000        0x2 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.enable_smp
+                0x0000000000000000        0xe /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.sunxi_deassert_arisc
+                0x0000000000000000       0x3c /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.sunxi_clock_exit_key
+                0x0000000000000000       0x14 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.strncpy  0x0000000000000000       0x18 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.strcat   0x0000000000000000       0x1e /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.strncat  0x0000000000000000       0x28 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.strcmp   0x0000000000000000       0x16 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.strchr   0x0000000000000000       0x18 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.strrchr  0x0000000000000000       0x20 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.strnlen  0x0000000000000000       0x18 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.strspn   0x0000000000000000       0x20 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.memcmp   0x0000000000000000       0x1e /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.memscan  0x0000000000000000       0x16 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.strstr   0x0000000000000000       0x40 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.memchr   0x0000000000000000       0x1c /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.vprintf  0x0000000000000000       0x1c /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.snprintf
+                0x0000000000000000       0x2c /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.print_sys_tick
+                0x0000000000000000       0x18 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.g_mod    0x0000000000000000       0x22 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.get_page_buf
+                0x0000000000000000        0x8 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.__aeabi_unwind_cpp_pr0
+                0x0000000000000000        0x2 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.malloc_init
+                0x0000000000000000       0x1c /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.malloc   0x0000000000000000       0x4c /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.realloc  0x0000000000000000       0x6c /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.sunxi_get_iobase
+                0x0000000000000000        0x2 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.sunxi_get_lw32_addr
+                0x0000000000000000        0x2 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.u8_to_string_hex
+                0x0000000000000000       0x1c /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.ndump    0x0000000000000000       0x6c /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.__assert_fail
+                0x0000000000000000       0x10 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.sunxi_gpio_set_cfgbank
+                0x0000000000000000       0x22 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.sunxi_gpio_set_cfgpin
+                0x0000000000000000       0x2c /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.sunxi_gpio_get_cfgbank
+                0x0000000000000000       0x16 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.sunxi_gpio_get_cfgpin
+                0x0000000000000000       0x20 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.sunxi_gpio_set_drv
+                0x0000000000000000       0x50 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.sunxi_gpio_set_pull
+                0x0000000000000000       0x50 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.rtc_write_data
+                0x0000000000000000        0xc /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.rtc_set_fel_flag
+                0x0000000000000000       0x20 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.rtc_set_hash_entry
+                0x0000000000000000       0x18 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.axp_i2c_write
+                0x0000000000000000       0x16 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.axp_i2c_read
+                0x0000000000000000       0x12 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.pmic_bus_setbits
+                0x0000000000000000       0x28 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.pmic_bus_clrbits
+                0x0000000000000000       0x2a /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.sunxi_read_gpadc_key
+                0x0000000000000000       0x20 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.get_boot_dram_update_flag
+                0x0000000000000000        0x6 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.dst_mctl_random_write
+                0x0000000000000000        0xc /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.dst_mem_compare
+                0x0000000000000000       0x1e /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.dram_udelay
+                0x0000000000000000        0x4 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.dwc_ddrphy_phyinit_E_setDfiClk
+                0x0000000000000000       0x28 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.__dram_power_save_process
+                0x0000000000000000      0x148 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.dram_power_save_process
+                0x0000000000000000        0xa /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.__dram_power_up_process
+                0x0000000000000000        0x8 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.dram_power_up_process
+                0x0000000000000000        0xa /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.mmc_switch_part
+                0x0000000000000000       0x2a /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.mmc_set_bus_width
+                0x0000000000000000        0x6 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.mmc_update_host_caps_f
+                0x0000000000000000        0x2 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.mmc_update_host_caps
+                0x0000000000000000      0x184 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.probe_power_key
+                0x0000000000000000       0x20 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.set_ddr4_2v5_voltage
+                0x0000000000000000       0x18 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.set_efuse_voltage
+                0x0000000000000000       0x18 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.axp858_probe_power_key
+                0x0000000000000000       0x40 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.axp858_set_ddr4_2v5_voltage
+                0x0000000000000000       0x14 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.axp1530_probe_power_key
+                0x0000000000000000       0x40 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.axp1530_set_efuse_voltage
+                0x0000000000000000        0xc /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text.toc1_get_image_addr
+                0x0000000000000000        0xe /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .text          0x0000000000000000        0x0 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/nboot/main/boot0_main.o
+ .data          0x0000000000000000        0x0 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/nboot/main/boot0_main.o
+ .bss           0x0000000000000000        0x0 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/nboot/main/boot0_main.o
+ .data          0x0000000000000000        0x0 /home/lodge/Allwinner-H616/brandy/brandy-2.0/tools/toolchain/gcc-linaro-7.2.1-2017.11-x86_64_arm-linux-gnueabi/bin/../lib/gcc/arm-linux-gnueabi/7.2.1/libgcc.a(_udivsi3.o)
+ .bss           0x0000000000000000        0x0 /home/lodge/Allwinner-H616/brandy/brandy-2.0/tools/toolchain/gcc-linaro-7.2.1-2017.11-x86_64_arm-linux-gnueabi/bin/../lib/gcc/arm-linux-gnueabi/7.2.1/libgcc.a(_udivsi3.o)
+ .data          0x0000000000000000        0x0 /home/lodge/Allwinner-H616/brandy/brandy-2.0/tools/toolchain/gcc-linaro-7.2.1-2017.11-x86_64_arm-linux-gnueabi/bin/../lib/gcc/arm-linux-gnueabi/7.2.1/libgcc.a(_divsi3.o)
+ .bss           0x0000000000000000        0x0 /home/lodge/Allwinner-H616/brandy/brandy-2.0/tools/toolchain/gcc-linaro-7.2.1-2017.11-x86_64_arm-linux-gnueabi/bin/../lib/gcc/arm-linux-gnueabi/7.2.1/libgcc.a(_divsi3.o)
+ .data          0x0000000000000000        0x0 /home/lodge/Allwinner-H616/brandy/brandy-2.0/tools/toolchain/gcc-linaro-7.2.1-2017.11-x86_64_arm-linux-gnueabi/bin/../lib/gcc/arm-linux-gnueabi/7.2.1/libgcc.a(_dvmd_lnx.o)
+ .bss           0x0000000000000000        0x0 /home/lodge/Allwinner-H616/brandy/brandy-2.0/tools/toolchain/gcc-linaro-7.2.1-2017.11-x86_64_arm-linux-gnueabi/bin/../lib/gcc/arm-linux-gnueabi/7.2.1/libgcc.a(_dvmd_lnx.o)
+ .text          0x0000000000000000        0x0 main/boot0_head.o
+ .data          0x0000000000000000        0x0 main/boot0_head.o
+ .bss           0x0000000000000000        0x0 main/boot0_head.o
+ .data          0x0000000000000000        0x0 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/arch/arm/cpu/armv7/boot0_entry.o
+ .bss           0x0000000000000000        0x0 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/arch/arm/cpu/armv7/boot0_entry.o
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+*default*        0x0000000000000000 0xffffffffffffffff
+
+Linker script and memory map
+
+LOAD /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+LOAD /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/nboot/main/boot0_main.o
+LOAD /home/lodge/Allwinner-H616/brandy/brandy-2.0/tools/toolchain/gcc-linaro-7.2.1-2017.11-x86_64_arm-linux-gnueabi/bin/../lib/gcc/arm-linux-gnueabi/7.2.1/libgcc.a
+                0x0000000000020000                . = 0x20000
+                0x0000000000020000                . = ALIGN (0x4)
+
+.head           0x0000000000020000     0x1300
+ main/boot0_head.o(.rodata)
+ .rodata        0x0000000000020000     0x1300 main/boot0_head.o
+                0x0000000000020000                BT0_head
+                0x0000000000021300                . = ALIGN (0x1)
+
+.text           0x0000000000021300      0xd3c
+ /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/arch/arm/cpu/armv7/boot0_entry.o(.text)
+ .text          0x0000000000021300       0x64 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/arch/arm/cpu/armv7/boot0_entry.o
+                0x0000000000021300                _start
+ *(.text)
+ .text          0x0000000000021364      0x7a0 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000021364                __v7_flush_dcache_all
+                0x0000000000021400                v7_flush_dcache_all
+                0x000000000002142c                memset0
+                0x00000000000214e4                memcpy0
+                0x0000000000021894                switch_2_secure0
+                0x000000000002189c                switch_2_nonsecure0
+                0x00000000000218a4                dst_mctl_random_write0
+                0x0000000000021938                dst_neon_init0
+                0x0000000000021958                dst_mctl_neon_cmp0
+                0x00000000000219b0                dst_mctl_neon_write0
+                0x0000000000021a30                dst_mctl_neon_write_2data0
+                0x0000000000021aac                dst_mctl_neon_copy0
+ *fill*         0x0000000000021b04        0x4 
+ .text          0x0000000000021b08      0x278 /home/lodge/Allwinner-H616/brandy/brandy-2.0/tools/toolchain/gcc-linaro-7.2.1-2017.11-x86_64_arm-linux-gnueabi/bin/../lib/gcc/arm-linux-gnueabi/7.2.1/libgcc.a(_udivsi3.o)
+                0x0000000000021b08                __udivsi3
+                0x0000000000021b08                __aeabi_uidiv
+                0x0000000000021d64                __aeabi_uidivmod
+ .text          0x0000000000021d80      0x2b0 /home/lodge/Allwinner-H616/brandy/brandy-2.0/tools/toolchain/gcc-linaro-7.2.1-2017.11-x86_64_arm-linux-gnueabi/bin/../lib/gcc/arm-linux-gnueabi/7.2.1/libgcc.a(_divsi3.o)
+                0x0000000000021d80                __aeabi_idiv
+                0x0000000000021d80                __divsi3
+                0x0000000000022014                __aeabi_idivmod
+ .text          0x0000000000022030        0xc /home/lodge/Allwinner-H616/brandy/brandy-2.0/tools/toolchain/gcc-linaro-7.2.1-2017.11-x86_64_arm-linux-gnueabi/bin/../lib/gcc/arm-linux-gnueabi/7.2.1/libgcc.a(_dvmd_lnx.o)
+                0x0000000000022030                __aeabi_ldiv0
+                0x0000000000022030                __aeabi_idiv0
+
+.glue_7         0x000000000002203c        0x0
+ .glue_7        0x000000000002203c        0x0 linker stubs
+
+.glue_7t        0x000000000002203c        0x0
+ .glue_7t       0x000000000002203c        0x0 linker stubs
+
+.vfp11_veneer   0x000000000002203c        0x0
+ .vfp11_veneer  0x000000000002203c        0x0 linker stubs
+
+.v4_bx          0x000000000002203c        0x0
+ .v4_bx         0x000000000002203c        0x0 linker stubs
+
+.text.get_sys_ticks
+                0x000000000002203c       0x14
+ .text.get_sys_ticks
+                0x000000000002203c       0x14 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x000000000002203c                get_sys_ticks
+
+.text.timer_get_us
+                0x0000000000022050       0x14
+ .text.timer_get_us
+                0x0000000000022050       0x14 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000022050                timer_get_us
+
+.text.udelay    0x0000000000022064       0x24
+ .text.udelay   0x0000000000022064       0x24 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000022064                udelay
+
+.text.mdelay    0x0000000000022088        0xa
+ .text.mdelay   0x0000000000022088        0xa /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000022088                mdelay
+
+.text.__usdelay
+                0x0000000000022092        0x4
+ .text.__usdelay
+                0x0000000000022092        0x4 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000022092                __usdelay
+
+.text.mmu_enable
+                0x0000000000022096       0x8c
+ .text.mmu_enable
+                0x0000000000022096       0x8c /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000022096                mmu_enable
+
+.text.mmu_disable
+                0x0000000000022122       0x30
+ .text.mmu_disable
+                0x0000000000022122       0x30 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000022122                mmu_disable
+
+.text.neon_enable
+                0x0000000000022152       0x1e
+ .text.neon_enable
+                0x0000000000022152       0x1e /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000022152                neon_enable
+
+.text.boot0_jmp
+                0x0000000000022170        0xc
+ .text.boot0_jmp
+                0x0000000000022170        0xc /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000022170                boot0_jmp
+
+.text.boot0_jmp_optee
+                0x000000000002217c        0xc
+ .text.boot0_jmp_optee
+                0x000000000002217c        0xc /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x000000000002217c                boot0_jmp_optee
+
+.text.boot0_jmp_monitor
+                0x0000000000022188       0x58
+ .text.boot0_jmp_monitor
+                0x0000000000022188       0x58 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000022188                boot0_jmp_monitor
+
+.text.set_cpu_down
+                0x00000000000221e0       0x44
+ .text.set_cpu_down
+                0x00000000000221e0       0x44 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+
+.text.sunxi_board_init
+                0x0000000000022224       0x78
+ .text.sunxi_board_init
+                0x0000000000022224       0x78 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000022224                sunxi_board_init
+
+.text.sunxi_board_late_init
+                0x000000000002229c        0x8
+ .text.sunxi_board_late_init
+                0x000000000002229c        0x8 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x000000000002229c                sunxi_board_late_init
+
+.text.sunxi_board_exit
+                0x00000000000222a4        0x4
+ .text.sunxi_board_exit
+                0x00000000000222a4        0x4 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x00000000000222a4                sunxi_board_exit
+
+.text.sunxi_board_pll_init
+                0x00000000000222a8      0x26c
+ .text.sunxi_board_pll_init
+                0x00000000000222a8      0x26c /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x00000000000222a8                sunxi_board_pll_init
+
+.text.sunxi_board_clock_reset
+                0x0000000000022514       0x28
+ .text.sunxi_board_clock_reset
+                0x0000000000022514       0x28 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000022514                sunxi_board_clock_reset
+
+.text.sunxi_clock_init_key
+                0x000000000002253c       0x28
+ .text.sunxi_clock_init_key
+                0x000000000002253c       0x28 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x000000000002253c                sunxi_clock_init_key
+
+.text.sunxi_clock_init_gpadc
+                0x0000000000022564        0x4
+ .text.sunxi_clock_init_gpadc
+                0x0000000000022564        0x4 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000022564                sunxi_clock_init_gpadc
+
+.text.sunxi_clock_init_uart
+                0x0000000000022568       0x30
+ .text.sunxi_clock_init_uart
+                0x0000000000022568       0x30 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000022568                sunxi_clock_init_uart
+
+.text.strcpy    0x0000000000022598       0x10
+ .text.strcpy   0x0000000000022598       0x10 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000022598                strcpy
+
+.text.strncmp   0x00000000000225a8       0x22
+ .text.strncmp  0x00000000000225a8       0x22 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x00000000000225a8                strncmp
+
+.text.strlen    0x00000000000225ca       0x10
+ .text.strlen   0x00000000000225ca       0x10 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x00000000000225ca                strlen
+
+.text.memset    0x00000000000225dc        0xc
+ .text.memset   0x00000000000225dc        0xc /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x00000000000225dc                memset
+
+.text.memcpy    0x00000000000225e8        0xc
+ .text.memcpy   0x00000000000225e8        0xc /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x00000000000225e8                memcpy
+
+.text.putc_outstr
+                0x00000000000225f4        0xa
+ .text.putc_outstr
+                0x00000000000225f4        0xa /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+
+.text.putc_normal
+                0x00000000000225fe        0x6
+ .text.putc_normal
+                0x00000000000225fe        0x6 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+
+.text.div_out   0x0000000000022604       0x32
+ .text.div_out  0x0000000000022604       0x32 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+
+.text._vprintf  0x0000000000022638      0x1e4
+ .text._vprintf
+                0x0000000000022638      0x1e4 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+
+.text.sprintf   0x000000000002281c       0x2c
+ .text.sprintf  0x000000000002281c       0x2c /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x000000000002281c                sprintf
+
+.text.printf    0x0000000000022848       0x54
+ .text.printf   0x0000000000022848       0x54 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000022848                printf
+
+.text.verify_addsum
+                0x000000000002289c       0x60
+ .text.verify_addsum
+                0x000000000002289c       0x60 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x000000000002289c                verify_addsum
+
+.text.get_uart_input
+                0x00000000000228fc       0x24
+ .text.get_uart_input
+                0x00000000000228fc       0x24 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x00000000000228fc                get_uart_input
+
+.text.set_uboot_func_mask
+                0x0000000000022920       0x10
+ .text.set_uboot_func_mask
+                0x0000000000022920       0x10 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000022920                set_uboot_func_mask
+
+.text.get_uboot_func_mask
+                0x0000000000022930        0xc
+ .text.get_uboot_func_mask
+                0x0000000000022930        0xc /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000022930                get_uboot_func_mask
+
+.text.raise     0x000000000002293c        0x4
+ .text.raise    0x000000000002293c        0x4 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x000000000002293c                raise
+
+.text.free      0x0000000000022940       0x20
+ .text.free     0x0000000000022940       0x20 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000022940                free
+
+.text.sunxi_serial_init
+                0x0000000000022960       0x48
+ .text.sunxi_serial_init
+                0x0000000000022960       0x48 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000022960                sunxi_serial_init
+
+.text.sunxi_serial_putc
+                0x00000000000229a8       0x14
+ .text.sunxi_serial_putc
+                0x00000000000229a8       0x14 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x00000000000229a8                sunxi_serial_putc
+
+.text.sunxi_serial_getc
+                0x00000000000229bc       0x14
+ .text.sunxi_serial_getc
+                0x00000000000229bc       0x14 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x00000000000229bc                sunxi_serial_getc
+
+.text.sunxi_serial_tstc
+                0x00000000000229d0       0x10
+ .text.sunxi_serial_tstc
+                0x00000000000229d0       0x10 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x00000000000229d0                sunxi_serial_tstc
+
+.text.boot_set_gpio
+                0x00000000000229e0      0x288
+ .text.boot_set_gpio
+                0x00000000000229e0      0x288 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x00000000000229e0                boot_set_gpio
+
+.text.rtc_read_data
+                0x0000000000022c68        0xc
+ .text.rtc_read_data
+                0x0000000000022c68        0xc /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000022c68                rtc_read_data
+
+.text.rtc_probe_fel_flag
+                0x0000000000022c74       0x74
+ .text.rtc_probe_fel_flag
+                0x0000000000022c74       0x74 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000022c74                rtc_probe_fel_flag
+
+.text.rtc_clear_fel_flag
+                0x0000000000022ce8       0x1c
+ .text.rtc_clear_fel_flag
+                0x0000000000022ce8       0x1c /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000022ce8                rtc_clear_fel_flag
+
+.text.i2c_sendbyteaddr
+                0x0000000000022d04       0x38
+ .text.i2c_sendbyteaddr
+                0x0000000000022d04       0x38 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+
+.text.i2c_sendstart
+                0x0000000000022d3c       0x40
+ .text.i2c_sendstart
+                0x0000000000022d3c       0x40 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+
+.text.i2c_sendslaveaddr
+                0x0000000000022d7c       0x4c
+ .text.i2c_sendslaveaddr
+                0x0000000000022d7c       0x4c /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+
+.text.i2c_stop  0x0000000000022dc8       0x4c
+ .text.i2c_stop
+                0x0000000000022dc8       0x4c /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+
+.text.i2c_read  0x0000000000022e14      0x148
+ .text.i2c_read
+                0x0000000000022e14      0x148 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000022e14                i2c_read
+
+.text.i2c_write
+                0x0000000000022f5c       0x9c
+ .text.i2c_write
+                0x0000000000022f5c       0x9c /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000022f5c                i2c_write
+
+.text.set_cpus_i2c_clock
+                0x0000000000022ff8       0x8c
+ .text.set_cpus_i2c_clock
+                0x0000000000022ff8       0x8c /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000022ff8                set_cpus_i2c_clock
+
+.text.i2c_set_clock
+                0x0000000000023084       0xb4
+ .text.i2c_set_clock
+                0x0000000000023084       0xb4 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000023084                i2c_set_clock
+
+.text.i2c_init_cpus
+                0x0000000000023138       0x28
+ .text.i2c_init_cpus
+                0x0000000000023138       0x28 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000023138                i2c_init_cpus
+
+.text.pmic_bus_init
+                0x0000000000023160        0xa
+ .text.pmic_bus_init
+                0x0000000000023160        0xa /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000023160                pmic_bus_init
+
+.text.pmic_bus_read
+                0x000000000002316a       0x14
+ .text.pmic_bus_read
+                0x000000000002316a       0x14 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x000000000002316a                pmic_bus_read
+
+.text.pmic_bus_write
+                0x000000000002317e       0x18
+ .text.pmic_bus_write
+                0x000000000002317e       0x18 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x000000000002317e                pmic_bus_write
+
+.text.super_standby_mode
+                0x0000000000023198       0x10
+ .text.super_standby_mode
+                0x0000000000023198       0x10 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000023198                super_standby_mode
+
+.text.handler_super_standby
+                0x00000000000231a8       0xee
+ .text.handler_super_standby
+                0x00000000000231a8       0xee /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x00000000000231a8                handler_super_standby
+
+.text.sunxi_gpadc_init
+                0x0000000000023298       0x40
+ .text.sunxi_gpadc_init
+                0x0000000000023298       0x40 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000023298                sunxi_gpadc_init
+
+.text.sunxi_read_gpadc
+                0x00000000000232d8       0x3c
+ .text.sunxi_read_gpadc
+                0x00000000000232d8       0x3c /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x00000000000232d8                sunxi_read_gpadc
+
+.text.sunxi_read_gpadc_vol
+                0x0000000000023314       0x74
+ .text.sunxi_read_gpadc_vol
+                0x0000000000023314       0x74 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000023314                sunxi_read_gpadc_vol
+
+.text.sunxi_dram_handle
+                0x0000000000023388      0x1b0
+ .text.sunxi_dram_handle
+                0x0000000000023388      0x1b0 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000023388                sunxi_dram_handle
+
+.text.crc_16    0x0000000000023538       0x22
+ .text.crc_16   0x0000000000023538       0x22 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000023538                crc_16
+
+.text.disturb_coding
+                0x000000000002355a       0x12
+ .text.disturb_coding
+                0x000000000002355a       0x12 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x000000000002355a                disturb_coding
+
+.text.id_judge_fun
+                0x000000000002356c       0x88
+ .text.id_judge_fun
+                0x000000000002356c       0x88 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x000000000002356c                id_judge_fun
+
+.text.switch_2_secure
+                0x00000000000235f4        0xc
+ .text.switch_2_secure
+                0x00000000000235f4        0xc /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x00000000000235f4                switch_2_secure
+
+.text.switch_2_nonsecure
+                0x0000000000023600        0xc
+ .text.switch_2_nonsecure
+                0x0000000000023600        0xc /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000023600                switch_2_nonsecure
+
+.text.dst_neon_init
+                0x000000000002360c        0xc
+ .text.dst_neon_init
+                0x000000000002360c        0xc /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x000000000002360c                dst_neon_init
+
+.text.dst_mctl_neon_cmp
+                0x0000000000023618        0xc
+ .text.dst_mctl_neon_cmp
+                0x0000000000023618        0xc /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000023618                dst_mctl_neon_cmp
+
+.text.dst_mctl_neon_write
+                0x0000000000023624        0xc
+ .text.dst_mctl_neon_write
+                0x0000000000023624        0xc /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000023624                dst_mctl_neon_write
+
+.text.dst_mctl_neon_write_2data
+                0x0000000000023630        0xc
+ .text.dst_mctl_neon_write_2data
+                0x0000000000023630        0xc /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000023630                dst_mctl_neon_write_2data
+
+.text.dst_mctl_neon_copy
+                0x000000000002363c        0xc
+ .text.dst_mctl_neon_copy
+                0x000000000002363c        0xc /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x000000000002363c                dst_mctl_neon_copy
+
+.text.dst_mem_cmp
+                0x0000000000023648       0x22
+ .text.dst_mem_cmp
+                0x0000000000023648       0x22 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000023648                dst_mem_cmp
+
+.text.dramc_memtester_dma_test
+                0x000000000002366c      0x18c
+ .text.dramc_memtester_dma_test
+                0x000000000002366c      0x18c /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x000000000002366c                dramc_memtester_dma_test
+
+.text.dst_read_cmp
+                0x00000000000237f8       0x50
+ .text.dst_read_cmp
+                0x00000000000237f8       0x50 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x00000000000237f8                dst_read_cmp
+
+.text.dst_dq_eye_scan
+                0x0000000000023848      0xebc
+ .text.dst_dq_eye_scan
+                0x0000000000023848      0xebc /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000023848                dst_dq_eye_scan
+
+.text.dst_from_none
+                0x0000000000024704       0xf0
+ .text.dst_from_none
+                0x0000000000024704       0xf0 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000024704                dst_from_none
+
+.text.auto_cal_timing
+                0x00000000000247f4       0x24
+ .text.auto_cal_timing
+                0x00000000000247f4       0x24 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x00000000000247f4                auto_cal_timing
+
+.text.dramc_simple_wr_test
+                0x0000000000024818       0x8c
+ .text.dramc_simple_wr_test
+                0x0000000000024818       0x8c /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000024818                dramc_simple_wr_test
+
+.text.DRAMC_get_dram_size
+                0x00000000000248a4       0x4c
+ .text.DRAMC_get_dram_size
+                0x00000000000248a4       0x4c /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x00000000000248a4                DRAMC_get_dram_size
+
+.text.set_master_priority
+                0x00000000000248f0      0x128
+ .text.set_master_priority
+                0x00000000000248f0      0x128 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x00000000000248f0                set_master_priority
+
+.text.Wait_time_config
+                0x0000000000024a18       0x14
+ .text.Wait_time_config
+                0x0000000000024a18       0x14 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000024a18                Wait_time_config
+
+.text.dram_vol_set
+                0x0000000000024a2c       0x70
+ .text.dram_vol_set
+                0x0000000000024a2c       0x70 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000024a2c                dram_vol_set
+
+.text.ccm_set_pll_ddr0_sscg
+                0x0000000000024a9c       0x5c
+ .text.ccm_set_pll_ddr0_sscg
+                0x0000000000024a9c       0x5c /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000024a9c                ccm_set_pll_ddr0_sscg
+
+.text._ccm_set_pll_ddr_clk
+                0x0000000000024af8       0x44
+ .text._ccm_set_pll_ddr_clk
+                0x0000000000024af8       0x44 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000024af8                _ccm_set_pll_ddr_clk
+
+.text.mctl_dfi_init
+                0x0000000000024b3c      0x2e8
+ .text.mctl_dfi_init
+                0x0000000000024b3c      0x2e8 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000024b3c                mctl_dfi_init
+
+.text.mctl_phy_vref_config
+                0x0000000000024e24       0x48
+ .text.mctl_phy_vref_config
+                0x0000000000024e24       0x48 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000024e24                mctl_phy_vref_config
+
+.text.mctl_drive_odt_config
+                0x0000000000024e6c      0x148
+ .text.mctl_drive_odt_config
+                0x0000000000024e6c      0x148 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000024e6c                mctl_drive_odt_config
+
+.text.mctl_phy_ca_bit_delay_compensation
+                0x0000000000024fb4      0x188
+ .text.mctl_phy_ca_bit_delay_compensation
+                0x0000000000024fb4      0x188 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000024fb4                mctl_phy_ca_bit_delay_compensation
+
+.text.mctl_phy_dx_bit_delay_compensation
+                0x000000000002513c      0x3c4
+ .text.mctl_phy_dx_bit_delay_compensation
+                0x000000000002513c      0x3c4 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x000000000002513c                mctl_phy_dx_bit_delay_compensation
+
+.text.mctl_phy_set_address_remapping
+                0x0000000000025500      0x21c
+ .text.mctl_phy_set_address_remapping
+                0x0000000000025500      0x21c /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000025500                mctl_phy_set_address_remapping
+
+.text.mctl_phy_cold_reset
+                0x000000000002571c       0x2c
+ .text.mctl_phy_cold_reset
+                0x000000000002571c       0x2c /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x000000000002571c                mctl_phy_cold_reset
+
+.text.phy_para_config
+                0x0000000000025748      0x198
+ .text.phy_para_config
+                0x0000000000025748      0x198 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000025748                phy_para_config
+
+.text.phy_write_leveling
+                0x00000000000258e0      0x118
+ .text.phy_write_leveling
+                0x00000000000258e0      0x118 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x00000000000258e0                phy_write_leveling
+
+.text.phy_read_calibration
+                0x00000000000259f8      0x144
+ .text.phy_read_calibration
+                0x00000000000259f8      0x144 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x00000000000259f8                phy_read_calibration
+
+.text.phy_read_training
+                0x0000000000025b3c      0x374
+ .text.phy_read_training
+                0x0000000000025b3c      0x374 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000025b3c                phy_read_training
+
+.text.phy_write_training
+                0x0000000000025eb0      0x334
+ .text.phy_write_training
+                0x0000000000025eb0      0x334 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000025eb0                phy_write_training
+
+.text.phy_zq_calibration
+                0x00000000000261e4      0x190
+ .text.phy_zq_calibration
+                0x00000000000261e4      0x190 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x00000000000261e4                phy_zq_calibration
+
+.text.mctl_com_set_controller_refresh
+                0x0000000000026374       0x14
+ .text.mctl_com_set_controller_refresh
+                0x0000000000026374       0x14 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000026374                mctl_com_set_controller_refresh
+
+.text.mctl_com_set_controller_after_phy
+                0x0000000000026388       0x4c
+ .text.mctl_com_set_controller_after_phy
+                0x0000000000026388       0x4c /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000026388                mctl_com_set_controller_after_phy
+
+.text.mctl_com_set_controller_before_phy
+                0x00000000000263d4       0x44
+ .text.mctl_com_set_controller_before_phy
+                0x00000000000263d4       0x44 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x00000000000263d4                mctl_com_set_controller_before_phy
+
+.text.mctl_com_set_controller_dbi
+                0x0000000000026418       0x18
+ .text.mctl_com_set_controller_dbi
+                0x0000000000026418       0x18 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000026418                mctl_com_set_controller_dbi
+
+.text.mctl_com_set_controller_update
+                0x0000000000026430       0x40
+ .text.mctl_com_set_controller_update
+                0x0000000000026430       0x40 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000026430                mctl_com_set_controller_update
+
+.text.mctl_com_set_channel_timing
+                0x0000000000026470      0x928
+ .text.mctl_com_set_channel_timing
+                0x0000000000026470      0x928 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000026470                mctl_com_set_channel_timing
+
+.text.mctl_com_set_controller_address_map
+                0x0000000000026d98      0x1dc
+ .text.mctl_com_set_controller_address_map
+                0x0000000000026d98      0x1dc /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000026d98                mctl_com_set_controller_address_map
+
+.text.mctl_com_set_controller_odt
+                0x0000000000026f74       0x9c
+ .text.mctl_com_set_controller_odt
+                0x0000000000026f74       0x9c /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000026f74                mctl_com_set_controller_odt
+
+.text.mctl_com_set_controller_2T_mode
+                0x0000000000027010       0x20
+ .text.mctl_com_set_controller_2T_mode
+                0x0000000000027010       0x20 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000027010                mctl_com_set_controller_2T_mode
+
+.text.mctl_com_set_controller_geardown_mode
+                0x0000000000027030       0x14
+ .text.mctl_com_set_controller_geardown_mode
+                0x0000000000027030       0x14 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000027030                mctl_com_set_controller_geardown_mode
+
+.text.mctl_com_set_controller_config
+                0x0000000000027044       0x44
+ .text.mctl_com_set_controller_config
+                0x0000000000027044       0x44 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000027044                mctl_com_set_controller_config
+
+.text.mctl_com_init
+                0x0000000000027088       0x60
+ .text.mctl_com_init
+                0x0000000000027088       0x60 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000027088                mctl_com_init
+
+.text.mctl_com_set_bus_config
+                0x00000000000270e8       0x24
+ .text.mctl_com_set_bus_config
+                0x00000000000270e8       0x24 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x00000000000270e8                mctl_com_set_bus_config
+
+.text.mctl_sys_init
+                0x000000000002710c       0xec
+ .text.mctl_sys_init
+                0x000000000002710c       0xec /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x000000000002710c                mctl_sys_init
+
+.text.mctl_core_init
+                0x00000000000271f8       0x1c
+ .text.mctl_core_init
+                0x00000000000271f8       0x1c /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x00000000000271f8                mctl_core_init
+
+.text.auto_scan_dram_size
+                0x0000000000027214      0x1a8
+ .text.auto_scan_dram_size
+                0x0000000000027214      0x1a8 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000027214                auto_scan_dram_size
+
+.text.auto_scan_dram_rank_width
+                0x00000000000273bc       0x98
+ .text.auto_scan_dram_rank_width
+                0x00000000000273bc       0x98 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x00000000000273bc                auto_scan_dram_rank_width
+
+.text.auto_scan_dram_config
+                0x0000000000027454       0xd4
+ .text.auto_scan_dram_config
+                0x0000000000027454       0xd4 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000027454                auto_scan_dram_config
+
+.text.ddrphy_phyinit_C_initPhyConfig
+                0x0000000000027528      0x198
+ .text.ddrphy_phyinit_C_initPhyConfig
+                0x0000000000027528      0x198 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000027528                ddrphy_phyinit_C_initPhyConfig
+
+.text.mctl_phy_init
+                0x00000000000276c0       0x12
+ .text.mctl_phy_init
+                0x00000000000276c0       0x12 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x00000000000276c0                mctl_phy_init
+
+.text.mctl_channel_init
+                0x00000000000276d4       0x50
+ .text.mctl_channel_init
+                0x00000000000276d4       0x50 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x00000000000276d4                mctl_channel_init
+
+.text.init_DRAM
+                0x0000000000027724      0x240
+ .text.init_DRAM
+                0x0000000000027724      0x240 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000027724                init_DRAM
+
+.text.crc_16_sd
+                0x0000000000027964       0x22
+ .text.crc_16_sd
+                0x0000000000027964       0x22 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000027964                crc_16_sd
+
+.text.disturb_coding_sd
+                0x0000000000027986       0x12
+ .text.disturb_coding_sd
+                0x0000000000027986       0x12 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000027986                disturb_coding_sd
+
+.text.bond_id_check
+                0x0000000000027998       0x46
+ .text.bond_id_check
+                0x0000000000027998       0x46 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000027998                bond_id_check
+
+.text.dumphex32.constprop.12
+                0x00000000000279e0       0x48
+ .text.dumphex32.constprop.12
+                0x00000000000279e0       0x48 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+
+.text.mmc_send_cmd
+                0x0000000000027a28      0x574
+ .text.mmc_send_cmd
+                0x0000000000027a28      0x574 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000027a28                mmc_send_cmd
+
+.text.mmc_send_status
+                0x0000000000027f9c       0x84
+ .text.mmc_send_status
+                0x0000000000027f9c       0x84 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000027f9c                mmc_send_status
+
+.text.mmc_set_blocklen
+                0x0000000000028020       0x2e
+ .text.mmc_set_blocklen
+                0x0000000000028020       0x2e /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000028020                mmc_set_blocklen
+
+.text.mmc_send_manual_stop
+                0x0000000000028050       0x30
+ .text.mmc_send_manual_stop
+                0x0000000000028050       0x30 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000028050                mmc_send_manual_stop
+
+.text.find_mmc_device
+                0x0000000000028080       0x20
+ .text.find_mmc_device
+                0x0000000000028080       0x20 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000028080                find_mmc_device
+
+.text.mmc_read_blocks
+                0x00000000000280a0       0x8c
+ .text.mmc_read_blocks
+                0x00000000000280a0       0x8c /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x00000000000280a0                mmc_read_blocks
+
+.text.mmc_go_idle
+                0x000000000002812c       0x3c
+ .text.mmc_go_idle
+                0x000000000002812c       0x3c /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x000000000002812c                mmc_go_idle
+
+.text.sd_send_op_cond
+                0x0000000000028168       0xfc
+ .text.sd_send_op_cond
+                0x0000000000028168       0xfc /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000028168                sd_send_op_cond
+
+.text.mmc_send_op_cond
+                0x0000000000028264       0xf0
+ .text.mmc_send_op_cond
+                0x0000000000028264       0xf0 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000028264                mmc_send_op_cond
+
+.text.mmc_send_ext_csd
+                0x0000000000028354       0x40
+ .text.mmc_send_ext_csd
+                0x0000000000028354       0x40 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000028354                mmc_send_ext_csd
+
+.text.mmc_update_phase
+                0x0000000000028394       0x1c
+ .text.mmc_update_phase
+                0x0000000000028394       0x1c /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000028394                mmc_update_phase
+
+.text.mmc_switch
+                0x00000000000283b0       0x58
+ .text.mmc_switch
+                0x00000000000283b0       0x58 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x00000000000283b0                mmc_switch
+
+.text.mmc_switch_to_ds
+                0x0000000000028408       0x54
+ .text.mmc_switch_to_ds
+                0x0000000000028408       0x54 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000028408                mmc_switch_to_ds
+
+.text.mmc_switch_to_hs
+                0x000000000002845c       0x5c
+ .text.mmc_switch_to_hs
+                0x000000000002845c       0x5c /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x000000000002845c                mmc_switch_to_hs
+
+.text.mmc_switch_to_hs200
+                0x00000000000284b8       0x5c
+ .text.mmc_switch_to_hs200
+                0x00000000000284b8       0x5c /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x00000000000284b8                mmc_switch_to_hs200
+
+.text.mmc_switch_to_hs400
+                0x0000000000028514       0x5c
+ .text.mmc_switch_to_hs400
+                0x0000000000028514       0x5c /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000028514                mmc_switch_to_hs400
+
+.text.mmc_switch_speed_mode
+                0x0000000000028570       0x4c
+ .text.mmc_switch_speed_mode
+                0x0000000000028570       0x4c /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000028570                mmc_switch_speed_mode
+
+.text.sd_switch
+                0x00000000000285bc       0x44
+ .text.sd_switch
+                0x00000000000285bc       0x44 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x00000000000285bc                sd_switch
+
+.text.sd_change_freq
+                0x0000000000028600      0x14c
+ .text.sd_change_freq
+                0x0000000000028600      0x14c /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000028600                sd_change_freq
+
+.text.mmc_set_ios
+                0x000000000002874c      0x4e4
+ .text.mmc_set_ios
+                0x000000000002874c      0x4e4 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x000000000002874c                mmc_set_ios
+
+.text.mmc_switch_bus_width
+                0x0000000000028c30       0xcc
+ .text.mmc_switch_bus_width
+                0x0000000000028c30       0xcc /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000028c30                mmc_switch_bus_width
+
+.text.mmc_switch_bus_mode
+                0x0000000000028cfc       0x50
+ .text.mmc_switch_bus_mode
+                0x0000000000028cfc       0x50 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000028cfc                mmc_switch_bus_mode
+
+.text.mmc_change_freq.part.10
+                0x0000000000028d4c      0x1b8
+ .text.mmc_change_freq.part.10
+                0x0000000000028d4c      0x1b8 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+
+.text.mmc_change_freq
+                0x0000000000028f04       0x20
+ .text.mmc_change_freq
+                0x0000000000028f04       0x20 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000028f04                mmc_change_freq
+
+.text.mmc_set_clock
+                0x0000000000028f24       0x16
+ .text.mmc_set_clock
+                0x0000000000028f24       0x16 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000028f24                mmc_set_clock
+
+.text.mmc_read_info
+                0x0000000000028f3c       0xe4
+ .text.mmc_read_info
+                0x0000000000028f3c       0xe4 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000028f3c                mmc_read_info
+
+.text.mmc_startup
+                0x0000000000029020      0x544
+ .text.mmc_startup
+                0x0000000000029020      0x544 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000029020                mmc_startup
+
+.text.mmc_send_if_cond
+                0x0000000000029564       0x5c
+ .text.mmc_send_if_cond
+                0x0000000000029564       0x5c /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000029564                mmc_send_if_cond
+
+.text.mmc_init  0x00000000000295c0      0x18c
+ .text.mmc_init
+                0x00000000000295c0      0x18c /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x00000000000295c0                mmc_init
+
+.text.mmc_bread
+                0x000000000002974c      0x148
+ .text.mmc_bread
+                0x000000000002974c      0x148 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x000000000002974c                mmc_bread
+
+.text.mmc_register
+                0x0000000000029894       0x20
+ .text.mmc_register
+                0x0000000000029894       0x20 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000029894                mmc_register
+
+.text.mmc_unregister
+                0x00000000000298b4       0x10
+ .text.mmc_unregister
+                0x00000000000298b4       0x10 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x00000000000298b4                mmc_unregister
+
+.text._get_pll_periph0
+                0x00000000000298c4       0x2c
+ .text._get_pll_periph0
+                0x00000000000298c4       0x2c /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+
+.text.mmc_core_init
+                0x00000000000298f0       0xe8
+ .text.mmc_core_init
+                0x00000000000298f0       0xe8 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+
+.text.mmc_clk_io_onoff
+                0x00000000000299d8       0xb0
+ .text.mmc_clk_io_onoff
+                0x00000000000299d8       0xb0 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+
+.text.mmc_ddr_mode_onoff.isra.0
+                0x0000000000029a88       0x2e
+ .text.mmc_ddr_mode_onoff.isra.0
+                0x0000000000029a88       0x2e /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+
+.text.mmc_get_mclk.isra.4
+                0x0000000000029ab8       0x50
+ .text.mmc_get_mclk.isra.4
+                0x0000000000029ab8       0x50 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+
+.text.mmc_update_clk.isra.5
+                0x0000000000029b08       0x68
+ .text.mmc_update_clk.isra.5
+                0x0000000000029b08       0x68 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+
+.text.mmc_get_timing_cfg
+                0x0000000000029b70      0x19c
+ .text.mmc_get_timing_cfg
+                0x0000000000029b70      0x19c /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+
+.text.set_mmc_para
+                0x0000000000029d0c       0x40
+ .text.set_mmc_para
+                0x0000000000029d0c       0x40 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000029d0c                set_mmc_para
+
+.text.mmc_update_host_caps_r
+                0x0000000000029d4c      0x108
+ .text.mmc_update_host_caps_r
+                0x0000000000029d4c      0x108 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000029d4c                mmc_update_host_caps_r
+
+.text.sunxi_mmc_init
+                0x0000000000029e54      0x180
+ .text.sunxi_mmc_init
+                0x0000000000029e54      0x180 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000029e54                sunxi_mmc_init
+
+.text.sunxi_mmc_exit
+                0x0000000000029fd4       0x3c
+ .text.sunxi_mmc_exit
+                0x0000000000029fd4       0x3c /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x0000000000029fd4                sunxi_mmc_exit
+
+.text.set_ddr_voltage
+                0x000000000002a010       0x28
+ .text.set_ddr_voltage
+                0x000000000002a010       0x28 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x000000000002a010                set_ddr_voltage
+
+.text.set_sys_voltage
+                0x000000000002a038       0x24
+ .text.set_sys_voltage
+                0x000000000002a038       0x24 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x000000000002a038                set_sys_voltage
+
+.text.set_pll_voltage
+                0x000000000002a05c       0x28
+ .text.set_pll_voltage
+                0x000000000002a05c       0x28 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x000000000002a05c                set_pll_voltage
+
+.text.axp_init  0x000000000002a084       0x30
+ .text.axp_init
+                0x000000000002a084       0x30 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x000000000002a084                axp_init
+
+.text.get_power_mode
+                0x000000000002a0b4        0xc
+ .text.get_power_mode
+                0x000000000002a0b4        0xc /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x000000000002a0b4                get_power_mode
+
+.text.pmu_set_vol.isra.0.part.1
+                0x000000000002a0c0      0x1b8
+ .text.pmu_set_vol.isra.0.part.1
+                0x000000000002a0c0      0x1b8 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+
+.text.axp858_set_ddr_voltage
+                0x000000000002a278       0x14
+ .text.axp858_set_ddr_voltage
+                0x000000000002a278       0x14 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x000000000002a278                axp858_set_ddr_voltage
+
+.text.axp858_set_pll_voltage
+                0x000000000002a28c       0x14
+ .text.axp858_set_pll_voltage
+                0x000000000002a28c       0x14 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x000000000002a28c                axp858_set_pll_voltage
+
+.text.axp858_axp_init
+                0x000000000002a2a0       0x60
+ .text.axp858_axp_init
+                0x000000000002a2a0       0x60 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x000000000002a2a0                axp858_axp_init
+
+.text.get_ctrl_info_from_tbl
+                0x000000000002a300       0x38
+ .text.get_ctrl_info_from_tbl
+                0x000000000002a300       0x38 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+
+.text.pmu_set_vol.isra.0
+                0x000000000002a338      0x100
+ .text.pmu_set_vol.isra.0
+                0x000000000002a338      0x100 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+
+.text.axp1530_set_ddr_voltage
+                0x000000000002a438      0x10c
+ .text.axp1530_set_ddr_voltage
+                0x000000000002a438      0x10c /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x000000000002a438                axp1530_set_ddr_voltage
+
+.text.axp1530_set_pll_voltage
+                0x000000000002a544        0xc
+ .text.axp1530_set_pll_voltage
+                0x000000000002a544        0xc /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x000000000002a544                axp1530_set_pll_voltage
+
+.text.axp1530_set_sys_voltage
+                0x000000000002a550        0xc
+ .text.axp1530_set_sys_voltage
+                0x000000000002a550        0xc /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x000000000002a550                axp1530_set_sys_voltage
+
+.text.axp1530_axp_init
+                0x000000000002a55c       0xac
+ .text.axp1530_axp_init
+                0x000000000002a55c       0xac /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x000000000002a55c                axp1530_axp_init
+
+.text.axp806_set_ddr_voltage
+                0x000000000002a608       0x14
+ .text.axp806_set_ddr_voltage
+                0x000000000002a608       0x14 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x000000000002a608                axp806_set_ddr_voltage
+
+.text.axp806_set_pll_voltage
+                0x000000000002a61c       0x14
+ .text.axp806_set_pll_voltage
+                0x000000000002a61c       0x14 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x000000000002a61c                axp806_set_pll_voltage
+
+.text.axp806_set_sys_voltage
+                0x000000000002a630       0x14
+ .text.axp806_set_sys_voltage
+                0x000000000002a630       0x14 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x000000000002a630                axp806_set_sys_voltage
+
+.text.axp806_axp_init
+                0x000000000002a644       0x80
+ .text.axp806_axp_init
+                0x000000000002a644       0x80 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x000000000002a644                axp806_axp_init
+
+.text.get_card_num
+                0x000000000002a6c4       0x18
+ .text.get_card_num
+                0x000000000002a6c4       0x18 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x000000000002a6c4                get_card_num
+
+.text.update_flash_para
+                0x000000000002a6dc       0x34
+ .text.update_flash_para
+                0x000000000002a6dc       0x34 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x000000000002a6dc                update_flash_para
+
+.text.load_toc1_from_sdmmc
+                0x000000000002a710      0x12c
+ .text.load_toc1_from_sdmmc
+                0x000000000002a710      0x12c /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x000000000002a710                load_toc1_from_sdmmc
+
+.text.load_package
+                0x000000000002a83c        0xc
+ .text.load_package
+                0x000000000002a83c        0xc /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x000000000002a83c                load_package
+
+.text.toc1_flash_read
+                0x000000000002a848       0x1c
+ .text.toc1_flash_read
+                0x000000000002a848       0x1c /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x000000000002a848                toc1_flash_read
+
+.text.load_image
+                0x000000000002a864      0x1a8
+ .text.load_image
+                0x000000000002a864      0x1a8 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x000000000002a864                load_image
+
+.iplt           0x000000000002aa0c        0x0
+ .iplt          0x000000000002aa0c        0x0 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+
+.text.startup.main
+                0x000000000002aa0c      0x130
+ .text.startup.main
+                0x000000000002aa0c      0x130 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/nboot/main/boot0_main.o
+                0x000000000002aa0c                main
+                0x000000000002ab40                . = ALIGN (0x10)
+
+.rodata         0x000000000002ab40      0x5e8
+ *(.rodata)
+ .rodata        0x000000000002ab40      0x5e8 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x000000000002ab40                _ctype
+
+.rodata.str1.1  0x000000000002b128     0x22ef
+ .rodata.str1.1
+                0x000000000002b128     0x2285 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                                       0x2379 (size before relaxing)
+ .rodata.str1.1
+                0x000000000002d3ad       0x6a /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/nboot/main/boot0_main.o
+
+.rel.dyn        0x000000000002d418        0x0
+ .rel.iplt      0x000000000002d418        0x0 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x000000000002d420                . = ALIGN (0x10)
+
+.data           0x000000000002d420      0x404
+ *(.data)
+ .data          0x000000000002d420      0x404 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x000000000002d420                switch_monitor
+                0x000000000002d570                read_write_flag
+                0x000000000002d820                mmc_config_addr
+
+.igot.plt       0x000000000002d824        0x0
+ .igot.plt      0x000000000002d824        0x0 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x000000000002d824                . = ALIGN (0x4)
+
+.bss            0x000000000002d828      0x661
+                0x000000000002d828                __bss_start = .
+ *(.bss)
+ .bss           0x000000000002d828      0x661 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                0x000000000002d870                half_dram_size
+                0x000000000002d874                DMA1_INFOR_EYETRAINING
+                0x000000000002d88c                DMA0_INFOR_EYETRAINING
+                0x000000000002d8a4                training_error_flag
+                0x000000000002d8b4                mmc_arg_addr
+                0x000000000002dab8                mmc_host
+                0x000000000002db58                mmc_dev
+                0x000000000002de8c                . = ALIGN (0x4)
+                0x000000000002de8c                __bss_end = .
+                0x000000000002de8c                _end = .
+                0x0000000000000001                ASSERT ((. <= 0x30000), boot0 image has exceeded its limit.)
+OUTPUT(boot0_sdcard.elf elf32-littlearm)
+
+.comment        0x0000000000000000       0x2d
+ .comment       0x0000000000000000       0x2d /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+                                        0x5ee (size before relaxing)
+ .comment       0x000000000000002d       0x2e /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/nboot/main/boot0_main.o
+ .comment       0x000000000000002d       0x2e main/boot0_head.o
+
+.note.GNU-stack
+                0x0000000000000000        0x0
+ .note.GNU-stack
+                0x0000000000000000        0x0 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .note.GNU-stack
+                0x0000000000000000        0x0 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/nboot/main/boot0_main.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 /home/lodge/Allwinner-H616/brandy/brandy-2.0/tools/toolchain/gcc-linaro-7.2.1-2017.11-x86_64_arm-linux-gnueabi/bin/../lib/gcc/arm-linux-gnueabi/7.2.1/libgcc.a(_udivsi3.o)
+ .note.GNU-stack
+                0x0000000000000000        0x0 /home/lodge/Allwinner-H616/brandy/brandy-2.0/tools/toolchain/gcc-linaro-7.2.1-2017.11-x86_64_arm-linux-gnueabi/bin/../lib/gcc/arm-linux-gnueabi/7.2.1/libgcc.a(_divsi3.o)
+ .note.GNU-stack
+                0x0000000000000000        0x0 /home/lodge/Allwinner-H616/brandy/brandy-2.0/tools/toolchain/gcc-linaro-7.2.1-2017.11-x86_64_arm-linux-gnueabi/bin/../lib/gcc/arm-linux-gnueabi/7.2.1/libgcc.a(_dvmd_lnx.o)
+ .note.GNU-stack
+                0x0000000000000000        0x0 main/boot0_head.o
+
+.ARM.attributes
+                0x0000000000000000       0x33
+ .ARM.attributes
+                0x0000000000000000       0x33 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/board/sun50iw9p1/libsun50iw9p1_sdcard.a
+ .ARM.attributes
+                0x0000000000000033       0x2f /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/nboot/main/boot0_main.o
+ .ARM.attributes
+                0x0000000000000062       0x1f /home/lodge/Allwinner-H616/brandy/brandy-2.0/tools/toolchain/gcc-linaro-7.2.1-2017.11-x86_64_arm-linux-gnueabi/bin/../lib/gcc/arm-linux-gnueabi/7.2.1/libgcc.a(_udivsi3.o)
+ .ARM.attributes
+                0x0000000000000081       0x1f /home/lodge/Allwinner-H616/brandy/brandy-2.0/tools/toolchain/gcc-linaro-7.2.1-2017.11-x86_64_arm-linux-gnueabi/bin/../lib/gcc/arm-linux-gnueabi/7.2.1/libgcc.a(_divsi3.o)
+ .ARM.attributes
+                0x00000000000000a0       0x1f /home/lodge/Allwinner-H616/brandy/brandy-2.0/tools/toolchain/gcc-linaro-7.2.1-2017.11-x86_64_arm-linux-gnueabi/bin/../lib/gcc/arm-linux-gnueabi/7.2.1/libgcc.a(_dvmd_lnx.o)
+ .ARM.attributes
+                0x00000000000000bf       0x33 main/boot0_head.o
+ .ARM.attributes
+                0x00000000000000f2       0x21 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/arch/arm/cpu/armv7/boot0_entry.o
+
+.debug_info     0x0000000000000000     0x190e
+ .debug_info    0x0000000000000000      0xe4d /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/nboot/main/boot0_main.o
+ .debug_info    0x0000000000000e4d      0x1cb /home/lodge/Allwinner-H616/brandy/brandy-2.0/tools/toolchain/gcc-linaro-7.2.1-2017.11-x86_64_arm-linux-gnueabi/bin/../lib/gcc/arm-linux-gnueabi/7.2.1/libgcc.a(_udivsi3.o)
+ .debug_info    0x0000000000001018      0x1cb /home/lodge/Allwinner-H616/brandy/brandy-2.0/tools/toolchain/gcc-linaro-7.2.1-2017.11-x86_64_arm-linux-gnueabi/bin/../lib/gcc/arm-linux-gnueabi/7.2.1/libgcc.a(_divsi3.o)
+ .debug_info    0x00000000000011e3      0x1cb /home/lodge/Allwinner-H616/brandy/brandy-2.0/tools/toolchain/gcc-linaro-7.2.1-2017.11-x86_64_arm-linux-gnueabi/bin/../lib/gcc/arm-linux-gnueabi/7.2.1/libgcc.a(_dvmd_lnx.o)
+ .debug_info    0x00000000000013ae      0x4e2 main/boot0_head.o
+ .debug_info    0x0000000000001890       0x7e /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/arch/arm/cpu/armv7/boot0_entry.o
+
+.debug_abbrev   0x0000000000000000      0x300
+ .debug_abbrev  0x0000000000000000      0x1fb /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/nboot/main/boot0_main.o
+ .debug_abbrev  0x00000000000001fb       0x14 /home/lodge/Allwinner-H616/brandy/brandy-2.0/tools/toolchain/gcc-linaro-7.2.1-2017.11-x86_64_arm-linux-gnueabi/bin/../lib/gcc/arm-linux-gnueabi/7.2.1/libgcc.a(_udivsi3.o)
+ .debug_abbrev  0x000000000000020f       0x14 /home/lodge/Allwinner-H616/brandy/brandy-2.0/tools/toolchain/gcc-linaro-7.2.1-2017.11-x86_64_arm-linux-gnueabi/bin/../lib/gcc/arm-linux-gnueabi/7.2.1/libgcc.a(_divsi3.o)
+ .debug_abbrev  0x0000000000000223       0x14 /home/lodge/Allwinner-H616/brandy/brandy-2.0/tools/toolchain/gcc-linaro-7.2.1-2017.11-x86_64_arm-linux-gnueabi/bin/../lib/gcc/arm-linux-gnueabi/7.2.1/libgcc.a(_dvmd_lnx.o)
+ .debug_abbrev  0x0000000000000237       0xb5 main/boot0_head.o
+ .debug_abbrev  0x00000000000002ec       0x14 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/arch/arm/cpu/armv7/boot0_entry.o
+
+.debug_loc      0x0000000000000000       0xc1
+ .debug_loc     0x0000000000000000       0xc1 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/nboot/main/boot0_main.o
+
+.debug_aranges  0x0000000000000000       0xb8
+ .debug_aranges
+                0x0000000000000000       0x20 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/nboot/main/boot0_main.o
+ .debug_aranges
+                0x0000000000000020       0x20 /home/lodge/Allwinner-H616/brandy/brandy-2.0/tools/toolchain/gcc-linaro-7.2.1-2017.11-x86_64_arm-linux-gnueabi/bin/../lib/gcc/arm-linux-gnueabi/7.2.1/libgcc.a(_udivsi3.o)
+ .debug_aranges
+                0x0000000000000040       0x20 /home/lodge/Allwinner-H616/brandy/brandy-2.0/tools/toolchain/gcc-linaro-7.2.1-2017.11-x86_64_arm-linux-gnueabi/bin/../lib/gcc/arm-linux-gnueabi/7.2.1/libgcc.a(_divsi3.o)
+ .debug_aranges
+                0x0000000000000060       0x20 /home/lodge/Allwinner-H616/brandy/brandy-2.0/tools/toolchain/gcc-linaro-7.2.1-2017.11-x86_64_arm-linux-gnueabi/bin/../lib/gcc/arm-linux-gnueabi/7.2.1/libgcc.a(_dvmd_lnx.o)
+ .debug_aranges
+                0x0000000000000080       0x18 main/boot0_head.o
+ .debug_aranges
+                0x0000000000000098       0x20 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/arch/arm/cpu/armv7/boot0_entry.o
+
+.debug_ranges   0x0000000000000000       0x28
+ .debug_ranges  0x0000000000000000       0x28 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/nboot/main/boot0_main.o
+
+.debug_line     0x0000000000000000      0x659
+ .debug_line    0x0000000000000000      0x21a /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/nboot/main/boot0_main.o
+ .debug_line    0x000000000000021a      0x108 /home/lodge/Allwinner-H616/brandy/brandy-2.0/tools/toolchain/gcc-linaro-7.2.1-2017.11-x86_64_arm-linux-gnueabi/bin/../lib/gcc/arm-linux-gnueabi/7.2.1/libgcc.a(_udivsi3.o)
+ .debug_line    0x0000000000000322      0x119 /home/lodge/Allwinner-H616/brandy/brandy-2.0/tools/toolchain/gcc-linaro-7.2.1-2017.11-x86_64_arm-linux-gnueabi/bin/../lib/gcc/arm-linux-gnueabi/7.2.1/libgcc.a(_divsi3.o)
+ .debug_line    0x000000000000043b       0xee /home/lodge/Allwinner-H616/brandy/brandy-2.0/tools/toolchain/gcc-linaro-7.2.1-2017.11-x86_64_arm-linux-gnueabi/bin/../lib/gcc/arm-linux-gnueabi/7.2.1/libgcc.a(_dvmd_lnx.o)
+ .debug_line    0x0000000000000529       0xd9 main/boot0_head.o
+ .debug_line    0x0000000000000602       0x57 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/arch/arm/cpu/armv7/boot0_entry.o
+
+.debug_str      0x0000000000000000      0x8d9
+ .debug_str     0x0000000000000000      0x8cc /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/nboot/main/boot0_main.o
+                                        0x9ce (size before relaxing)
+ .debug_str     0x00000000000008cc        0xd main/boot0_head.o
+                                        0x4b9 (size before relaxing)
+
+.debug_frame    0x0000000000000000       0xa0
+ .debug_frame   0x0000000000000000       0x38 /home/lodge/Allwinner-H616/brandy/brandy-2.0/spl-pub/nboot/main/boot0_main.o
+ .debug_frame   0x0000000000000038       0x20 /home/lodge/Allwinner-H616/brandy/brandy-2.0/tools/toolchain/gcc-linaro-7.2.1-2017.11-x86_64_arm-linux-gnueabi/bin/../lib/gcc/arm-linux-gnueabi/7.2.1/libgcc.a(_udivsi3.o)
+ .debug_frame   0x0000000000000058       0x20 /home/lodge/Allwinner-H616/brandy/brandy-2.0/tools/toolchain/gcc-linaro-7.2.1-2017.11-x86_64_arm-linux-gnueabi/bin/../lib/gcc/arm-linux-gnueabi/7.2.1/libgcc.a(_divsi3.o)
+ .debug_frame   0x0000000000000078       0x28 /home/lodge/Allwinner-H616/brandy/brandy-2.0/tools/toolchain/gcc-linaro-7.2.1-2017.11-x86_64_arm-linux-gnueabi/bin/../lib/gcc/arm-linux-gnueabi/7.2.1/libgcc.a(_dvmd_lnx.o)

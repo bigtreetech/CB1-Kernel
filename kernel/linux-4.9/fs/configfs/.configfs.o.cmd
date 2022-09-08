@@ -1,1 +1,0 @@
-cmd_fs/configfs/configfs.o := /home/lodge/Allwinner-H616/out/gcc-linaro-5.3.1-2016.05-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-ld -EL   -r -o fs/configfs/configfs.o fs/configfs/inode.o fs/configfs/file.o fs/configfs/dir.o fs/configfs/symlink.o fs/configfs/mount.o fs/configfs/item.o 

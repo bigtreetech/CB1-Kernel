@@ -17,7 +17,7 @@ size = 16384
 ;
 ;
 ;  partition 定义范例:
-;    [partition]                ;  //表示是一个分区
+;    [partition]                ; //表示是一个分区
 ;    name        = USERFS2      ; //分区名称
 ;    size        = 16384        ; //分区大小 单位: 扇区.分区表示个数最多2^31 * 512 = 2T
 ;    downloadfile = "123.fex"   ; //下载文件的路径和名称，可以使用相对路径，相对是指相对于image.cfg文件所在分区。也可以使用绝对路径
