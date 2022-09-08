@@ -26,6 +26,7 @@ toolchains/libexec/
 
 *.changes
 *.buildinfo
+*.builtin
 
 external/cache/.gpg
 external/cache/hash

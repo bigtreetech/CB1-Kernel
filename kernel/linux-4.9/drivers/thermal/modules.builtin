@@ -1,2 +1,0 @@
-kernel/drivers/thermal/thermal_sys.ko
-kernel/drivers/thermal/sunxi_thermal-ng.ko

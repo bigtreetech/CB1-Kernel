@@ -1,3 +1,0 @@
-kernel/drivers/usb/class/cdc-acm.ko
-kernel/drivers/usb/class/usblp.ko
-kernel/drivers/usb/class/cdc-wdm.ko

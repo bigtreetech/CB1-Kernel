@@ -120,8 +120,7 @@ static void disable_802_3az_ieee(struct phy_device *phydev)
 
 static int ephy_config_init(struct phy_device *phydev)
 {
-    unsigned int value;
-    //printk("==> ephy_config_init\n");
+   // printk("==> ephy_config_init\n");
 #if 1
 	/* Iint ephy */
 	phy_write(phydev, 0x1f, 0x0100);	/* Switch to Page 1 */
@@ -154,7 +153,7 @@ static int ephy_config_init(struct phy_device *phydev)
     
     msleep(500);
     
-   // printk("==> EPHY reg list:\n");
+    printk("==> EPHY reg list:\n");
     for(i=0;i<32;i++)
     {
         phy_read(phydev, i); 
@@ -163,10 +162,9 @@ static int ephy_config_init(struct phy_device *phydev)
     msleep(500);
     
     printk("==> AC300 reg list:\n");
-    for(i=0;i<0x20;i++)
+    for(i=0;i<16;i++)
     {
-        value = phy_read(ac300_ephy.ac300, i); 
-        printk("==>ac300 reg %02x = 0x%08x\n",i,value);
+        phy_read(ac300_ephy.ac300, i); 
     }  
 #endif 
 #endif

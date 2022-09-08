@@ -1,2 +1,0 @@
-kernel/net/netfilter/ipvs/ip_vs.ko
-kernel/net/netfilter/ipvs/ip_vs_rr.ko

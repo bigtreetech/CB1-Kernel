@@ -1,0 +1,42 @@
+name: Build
+
+on: [pull_request]
+
+jobs:
+  fetchKernelData:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+    - id: set-matrix
+      run: |
+        JSON=$(curl https://www.kernel.org/releases.json)
+        VERSIONSARRAY=$(echo $JSON | jq -c '[.releases[] | {version: .version, moniker: .moniker} | select(.moniker != "linux-next") | .version]')
+        echo ::set-output name=matrix::${VERSIONSARRAY}
+
+  build:
+    needs: fetchKernelData
+    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix: 
+        version: ${{fromJson(needs.fetchKernelData.outputs.matrix)}}
+        #version: [4.9.248, 4.4.248]
+    steps:
+    - name: download-Kernel
+      env: 
+        VERSION: ${{matrix.version }}
+      run: |
+        KERNEL_URL=https://kernel.ubuntu.com/~kernel-ppa/mainline/
+        KERNEL_URL_DETAILS=$(wget --quiet -O - ${KERNEL_URL}v${VERSION}/ | grep -A8 "Build for amd64\|Test amd64")
+        ALL_DEB=$(echo "$KERNEL_URL_DETAILS" |  grep -m1 'all.deb' | cut -d '"' -f 2)
+        AMD64_DEB=$(echo "$KERNEL_URL_DETAILS" | grep -m1 "amd64.deb" | cut -d '"' -f 2)
+        [  -z "$ALL_DEB" ] && exit 1
+        [  -z "$AMD64_DEB" ] && exit 2
+        wget -nv ${KERNEL_URL}v${VERSION}/$AMD64_DEB
+        wget -nv ${KERNEL_URL}v${VERSION}/$ALL_DEB
+        sudo dpkg --force-all -i *.deb
+        echo "KVER=$(echo $ALL_DEB | cut -d '_' -f 2 | rev | cut -c14- | rev)-generic" >> $GITHUB_ENV
+    - uses: actions/checkout@v2
+    - name: build
+      run: make KVER=$KVER CONFIG_PLATFORM_I386_PC=y
