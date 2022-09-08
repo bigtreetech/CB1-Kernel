@@ -1,17 +1,3 @@
-kernel/drivers/usb/gadget/function/usb_f_acm.ko
-kernel/drivers/usb/gadget/function/u_serial.ko
-kernel/drivers/usb/gadget/function/usb_f_serial.ko
-kernel/drivers/usb/gadget/function/usb_f_obex.ko
-kernel/drivers/usb/gadget/function/u_ether.ko
-kernel/drivers/usb/gadget/function/usb_f_ncm.ko
-kernel/drivers/usb/gadget/function/usb_f_ecm.ko
-kernel/drivers/usb/gadget/function/usb_f_eem.ko
-kernel/drivers/usb/gadget/function/usb_f_ecm_subset.ko
-kernel/drivers/usb/gadget/function/usb_f_rndis.ko
 kernel/drivers/usb/gadget/function/usb_f_mass_storage.ko
 kernel/drivers/usb/gadget/function/usb_f_fs.ko
-kernel/drivers/usb/gadget/function/usb_f_uvc.ko
-kernel/drivers/usb/gadget/function/usb_f_printer.ko
 kernel/drivers/usb/gadget/function/usb_f_mtp.ko
-kernel/drivers/usb/gadget/function/usb_f_ptp.ko
-kernel/drivers/usb/gadget/function/usb_f_accessory.ko

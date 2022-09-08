@@ -1,2 +1,1 @@
 kernel/drivers/gpio/gpio-generic.ko
-kernel/drivers/gpio/gpio-sunxi.ko

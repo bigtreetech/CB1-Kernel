@@ -1,6 +1,5 @@
-kernel/drivers/char/ttyprintk.ko
 kernel/drivers/char/dump_reg/dump_reg.ko
-kernel/drivers/char/hw_random/rng-core.ko
 kernel/drivers/char/sunxi-di/deinterlace.ko
+kernel/drivers/char/sunxi-scr/scr.ko
 kernel/drivers/char/sunxi-sysinfo/sysinfo.ko
 kernel/drivers/char/sunxi_g2d/g2d_sunxi.ko

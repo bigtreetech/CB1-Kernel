@@ -1,3 +1,0 @@
-kernel/drivers/video/console/fbcon.ko
-kernel/drivers/video/console/bitblit.ko
-kernel/drivers/video/console/softcursor.ko

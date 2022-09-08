@@ -1,5 +1,4 @@
 kernel/drivers/media/rc/rc-core.ko
-kernel/drivers/media/rc/lirc_dev.ko
 kernel/drivers/media/rc/ir-nec-decoder.ko
 kernel/drivers/media/rc/ir-rc5-decoder.ko
 kernel/drivers/media/rc/ir-rc6-decoder.ko
@@ -8,19 +7,7 @@ kernel/drivers/media/rc/ir-sony-decoder.ko
 kernel/drivers/media/rc/ir-sanyo-decoder.ko
 kernel/drivers/media/rc/ir-sharp-decoder.ko
 kernel/drivers/media/rc/ir-mce_kbd-decoder.ko
-kernel/drivers/media/rc/ir-lirc-codec.ko
 kernel/drivers/media/rc/ir-xmp-decoder.ko
-kernel/drivers/media/rc/ati_remote.ko
-kernel/drivers/media/rc/ir-hix5hd2.ko
-kernel/drivers/media/rc/imon.ko
-kernel/drivers/media/rc/mceusb.ko
-kernel/drivers/media/rc/redrat3.ko
-kernel/drivers/media/rc/streamzap.ko
-kernel/drivers/media/rc/rc-loopback.ko
-kernel/drivers/media/rc/gpio-ir-recv.ko
-kernel/drivers/media/rc/igorplugusb.ko
-kernel/drivers/media/rc/iguanair.ko
-kernel/drivers/media/rc/ttusbir.ko
 kernel/drivers/media/rc/sunxi-ir-rx.ko
 kernel/drivers/media/rc/keymaps/rc-adstech-dvb-t-pci.ko
 kernel/drivers/media/rc/keymaps/rc-alink-dtu-m.ko

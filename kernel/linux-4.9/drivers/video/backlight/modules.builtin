@@ -1,4 +1,0 @@
-kernel/drivers/video/backlight/lcd.ko
-kernel/drivers/video/backlight/backlight.ko
-kernel/drivers/video/backlight/generic_bl.ko
-kernel/drivers/video/backlight/gpio_backlight.ko

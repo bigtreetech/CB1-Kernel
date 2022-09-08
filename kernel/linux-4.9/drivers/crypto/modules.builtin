@@ -1,4 +1,0 @@
-kernel/drivers/crypto/ccp/ccp.ko
-kernel/drivers/crypto/ccp/ccp-crypto.ko
-kernel/drivers/crypto/sunxi-emce/sunxi_emce.ko
-kernel/drivers/crypto/sunxi-ss/ss.ko

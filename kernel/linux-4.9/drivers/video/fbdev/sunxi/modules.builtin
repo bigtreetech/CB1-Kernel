@@ -1,2 +1,3 @@
 kernel/drivers/video/fbdev/sunxi/disp2/disp/disp.ko
 kernel/drivers/video/fbdev/sunxi/disp2/hdmi2/hdmi20.ko
+kernel/drivers/video/fbdev/sunxi/disp2/tv/tv.ko
