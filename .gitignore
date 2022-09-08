@@ -20,6 +20,8 @@ out
 
 toolchain
 
+!brandy/brandy-2.0/tools/toolchain
+
 toolchains/libexec/
 
 *.changes

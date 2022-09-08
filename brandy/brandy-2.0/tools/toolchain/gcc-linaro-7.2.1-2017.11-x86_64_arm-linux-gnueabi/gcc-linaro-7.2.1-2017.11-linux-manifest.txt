@@ -1,0 +1,197 @@
+manifest_format=1.5
+
+# Note that for ABE, these parameters are not used
+# Component data for gmp
+gmp_url=http://snapshots.linaro.org/components/toolchain/infrastructure
+gmp_filespec=gmp-6.1.2.tar.xz
+gmp_md5sum=f58fa8001d60c4c77595fbbb62b63c1d
+gmp_mingw_only="no"
+gmp_configure="--enable-cxx --enable-fft"
+gmp_staticlink="yes"
+
+# Component data for mpfr
+mpfr_url=http://snapshots.linaro.org/components/toolchain/infrastructure
+mpfr_filespec=mpfr-3.1.5.tar.xz
+mpfr_md5sum=c4ac246cf9795a4491e7766002cd528f
+mpfr_mingw_only="no"
+mpfr_configure="--with-gmp=${local_builds}/destdir/${host}"
+mpfr_staticlink="yes"
+
+# Component data for mpc
+mpc_url=http://snapshots.linaro.org/components/toolchain/infrastructure/
+mpc_filespec=mpc-1.0.3.tar.gz
+mpc_md5sum=d6a1d5f8ddea3abd2cc3e98f58352d26
+mpc_mingw_only="no"
+mpc_configure="--with-gmp=${local_builds}/destdir/${host} --with-mpfr=${local_builds}/destdir/${host}"
+mpc_staticlink="yes"
+
+# Component data for linux
+linux_url=http://snapshots.linaro.org/components/toolchain/infrastructure
+linux_filespec=linux-4.10.3.tar.xz
+linux_md5sum=626292ab8b495e81efe6ee45baf6b817
+linux_mingw_only="no"
+linux_staticlink="yes"
+
+# Component data for dejagnu
+dejagnu_url=http://git.linaro.org/git/toolchain
+dejagnu_branch=linaro-local/stable
+dejagnu_revision=9c19d3d7473ef731b74f3a48fcce5a168bf701ec
+dejagnu_filespec=dejagnu.git
+dejagnu_mingw_only="no"
+dejagnu_staticlink="yes"
+
+# Component data for expat
+expat_url=http://snapshots.linaro.org/components/toolchain/infrastructure/
+expat_filespec=expat-2.1.0-1-mingw32-dev.tar.xz
+expat_md5sum=1dae54e2670882843d496692154a0e27
+expat_mingw_only="yes"
+expat_staticlink="yes"
+
+# Component data for python
+python_url=http://snapshots.linaro.org/components/toolchain/infrastructure/
+python_filespec=python-2.7.4-mingw32.tar.xz
+python_md5sum=9b3092eff5508c4802936dfe4f5225ef
+python_mingw_only="yes"
+python_staticlink="yes"
+
+# Component data for libiconv
+libiconv_url=http://snapshots.linaro.org/components/toolchain/infrastructure/
+libiconv_filespec=libiconv-1.14-3-mingw32-dev.tar.xz
+libiconv_md5sum=7ead614fa3a8bc266e70c6fcdf198219
+libiconv_mingw_only="yes"
+libiconv_staticlink="yes"
+
+# Component data for binutils
+binutils_url=http://git.linaro.org/git/toolchain
+binutils_branch=users/linaro/binutils-2_28-branch
+binutils_revision=e2bd6d4d2f35ca1ff9f7d6667f4274efa7781df3
+binutils_filespec=binutils-gdb.git
+binutils_mingw_only="no"
+binutils_configure="--enable-lto --enable-plugins --enable-gold --disable-werror CPPFLAGS=-UFORTIFY_SOURCE --with-pkgversion=Linaro_Binutils-2017.11 --disable-gdb --disable-sim --disable-libdecnumber --disable-readline --with-sysroot=${sysroots}"
+binutils_staticlink="yes"
+
+# Component data for gcc
+gcc_url=http://git.linaro.org/git/toolchain
+gcc_branch=linaro-7.2-2017.11
+gcc_revision=ada5dcbb13a703ed2a53922e819f96b998acc443
+gcc_filespec=gcc.git
+gcc_makeflags="MAKEINFOFLAGS=--force"
+gcc_mingw_only="no"
+gcc_configure=
+gcc_mingw_extraconf="--with-libiconv-prefix=${local_builds}/destdir/${host}/usr"
+gcc_staticlink="no"
+gcc_stage1_flags="--with-mpc=${local_builds}/destdir/${host} --with-mpfr=${local_builds}/destdir/${host} --with-gmp=${local_builds}/destdir/${host} --with-gnu-as --with-gnu-ld --disable-libmudflap --enable-lto --enable-shared --without-included-gettext --enable-nls --disable-sjlj-exceptions --enable-gnu-unique-object --enable-linker-build-id --disable-libstdcxx-pch --enable-c99 --enable-clocale=gnu --enable-libstdcxx-debug --enable-long-long --with-cloog=no --with-ppl=no --with-isl=no --disable-multilib --with-float=soft --with-mode=thumb --with-tune=cortex-a9 --with-arch=armv7-a --enable-threads=posix --enable-multiarch --enable-libstdcxx-time=yes --enable-gnu-indirect-function --disable-libssp --disable-libquadmath --disable-threads --without-headers --with-newlib --disable-libmudflap --disable-bootstrap --disable-decimal-float --disable-libgomp --disable-libatomic --disable-libsanitizer --disable-plugins --disable-libitm --enable-languages=c --with-sysroot=${local_builds}/sysroot-arm-linux-gnueabi --disable-shared --with-glibc-version=2.18"
+gcc_stage2_flags="--with-mpc=${local_builds}/destdir/${host} --with-mpfr=${local_builds}/destdir/${host} --with-gmp=${local_builds}/destdir/${host} --with-gnu-as --with-gnu-ld --disable-libmudflap --enable-lto --enable-shared --without-included-gettext --enable-nls --disable-sjlj-exceptions --enable-gnu-unique-object --enable-linker-build-id --disable-libstdcxx-pch --enable-c99 --enable-clocale=gnu --enable-libstdcxx-debug --enable-long-long --with-cloog=no --with-ppl=no --with-isl=no --disable-multilib --with-float=soft --with-mode=thumb --with-tune=cortex-a9 --with-arch=armv7-a --enable-threads=posix --enable-multiarch --enable-libstdcxx-time=yes --enable-gnu-indirect-function --with-build-sysroot=${sysroots} --with-sysroot=${local_builds}/destdir/${host}/arm-linux-gnueabi/libc --enable-checking=release --disable-bootstrap --enable-languages=c,c++,fortran,lto"
+
+# Component data for glibc
+glibc_url=http://git.linaro.org/git/toolchain
+glibc_branch=release/2.25/master
+glibc_revision=46acbd0582ce0c1b661e1b43f8e783daeea6ed9a
+glibc_filespec=glibc.git
+glibc_makeflags="PARALLELMFLAGS=-j32"
+glibc_mingw_only="no"
+glibc_configure="--disable-profile --without-gd --enable-obsolete-rpc --with-headers=${sysroots}/usr/include libc_cv_forced_unwind=yes libc_cv_c_cleanup=yes --without-selinux --disable-werror"
+
+# Component data for gdb
+gdb_url=http://git.linaro.org/git/toolchain
+gdb_branch=gdb-8.0-branch
+gdb_revision=220185ca4e0c0b2c8324df66a6e00bb741a5aaea
+gdb_filespec=binutils-gdb.git
+gdb_mingw_only="no"
+gdb_configure="--with-gnu-ld --enable-plugins --enable-tui --with-pkgversion=Linaro_GDB-2017.11 --disable-gas --disable-binutils --disable-ld --disable-gold --disable-gprof --with-python=yes"
+gdb_mingw_extraconf="--disable-tui --with-python=${local_snapshots}/python-2.7.4-mingw32 CFLAGS=-I${local_builds}/destdir/${host}/usr/include LDFLAGS=-L${local_builds}/destdir/${host}/usr/lib"
+gdb_staticlink="yes"
+
+# Component data for gdbserver
+gdbserver_url=http://git.linaro.org/git/toolchain
+gdbserver_branch=gdb-8.0-branch
+gdbserver_revision=220185ca4e0c0b2c8324df66a6e00bb741a5aaea
+gdbserver_filespec=binutils-gdb.git
+gdbserver_mingw_only="no"
+gdbserver_configure="LDFLAGS=-static CPPFLAGS=--sysroot=${sysroots} CFLAGS=--sysroot=${sysroots} CXXFLAGS=--sysroot=${sysroots}"
+gdbserver_staticlink="yes"
+
+
+clibrary=glibc
+target=arm-linux-gnueabi
+manifestid=957ff665cddd0fa6d0ca3e8186b078c0f8b9bc21
+
+ ##############################################################################
+ # Everything below this line is only for informational purposes for developers
+ ##############################################################################
+
+# Build machine data
+build: linux
+host: x86_64-unknown-linux-gnu
+kernel: 4.4.0-45-generic
+hostname: 1dd486972eb8
+distribution: trusty
+host_gcc: gcc version 4.8.4 (Ubuntu 4.8.4-2ubuntu1~14.04.3) 
+
+# These aren't used in the repeat build. just a sanity check for developers
+build directory: /home/tcwg-buildslave/workspace/tcwg-make-release/builder_arch/amd64/label/tcwg-x86_64-build/target/arm-linux-gnueabi/_build/builds
+sysroot directory: /home/tcwg-buildslave/workspace/tcwg-make-release/builder_arch/amd64/label/tcwg-x86_64-build/target/arm-linux-gnueabi/_build/sysroots/arm-linux-gnueabi
+snapshots directory: /home/tcwg-buildslave/workspace/tcwg-make-release/builder_arch/amd64/label/tcwg-x86_64-build/target/arm-linux-gnueabi/snapshots
+git reference directory: /home/tcwg-buildslave/snapshots-ref
+
+abe_url=https://git-us.linaro.org/toolchain
+abe_branch=branch=
+abe_revision=333add3ae07b35815672a8a1d03eb443e5ea87fe
+abe_filespec=abe.git
+abe_configure="--with-local-snapshots=${local_snapshots} --with-git-reference-dir=/home/tcwg-buildslave/snapshots-ref"
+
+--------------------- gcc ----------------------
+commit ada5dcbb13a703ed2a53922e819f96b998acc443
+Author: TCWG Automation <linaro-toolchain@lists.linaro.org>
+Date:   Wed Nov 8 13:41:16 2017 +0000
+
+    Make Linaro GCC Release 7.2-2017.11.
+    
+    	gcc/
+    	* LINARO-VERSION: Update.
+
+--------------------- binutils ----------------------
+commit e2bd6d4d2f35ca1ff9f7d6667f4274efa7781df3
+Merge: e0f59b0 a595e02
+Author: Adhemerval Zanella <adhemerval.zanella@linaro.org>
+Date:   Thu Aug 24 10:02:01 2017 -0300
+
+    Merge with binutils-2_28-branch rev a595e022494
+    
+    Change-Id: Id5cdd9fca875884f6e31a9a0847aa098d956bf23
+
+--------------------- glibc ----------------------
+commit 46acbd0582ce0c1b661e1b43f8e783daeea6ed9a
+Author: James Clarke <jrtc27@jrtc27.com>
+Date:   Fri Oct 13 15:44:39 2017 -0300
+
+    Fix TLS relocations against local symbols on powerpc32, sparc32 and sparc64
+    
+    Normally, TLS relocations against local symbols are optimised by the linker
+    to be absolute.  However, gold does not do this, and so it is possible to
+    end up with, for example, R_SPARC_TLS_DTPMOD64 referring to a local symbol.
+    Since sym_map is left as null in elf_machine_rela for the special local
+    symbol case, the relocation handling thinks it has nothing to do, and so
+    the module gets left as 0.  Havoc then ensues when the variable in question
+    is accessed.
+    
+    Before this fix, the main_local_gold program would receive a SIGBUS on
+    sparc64, and SIGSEGV on powerpc32.  With this fix applied, that test now
+    passes like the rest of them.
+    
+    	* sysdeps/powerpc/powerpc32/dl-machine.h (elf_machine_rela):
+    	Assign sym_map to be map for local symbols, as TLS relocations
+    	use sym_map to determine whether the symbol is defined and to
+    	extract the TLS information.
+    	* sysdeps/sparc/sparc32/dl-machine.h (elf_machine_rela): Likewise.
+    	* sysdeps/sparc/sparc64/dl-machine.h (elf_machine_rela): Likewise.
+
+--------------------- abe ----------------------
+commit 333add3ae07b35815672a8a1d03eb443e5ea87fe
+Author: Yvan Roux <yvan.roux@linaro.org>
+Date:   Thu Nov 9 14:57:03 2017 +0100
+
+    config/gcc[567]/binutils.conf: Switch to upstream users/linaro branches.
+    
+    Change-Id: I47d4c82b02ffad83191f70e8e226e301e8eb0b60
+
