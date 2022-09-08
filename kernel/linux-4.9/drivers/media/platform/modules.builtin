@@ -1,3 +1,0 @@
-kernel/drivers/media/platform/sunxi-vin/vin_io.ko
-kernel/drivers/media/platform/sunxi-vin/vin_v4l2.ko
-kernel/drivers/media/platform/sunxi-vin/modules/actuator/actuator.ko

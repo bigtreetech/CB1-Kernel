@@ -1,4 +1,0 @@
-kernel/drivers/i2c/i2c-core.ko
-kernel/drivers/i2c/i2c-dev.ko
-kernel/drivers/i2c/i2c-mux.ko
-kernel/drivers/i2c/busses/i2c-sunxi.ko

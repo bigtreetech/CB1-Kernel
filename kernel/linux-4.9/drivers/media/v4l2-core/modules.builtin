@@ -1,7 +1,0 @@
-kernel/drivers/media/v4l2-core/videodev.ko
-kernel/drivers/media/v4l2-core/v4l2-common.ko
-kernel/drivers/media/v4l2-core/v4l2-dv-timings.ko
-kernel/drivers/media/v4l2-core/videobuf2-core.ko
-kernel/drivers/media/v4l2-core/videobuf2-v4l2.ko
-kernel/drivers/media/v4l2-core/videobuf2-memops.ko
-kernel/drivers/media/v4l2-core/videobuf2-dma-contig.ko

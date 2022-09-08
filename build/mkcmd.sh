@@ -512,8 +512,6 @@ function parse_cross_compiler()
 		done
 	done
 
-    echo "===$LICHEE_COMPILER_TAR ==="
-
 	if [ -z ${LICHEE_COMPILER_TAR} ] ; then
 		mk_error "can not match LICHEE_COMPILER_TAR."
 		exit 1
@@ -872,9 +870,7 @@ function prepare_toolchain()
 	fi
 
 	toolchain_archive=${LICHEE_COMPILER_TAR}
-
-	# toolchain_archivedir=${LICHEE_BUILD_DIR}/toolchain/${toolchain_archive}
-    toolchain_archivedir=${LICHEE_BUILD_DIR}/toolchain/gcc-linaro-5.3.1-2016.05-x86_64_arm-linux-gnueabi.tar.xz
+	toolchain_archivedir=${LICHEE_BUILD_DIR}/toolchain/${toolchain_archive}
 	if [ ! -f ${toolchain_archivedir} ]; then
 		mk_error "Prepare toolchain error!"
 		exit 1

@@ -1,3 +1,0 @@
-kernel/drivers/usb/gadget/function/usb_f_mass_storage.ko
-kernel/drivers/usb/gadget/function/usb_f_fs.ko
-kernel/drivers/usb/gadget/function/usb_f_mtp.ko

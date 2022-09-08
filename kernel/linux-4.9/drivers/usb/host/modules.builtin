@@ -1,3 +1,0 @@
-kernel/drivers/usb/host/ehci-hcd.ko
-kernel/drivers/usb/host/ohci-hcd.ko
-kernel/drivers/usb/host/sunxi_hci.ko

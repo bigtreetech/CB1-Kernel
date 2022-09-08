@@ -1,2 +1,0 @@
-kernel/drivers/net/mii.ko
-kernel/drivers/net/ethernet/allwinner/sunxi_gmac.ko

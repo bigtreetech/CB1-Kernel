@@ -1,3 +1,0 @@
-kernel/drivers/hid/hid.ko
-kernel/drivers/hid/hid-generic.ko
-kernel/drivers/hid/usbhid/usbhid.ko

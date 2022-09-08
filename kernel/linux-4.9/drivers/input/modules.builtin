@@ -1,8 +1,0 @@
-kernel/drivers/input/input-core.ko
-kernel/drivers/input/evdev.ko
-kernel/drivers/input/init-input.ko
-kernel/drivers/input/keyboard/atkbd.ko
-kernel/drivers/input/keyboard/sunxi-keyboard.ko
-kernel/drivers/input/misc/axp2101-pek.ko
-kernel/drivers/input/sensor/sunxi_gpadc.ko
-kernel/drivers/input/touchscreen/of_touchscreen.ko
