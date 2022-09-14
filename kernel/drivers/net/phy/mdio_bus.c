@@ -552,11 +552,12 @@ int __mdiobus_register(struct mii_bus *bus, struct module *owner)
     bus->state = MDIOBUS_UNREGISTERED;
 
     err = device_register(&bus->dev);
-    pr_err("test mii_bus %s failed to register\n", bus->id);
+
+    // pr_err("test mii_bus %s failed to register\n", bus->id);
 
     if (err)
     {
-        pr_err("mii_bus %s failed to register\n", bus->id);
+        // pr_err("mii_bus %s failed to register\n", bus->id);
         return -EINVAL;
     }
 

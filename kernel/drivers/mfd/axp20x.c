@@ -906,13 +906,19 @@ static const struct mfd_cell axp806_cells[] = {
     },
 };
 
-#define AXP1530_DCDC1 "dcdc1"
-#define AXP1530_DCDC2 "dcdc2"
-#define AXP1530_DCDC3 "dcdc3"
-#define AXP1530_ALDO1 "aldo1"
-#define AXP1530_DLDO1 "dldo1"
+// #define AXP1530_DCDC1 "dcdc1"
+// #define AXP1530_DCDC2 "dcdc2"
+// #define AXP1530_DCDC3 "dcdc3"
+// #define AXP1530_ALDO1 "aldo1"
+// #define AXP1530_DLDO1 "dldo1"
 
 static struct mfd_cell axp1530_cells[] = {
+    {
+        .id = 0,
+        .name = "axp20x-regulator",
+    },
+
+#if 0
     // 	{
     // 		.name		= "axp1530-gpio",
     // 		.of_compatible	= "x-powers,axp1530-gpio",
@@ -964,6 +970,7 @@ static struct mfd_cell axp1530_cells[] = {
         .platform_data = AXP1530_DLDO1,
         .pdata_size = sizeof(AXP1530_DLDO1),
     },
+#endif
 };
 
 static const struct mfd_cell axp809_cells[] = {

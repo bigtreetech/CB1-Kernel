@@ -201,13 +201,14 @@ static int display_connector_probe(struct platform_device *pdev)
     conn->bridge.funcs = &display_connector_bridge_funcs;
     conn->bridge.of_node = pdev->dev.of_node;
 
+#if 0
     if (conn->bridge.ddc)
         conn->bridge.ops |= DRM_BRIDGE_OP_EDID | DRM_BRIDGE_OP_DETECT;
     if (conn->hpd_gpio)
         conn->bridge.ops |= DRM_BRIDGE_OP_DETECT;
-
-    // if (conn->hpd_irq >= 0)
-    //     conn->bridge.ops |= DRM_BRIDGE_OP_HPD;
+    if (conn->hpd_irq >= 0)
+        conn->bridge.ops |= DRM_BRIDGE_OP_HPD;
+#endif
 
     printk("---> Found %s display connector '%s' %s DDC bus and %s HPD GPIO (ops 0x%x)\n",
            drm_get_connector_type_name(conn->bridge.type),

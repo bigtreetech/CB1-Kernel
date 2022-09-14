@@ -318,10 +318,6 @@ kernel/drivers/gpu/drm/bridge/simple-bridge.ko:
 kernel/drivers/gpu/drm/bridge/thc63lvd1024.ko:
 kernel/drivers/gpu/drm/bridge/tc358764.ko:
 kernel/drivers/gpu/drm/bridge/tc358768.ko:
-kernel/drivers/gpu/drm/bridge/ti-sn65dsi83.ko:
-kernel/drivers/gpu/drm/bridge/ti-sn65dsi86.ko: kernel/drivers/gpu/drm/drm_dp_aux_bus.ko
-kernel/drivers/gpu/drm/bridge/ti-tpd12s015.ko:
-kernel/drivers/gpu/drm/bridge/ite-it66121.ko:
 kernel/drivers/gpu/drm/tiny/gm12u320.ko:
 kernel/drivers/gpu/drm/tiny/simpledrm.ko:
 kernel/drivers/gpu/drm/tiny/hx8357d.ko: kernel/drivers/gpu/drm/drm_mipi_dbi.ko

@@ -309,7 +309,6 @@ static struct platform_driver sun8i_dw_hdmi_pltfm_driver = {
 
 static int __init sun8i_dw_hdmi_init(void)
 {
-    printk("=== connector-hdmi,sun8i_dw_hdmi_init ==== \n");
     int ret;
 
     ret = platform_driver_register(&sun8i_dw_hdmi_pltfm_driver);

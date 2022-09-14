@@ -1214,10 +1214,19 @@ EXPORT_SYMBOL_GPL(drm_bridge_get_modes);
 struct edid *drm_bridge_get_edid(struct drm_bridge *bridge,
                                  struct drm_connector *connector)
 {
+    printk("---> drm_bridge_get_edid ====\n");
+
+    struct edid *r_edid;
+
     if (!(bridge->ops & DRM_BRIDGE_OP_EDID))
         return NULL;
 
-    return bridge->funcs->get_edid(bridge, connector);
+    r_edid = bridge->funcs->get_edid(bridge, connector);
+
+    printk("---> drm_bridge_get_edid => connector: %s\n", connector);
+
+    return r_edid;
+    // return bridge->funcs->get_edid(bridge, connector);
 }
 EXPORT_SYMBOL_GPL(drm_bridge_get_edid);
 
