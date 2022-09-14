@@ -59,7 +59,6 @@ alias symbol:ieee80211_remain_on_channel_expired mac80211
 alias symbol:__cast5_decrypt cast5_generic
 alias symbol:rc_map_af9005_table_size dvb_usb_af9005_remote
 alias symbol:target_undepend_item target_core_mod
-alias symbol:analogix_dp_suspend analogix_dp
 alias symbol:iscsit_build_text_rsp iscsi_target_mod
 alias symbol:rpc_mkpipe_data sunrpc
 alias symbol:dm_bitset_empty dm_persistent_data
@@ -116,7 +115,6 @@ alias symbol:ieee80211_chswitch_done mac80211
 alias symbol:sunrpc_net_id sunrpc
 alias symbol:typec_mux_set_drvdata typec
 alias symbol:dlm_posix_get dlm
-alias symbol:anx_dp_aux_transfer analogix_dp
 alias symbol:ceph_auth_handle_bad_authorizer libceph
 alias symbol:dsa_8021q_rx_switch_id dsa_core
 alias symbol:iscsit_reject_cmd iscsi_target_mod
@@ -913,7 +911,6 @@ alias symbol:rpc_clnt_iterate_for_each_xprt sunrpc
 alias symbol:v4l2_ctrl_log_status videodev
 alias symbol:gserial_alloc_line u_serial
 alias symbol:virtio_transport_notify_send_post_enqueue vmw_vsock_virtio_transport_common
-alias symbol:analogix_dp_unbind analogix_dp
 alias symbol:iscsi_conn_queue_work libiscsi
 alias symbol:nfs_file_mmap nfs
 alias symbol:nft_data_init nf_tables
@@ -1008,7 +1005,6 @@ alias symbol:nfs_put_client nfs
 alias symbol:max9271_verify_id max9271
 alias symbol:ceph_monc_want_map libceph
 alias symbol:ieee80211_nan_func_terminated mac80211
-alias symbol:rtw_disable_gpio_interrupt 8189es
 alias symbol:dm_array_cursor_begin dm_persistent_data
 alias symbol:edac_raw_mc_handle_error edac_core
 alias symbol:usb_serial_resume usbserial
@@ -1658,7 +1654,6 @@ alias symbol:sunrpc_cache_unregister_pipefs sunrpc
 alias symbol:cx231xx_uninit_vbi_isoc cx231xx
 alias symbol:eeprom_93cx6_write eeprom_93cx6
 alias symbol:crypto_finalize_kpp_request crypto_engine
-alias symbol:analogix_dp_start_crc analogix_dp
 alias symbol:iio_device_get_clock industrialio
 alias symbol:ata_link_online libata
 alias symbol:dvb_ringbuffer_avail dvb_core
@@ -1685,7 +1680,6 @@ alias symbol:nfs_async_iocounter_wait nfs
 alias symbol:sas_attach_transport scsi_transport_sas
 alias symbol:typec_partner_set_svdm_version typec
 alias symbol:video_device_release videodev
-alias symbol:analogix_dp_probe analogix_dp
 alias symbol:register_ife_op act_ife
 alias symbol:ceph_msg_type_name libceph
 alias symbol:iscsi_conn_send_pdu libiscsi
@@ -1709,7 +1703,6 @@ alias symbol:ax25_defaddr ax25
 alias symbol:drm_sched_entity_modify_sched gpu_sched
 alias symbol:nf_nat_redirect_ipv6 nf_nat
 alias symbol:w1_read_8 wire
-alias symbol:analogix_dp_resume analogix_dp
 alias symbol:ceph_oid_aprintf libceph
 alias symbol:cfg80211_get_p2p_attr cfg80211
 alias symbol:dibx000_reset_i2c_master dibx000_common
@@ -1779,7 +1772,6 @@ alias symbol:svc_print_addr sunrpc
 alias symbol:cache_destroy_net sunrpc
 alias symbol:nfc_hci_result_to_errno hci
 alias symbol:rmi_2d_sensor_abs_process rmi_core
-alias symbol:rtw_set_gpio_output_value 8189es
 alias symbol:vhost_init_device_iotlb vhost
 alias symbol:LTC2497 ltc2497_core
 alias symbol:dm_tm_issue_prefetches dm_persistent_data
@@ -2410,7 +2402,6 @@ alias symbol:sas_is_tlr_enabled scsi_transport_sas
 alias symbol:to_drm_sched_fence gpu_sched
 alias symbol:drm_sched_resubmit_jobs gpu_sched
 alias symbol:gether_cleanup u_ether
-alias symbol:rtw_register_gpio_interrupt 8189es
 alias symbol:sms_board_setup smsmdtv
 alias symbol:v4l2_m2m_qbuf v4l2_mem2mem
 alias symbol:ata_sas_port_suspend libata
@@ -2526,7 +2517,6 @@ alias symbol:channel5g rtlwifi
 alias symbol:usb_get_function_instance libcomposite
 alias symbol:ata_host_init libata
 alias symbol:em28xx_tuner_callback em28xx
-alias symbol:rtw_config_gpio 8189es
 alias symbol:dsa_devlink_params_register dsa_core
 alias symbol:mipi_dbi_command_buf drm_mipi_dbi
 alias symbol:nfnl_acct_overquota nfnetlink_acct
@@ -2746,7 +2736,6 @@ alias symbol:edac_device_alloc_ctl_info edac_core
 alias symbol:xprt_wake_up_backlog sunrpc
 alias symbol:pnfs_write_done_resend_to_mds nfsv4
 alias symbol:radio_tea5777_exit shark2
-alias symbol:analogix_dp_stop_crc analogix_dp
 alias symbol:s3fwrn5_remove s3fwrn5
 alias symbol:ssb_bus_unregister ssb
 alias symbol:st33zp24_probe tpm_st33zp24
@@ -3451,7 +3440,6 @@ alias symbol:drm_sched_entity_init gpu_sched
 alias symbol:hid_sensor_read_raw_hyst_rel_value hid_sensor_iio_common
 alias symbol:ieee80211_sta_set_buffered mac80211
 alias symbol:v4l2_event_subdev_unsubscribe videodev
-alias symbol:analogix_dp_remove analogix_dp
 alias symbol:wwan_port_rx wwan
 alias symbol:ad7091r_regmap_config ad7091r_base
 alias symbol:vhost_poll_start vhost
@@ -3817,7 +3805,6 @@ alias symbol:nand_read_data_op nand
 alias symbol:nci_uart_set_config nci_uart
 alias symbol:usbip_pad_iso usbip_core
 alias symbol:nf_conntrack_find_get nf_conntrack
-alias symbol:rtw_get_gpio 8189es
 alias symbol:i3c_master_add_i3c_dev_locked i3c
 alias symbol:libceph_compatible libceph
 alias symbol:v4l2_calc_timeperframe v4l2_dv_timings
@@ -4671,7 +4658,6 @@ alias symbol:typec_switch_register typec
 alias symbol:channel_has_mbo most_core
 alias symbol:lc_del lru_cache
 alias symbol:snd_mpu401_uart_interrupt snd_mpu401_uart
-alias symbol:analogix_dp_bind analogix_dp
 alias symbol:v4l2_s_parm_cap videodev
 alias symbol:adxl355_readable_regs_tbl adxl355_core
 alias symbol:iscsi_session_chkready scsi_transport_iscsi

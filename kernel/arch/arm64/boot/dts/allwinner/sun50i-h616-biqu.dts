@@ -36,12 +36,6 @@
 		};
 	};
 
-    mcp2515_clock: mcp2515_clock {
-		compatible = "fixed-clock";
-		#clock-cells = <0>;
-		clock-frequency  = <12000000>;          //对应模块上晶振的频率，我的是12MHz的
-	};
-
 	leds {
 		compatible = "gpio-leds";
         
@@ -71,6 +65,12 @@
             gpio = <&pio 6 15 GPIO_ACTIVE_LOW>; /* PG15 */
             status = "okay";
 		};
+	};
+
+    mcp2515_clock: mcp2515_clock {
+		compatible = "fixed-clock";
+		#clock-cells = <0>;
+		clock-frequency  = <12000000>;          //对应模块上晶振的频率，我的是12MHz的
 	};
 
 	reg_vcc5v: vcc5v {
@@ -131,6 +131,22 @@
 	status = "okay";
 };
 
+&hdmi {
+	hvcc-supply = <&reg_aldo1>;
+	status = "okay";
+};
+
+&hdmi_out {
+	hdmi_out_con: endpoint {
+		remote-endpoint = <&hdmi_con_in>;
+	};
+};
+
+&gpu {
+    mali-supply = <&reg_dcdc3>;
+    status = "disabled";
+};
+
 &ehci0 {
 	status = "okay";
 };
@@ -147,21 +163,6 @@
 	status = "okay";
 };
 
-&gpu {
-    mali-supply = <&reg_dcdc3>;
-    status = "disabled";
-};
-
-&hdmi {
-	hvcc-supply = <&reg_aldo1>;
-	status = "okay";
-};
-
-&hdmi_out {
-	hdmi_out_con: endpoint {
-		remote-endpoint = <&hdmi_con_in>;
-	};
-};
 
 /* USB 2 & 3 are on headers only. */
 
@@ -354,22 +355,6 @@
 	 */
 	dr_mode = "peripheral";
 	status = "okay";
-};
-
-&i2c1 {
-	status = "disabled";
-};
-
-&i2c2 {
-	status = "disabled";
-};
-
-&i2c3 {
-	status = "disabled";
-};
-
-&i2c4 {
-	status = "disabled";
 };
 
 &ir {

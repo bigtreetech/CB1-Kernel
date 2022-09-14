@@ -268,23 +268,6 @@ kernel/drivers/soc/litex/litex_soc_ctrl.ko:
 kernel/drivers/regulator/userspace-consumer-of.ko:
 kernel/drivers/regulator/88pg86x.ko:
 kernel/drivers/regulator/scmi-regulator.ko:
-kernel/drivers/regulator/bd9571mwv-regulator.ko:
-kernel/drivers/regulator/da9121-regulator.ko:
-kernel/drivers/regulator/max8893.ko:
-kernel/drivers/regulator/mcp16502.ko:
-kernel/drivers/regulator/mp5416.ko:
-kernel/drivers/regulator/mp8859.ko:
-kernel/drivers/regulator/mp886x.ko:
-kernel/drivers/regulator/mpq7920.ko:
-kernel/drivers/regulator/mt6315-regulator.ko: kernel/drivers/base/regmap/regmap-spmi.ko
-kernel/drivers/regulator/pf8x00-regulator.ko:
-kernel/drivers/regulator/rt6160-regulator.ko:
-kernel/drivers/regulator/rt6245-regulator.ko:
-kernel/drivers/regulator/rtq2134-regulator.ko:
-kernel/drivers/regulator/rtq6752-regulator.ko:
-kernel/drivers/regulator/sy8106a-regulator.ko:
-kernel/drivers/regulator/sy8824x.ko:
-kernel/drivers/regulator/tp65185x.ko:
 kernel/drivers/tty/serial/bcm63xx_uart.ko:
 kernel/drivers/tty/serial/sc16is7xx.ko:
 kernel/drivers/tty/serial/fsl_linflexuart.ko:
@@ -315,27 +298,6 @@ kernel/drivers/gpu/drm/rcar-du/rcar_lvds.ko:
 kernel/drivers/gpu/drm/i2c/ch7006.ko:
 kernel/drivers/gpu/drm/i2c/sil164.ko:
 kernel/drivers/gpu/drm/i2c/tda9950.ko:
-kernel/drivers/gpu/drm/panel/panel-abt-y030xx067a.ko:
-kernel/drivers/gpu/drm/panel/panel-arm-versatile.ko:
-kernel/drivers/gpu/drm/panel/panel-boe-himax8279d.ko:
-kernel/drivers/gpu/drm/panel/panel-dsi-cm.ko:
-kernel/drivers/gpu/drm/panel/panel-lvds.ko:
-kernel/drivers/gpu/drm/panel/panel-feixin-k101-im2ba02.ko:
-kernel/drivers/gpu/drm/panel/panel-feiyang-fy07024di26a30d.ko:
-kernel/drivers/gpu/drm/panel/panel-ilitek-ili9322.ko:
-kernel/drivers/gpu/drm/panel/panel-ilitek-ili9341.ko: kernel/drivers/gpu/drm/drm_mipi_dbi.ko
-kernel/drivers/gpu/drm/panel/panel-ilitek-ili9881c.ko:
-kernel/drivers/gpu/drm/panel/panel-innolux-ej030na.ko:
-kernel/drivers/gpu/drm/panel/panel-innolux-p079zca.ko:
-kernel/drivers/gpu/drm/panel/panel-jdi-lt070me05000.ko:
-kernel/drivers/gpu/drm/panel/panel-khadas-ts050.ko:
-kernel/drivers/gpu/drm/panel/panel-kingdisplay-kd097d04.ko:
-kernel/drivers/gpu/drm/panel/panel-leadtek-ltk500hd1829.ko:
-kernel/drivers/gpu/drm/panel/panel-lg-lb035q02.ko:
-kernel/drivers/gpu/drm/panel/panel-nec-nl8048hl11.ko:
-kernel/drivers/gpu/drm/panel/panel-novatek-nt35510.ko:
-kernel/drivers/gpu/drm/panel/panel-novatek-nt36672a.ko:
-kernel/drivers/gpu/drm/panel/panel-novatek-nt39016.ko:
 kernel/drivers/gpu/drm/panel/panel-olimex-lcd-olinuxino.ko:
 kernel/drivers/gpu/drm/panel/panel-orisetech-otm8009a.ko:
 kernel/drivers/gpu/drm/panel/panel-panasonic-vvx10f034n00.ko:
@@ -343,43 +305,15 @@ kernel/drivers/gpu/drm/panel/panel-raspberrypi-touchscreen.ko:
 kernel/drivers/gpu/drm/panel/panel-raydium-rm67191.ko:
 kernel/drivers/gpu/drm/panel/panel-raydium-rm68200.ko:
 kernel/drivers/gpu/drm/panel/panel-ronbo-rb070d30.ko:
-kernel/drivers/gpu/drm/panel/panel-samsung-db7430.ko: kernel/drivers/gpu/drm/drm_mipi_dbi.ko
-kernel/drivers/gpu/drm/panel/panel-samsung-s6d16d0.ko:
-kernel/drivers/gpu/drm/panel/panel-samsung-s6d27a1.ko: kernel/drivers/gpu/drm/drm_mipi_dbi.ko
-kernel/drivers/gpu/drm/panel/panel-samsung-s6e3ha2.ko:
-kernel/drivers/gpu/drm/panel/panel-samsung-s6e63j0x03.ko:
-kernel/drivers/gpu/drm/panel/panel-samsung-s6e88a0-ams452ef01.ko:
-kernel/drivers/gpu/drm/panel/panel-samsung-sofef00.ko:
-kernel/drivers/gpu/drm/panel/panel-seiko-43wvf1g.ko:
-kernel/drivers/gpu/drm/panel/panel-sharp-lq101r1sx01.ko:
-kernel/drivers/gpu/drm/panel/panel-sharp-ls037v7dw01.ko:
-kernel/drivers/gpu/drm/panel/panel-sharp-ls043t1le01.ko:
-kernel/drivers/gpu/drm/panel/panel-sharp-ls060t1sx01.ko:
-kernel/drivers/gpu/drm/panel/panel-sitronix-st7701.ko:
-kernel/drivers/gpu/drm/panel/panel-sony-acx424akp.ko:
-kernel/drivers/gpu/drm/panel/panel-sony-acx565akm.ko:
 kernel/drivers/gpu/drm/panel/panel-tdo-tl070wsh30.ko:
 kernel/drivers/gpu/drm/panel/panel-tpo-td028ttec1.ko:
 kernel/drivers/gpu/drm/panel/panel-tpo-td043mtea1.ko:
 kernel/drivers/gpu/drm/panel/panel-tpo-tpg110.ko:
 kernel/drivers/gpu/drm/panel/panel-truly-nt35597.ko:
-kernel/drivers/gpu/drm/panel/panel-widechips-ws2401.ko: kernel/drivers/gpu/drm/drm_mipi_dbi.ko
-kernel/drivers/gpu/drm/panel/panel-xinpeng-xpp055c272.ko:
-kernel/drivers/gpu/drm/panel/panel-himax-hx8394.ko:
-kernel/drivers/gpu/drm/bridge/analogix/analogix-anx6345.ko: kernel/drivers/gpu/drm/bridge/analogix/analogix_dp.ko
-kernel/drivers/gpu/drm/bridge/analogix/anx7625.ko:
-kernel/drivers/gpu/drm/bridge/analogix/analogix-anx78xx.ko: kernel/drivers/gpu/drm/bridge/analogix/analogix_dp.ko
-kernel/drivers/gpu/drm/bridge/analogix/analogix_dp.ko:
 kernel/drivers/gpu/drm/bridge/synopsys/dw-hdmi-ahb-audio.ko:
 kernel/drivers/gpu/drm/bridge/synopsys/dw-hdmi-cec.ko:
-kernel/drivers/gpu/drm/bridge/cdns-dsi.ko:
-kernel/drivers/gpu/drm/bridge/chipone-icn6211.ko:
 kernel/drivers/gpu/drm/bridge/display-connector.ko:
-kernel/drivers/gpu/drm/bridge/lontium-lt8912b.ko:
-kernel/drivers/gpu/drm/bridge/lontium-lt9611uxc.ko:
 kernel/drivers/gpu/drm/bridge/lvds-codec.ko:
-kernel/drivers/gpu/drm/bridge/parade-ps8640.ko:
-kernel/drivers/gpu/drm/bridge/sii9234.ko:
 kernel/drivers/gpu/drm/bridge/simple-bridge.ko:
 kernel/drivers/gpu/drm/bridge/thc63lvd1024.ko:
 kernel/drivers/gpu/drm/bridge/tc358764.ko:
@@ -555,7 +489,6 @@ kernel/drivers/net/hamradio/bpqether.ko: kernel/net/ax25/ax25.ko
 kernel/drivers/net/hamradio/baycom_ser_fdx.ko: kernel/drivers/net/hamradio/hdlcdrv.ko kernel/net/ax25/ax25.ko
 kernel/drivers/net/hamradio/hdlcdrv.ko: kernel/net/ax25/ax25.ko
 kernel/drivers/net/hamradio/baycom_ser_hdx.ko: kernel/drivers/net/hamradio/hdlcdrv.ko kernel/net/ax25/ax25.ko
-kernel/drivers/net/wireless/realtek/rtl818x/rtl8187/rtl8187.ko: kernel/drivers/misc/eeprom/eeprom_93cx6.ko kernel/net/mac80211/mac80211.ko kernel/net/wireless/cfg80211.ko kernel/lib/crypto/libarc4.ko
 kernel/drivers/net/wireless/realtek/rtlwifi/rtlwifi.ko: kernel/net/mac80211/mac80211.ko kernel/net/wireless/cfg80211.ko kernel/lib/crypto/libarc4.ko
 kernel/drivers/net/wireless/realtek/rtlwifi/rtl_usb.ko: kernel/drivers/net/wireless/realtek/rtlwifi/rtlwifi.ko kernel/net/mac80211/mac80211.ko kernel/net/wireless/cfg80211.ko kernel/lib/crypto/libarc4.ko
 kernel/drivers/net/wireless/realtek/rtlwifi/rtl8192c/rtl8192c-common.ko: kernel/drivers/net/wireless/realtek/rtlwifi/rtlwifi.ko kernel/net/mac80211/mac80211.ko kernel/net/wireless/cfg80211.ko kernel/lib/crypto/libarc4.ko
@@ -563,7 +496,6 @@ kernel/drivers/net/wireless/realtek/rtlwifi/rtl8192cu/rtl8192cu.ko: kernel/drive
 kernel/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu.ko: kernel/net/mac80211/mac80211.ko kernel/net/wireless/cfg80211.ko kernel/lib/crypto/libarc4.ko
 kernel/drivers/net/wireless/rndis_wlan.ko: kernel/drivers/net/usb/rndis_host.ko kernel/drivers/net/usb/cdc_ether.ko kernel/drivers/net/usb/usbnet.ko kernel/net/wireless/cfg80211.ko
 kernel/drivers/net/wireless/virt_wifi.ko: kernel/net/wireless/cfg80211.ko
-kernel/drivers/net/wireless/rtl8189es/8189es.ko: kernel/net/wireless/cfg80211.ko
 kernel/drivers/net/wireless/rtl8189fs/8189fs.ko: kernel/net/wireless/cfg80211.ko
 kernel/drivers/net/bonding/bonding.ko:
 kernel/drivers/net/ipvlan/ipvlan.ko:

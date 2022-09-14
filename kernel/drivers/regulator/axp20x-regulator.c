@@ -1071,6 +1071,9 @@ static int axp20x_set_dcdc_freq(struct platform_device *pdev, u32 dcdcfreq)
         if (axp20x->variant == AXP806_ID)
             reg = AXP806_DCDC_FREQ_CTRL;
         fallthrough;
+    case AXP1530_ID:
+        return 0;
+        break;
     case AXP221_ID:
     case AXP223_ID:
     case AXP809_ID:

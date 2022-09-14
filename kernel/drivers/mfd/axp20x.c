@@ -1823,9 +1823,7 @@ int axp20x_match_device(struct axp20x_dev *axp20x)
          * Don't register the power key part if in slave mode or
          * if there is no interrupt line.
          */
-        if (of_property_read_bool(axp20x->dev->of_node,
-                                  "x-powers,self-working-mode") &&
-            axp20x->irq > 0)
+        if (of_property_read_bool(axp20x->dev->of_node, "x-powers,self-working-mode") && axp20x->irq > 0)
         {
             axp20x->nr_cells = ARRAY_SIZE(axp806_self_working_cells);
             axp20x->cells = axp806_self_working_cells;
@@ -1898,10 +1896,8 @@ int axp20x_device_probe(struct axp20x_dev *axp20x)
      */
     if (axp20x->variant == AXP806_ID)
     {
-        if (of_property_read_bool(axp20x->dev->of_node,
-                                  "x-powers,master-mode") ||
-            of_property_read_bool(axp20x->dev->of_node,
-                                  "x-powers,self-working-mode"))
+        if (of_property_read_bool(axp20x->dev->of_node, "x-powers,master-mode") ||
+            of_property_read_bool(axp20x->dev->of_node, "x-powers,self-working-mode"))
             regmap_write(axp20x->regmap, AXP806_REG_ADDR_EXT,
                          AXP806_REG_ADDR_EXT_ADDR_MASTER_MODE);
         else

@@ -64,7 +64,7 @@
 	};
 
 	de: display-engine {
-		compatible = "allwinner,sun50i-h6-display-engine";
+		compatible = "allwinner,sun50i-h616-display-engine";
 		allwinner,pipelines = <&mixer0>;
 		status = "disabled";
 	};
@@ -1041,25 +1041,16 @@
 			status = "disabled";
 		};
 
-		hdmi_audio: hdmi-audio@1 {
-			compatible = "allwinner,sunxi-hdmi-machine";
-			sunxi,cpudai-controller = <&ahub_i2s1>;
-			sunxi,snddaudio-codec = "hdmi-audio-codec.4.auto";
-			status = "disabled";
-		};
-
 		hdmi: hdmi@6000000 {
 			#sound-dai-cells = <0>;
-			compatible = "allwinner,sun50i-h616-dw-hdmi",
-				     "allwinner,sun50i-h6-dw-hdmi";
+			compatible = "allwinner,sun50i-h616-dw-hdmi";
 			reg = <0x06000000 0x10000>;
 			reg-io-width = <1>;
 			interrupts = <GIC_SPI 63 IRQ_TYPE_LEVEL_HIGH>;
 			clocks = <&ccu CLK_BUS_HDMI>, <&ccu CLK_HDMI_SLOW>,
 				 <&ccu CLK_HDMI>, <&ccu CLK_HDMI_CEC>,
 				 <&ccu CLK_HDCP>, <&ccu CLK_BUS_HDCP>;
-			clock-names = "iahb", "isfr", "tmds", "cec", "hdcp",
-				      "hdcp-bus";
+			clock-names = "iahb", "isfr", "tmds", "cec", "hdcp", "hdcp-bus";
 			resets = <&ccu RST_BUS_HDMI>, <&ccu RST_BUS_HDCP>;
 			reset-names = "ctrl", "hdcp";
 			phys = <&hdmi_phy>;
@@ -1094,13 +1085,19 @@
 			#phy-cells = <0>;
 		};
 
+        hdmi_audio: hdmi-audio@1 {
+			compatible = "allwinner,sunxi-hdmi-machine";
+			sunxi,cpudai-controller = <&ahub_i2s1>;
+			sunxi,snddaudio-codec = "hdmi-audio-codec.4.auto";
+			status = "disabled";
+		};
+
 		tcon_top: tcon-top@6510000 {
 			compatible = "allwinner,sun50i-h6-tcon-top";
 			reg = <0x06510000 0x1000>;
 			clocks = <&ccu CLK_BUS_TCON_TOP>,
 				 <&ccu CLK_TCON_TV0>;
-			clock-names = "bus",
-				      "tcon-tv0";
+			clock-names = "bus", "tcon-tv0";
 			clock-output-names = "tcon-top-tv0";
 			resets = <&ccu RST_BUS_TCON_TOP>;
 			#clock-cells = <1>;
@@ -1108,7 +1105,7 @@
 			ports {
 				#address-cells = <1>;
 				#size-cells = <0>;
-
+                
 				tcon_top_mixer0_in: port@0 {
 					#address-cells = <1>;
 					#size-cells = <0>;
@@ -1130,7 +1127,7 @@
 						remote-endpoint = <&tcon_tv_in_tcon_top_mixer0>;
 					};
 				};
-
+                
 				tcon_top_hdmi_in: port@4 {
 					#address-cells = <1>;
 					#size-cells = <0>;
@@ -1180,14 +1177,12 @@
 		};
 
 		tcon_tv: lcd-controller@6515000 {
-			compatible = "allwinner,sun50i-h6-tcon-tv",
-				     "allwinner,sun8i-r40-tcon-tv";
+			compatible = "allwinner,sun50i-h616-tcon-tv";
 			reg = <0x06515000 0x1000>;
 			interrupts = <GIC_SPI 66 IRQ_TYPE_LEVEL_HIGH>;
 			clocks = <&ccu CLK_BUS_TCON_TV0>,
 				 <&tcon_top CLK_TCON_TOP_TV0>;
-			clock-names = "ahb",
-				      "tcon-ch1";
+			clock-names = "ahb", "tcon-ch1";
 			resets = <&ccu RST_BUS_TCON_TV0>;
 			reset-names = "lcd";
 
