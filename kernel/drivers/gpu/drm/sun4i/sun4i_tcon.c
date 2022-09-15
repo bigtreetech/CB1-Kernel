@@ -32,10 +32,7 @@
 #include "sun4i_crtc.h"
 #include "sun4i_dotclock.h"
 #include "sun4i_drv.h"
-#include "sun4i_lvds.h"
-#include "sun4i_rgb.h"
 #include "sun4i_tcon.h"
-#include "sun6i_mipi_dsi.h"
 #include "sun8i_tcon_top.h"
 #include "sunxi_engine.h"
 
@@ -391,6 +388,7 @@ static void sun4i_tcon0_mode_set_dithering(struct sun4i_tcon *tcon,
     regmap_write(tcon->regs, SUN4I_TCON_FRM_CTL_REG, val);
 }
 
+#if 0
 static void sun4i_tcon0_mode_set_cpu(struct sun4i_tcon *tcon,
                                      const struct drm_encoder *encoder,
                                      const struct drm_display_mode *mode)
@@ -461,6 +459,7 @@ static void sun4i_tcon0_mode_set_cpu(struct sun4i_tcon *tcon,
     regmap_write(tcon->regs, SUN4I_TCON0_IO_TRI_REG,
                  0xe0000000);
 }
+#endif
 
 static void sun4i_tcon0_mode_set_lvds(struct sun4i_tcon *tcon,
                                       const struct drm_encoder *encoder,
@@ -747,6 +746,7 @@ void sun4i_tcon_mode_set(struct sun4i_tcon *tcon,
 {
     switch (encoder->encoder_type)
     {
+#if 0
     case DRM_MODE_ENCODER_DSI:
         /* DSI is tied to special case of CPU interface */
         sun4i_tcon0_mode_set_cpu(tcon, encoder, mode);
@@ -754,6 +754,7 @@ void sun4i_tcon_mode_set(struct sun4i_tcon *tcon,
     case DRM_MODE_ENCODER_LVDS:
         sun4i_tcon0_mode_set_lvds(tcon, encoder, mode);
         break;
+#endif
     case DRM_MODE_ENCODER_NONE:
         sun4i_tcon0_mode_set_rgb(tcon, encoder, mode);
         sun4i_tcon_set_mux(tcon, 0, encoder);
@@ -1315,6 +1316,7 @@ static int sun4i_tcon_bind(struct device *dev, struct device *master, void *data
         goto err_free_dotclock;
     }
 
+#if 0
     if (tcon->quirks->has_channel_0)
     {
         /*
@@ -1335,6 +1337,7 @@ static int sun4i_tcon_bind(struct device *dev, struct device *master, void *data
         if (ret < 0)
             goto err_free_dotclock;
     }
+#endif
 
     regmap_update_bits(tcon->regs, SUN4I_TCON_GCTL_REG,
                        SUN4I_TCON_GCTL_PAD_SEL,

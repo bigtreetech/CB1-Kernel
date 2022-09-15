@@ -299,25 +299,12 @@ kernel/drivers/gpu/drm/i2c/ch7006.ko:
 kernel/drivers/gpu/drm/i2c/sil164.ko:
 kernel/drivers/gpu/drm/i2c/tda9950.ko:
 kernel/drivers/gpu/drm/panel/panel-olimex-lcd-olinuxino.ko:
-kernel/drivers/gpu/drm/panel/panel-orisetech-otm8009a.ko:
-kernel/drivers/gpu/drm/panel/panel-panasonic-vvx10f034n00.ko:
-kernel/drivers/gpu/drm/panel/panel-raspberrypi-touchscreen.ko:
-kernel/drivers/gpu/drm/panel/panel-raydium-rm67191.ko:
-kernel/drivers/gpu/drm/panel/panel-raydium-rm68200.ko:
-kernel/drivers/gpu/drm/panel/panel-ronbo-rb070d30.ko:
-kernel/drivers/gpu/drm/panel/panel-tdo-tl070wsh30.ko:
 kernel/drivers/gpu/drm/panel/panel-tpo-td028ttec1.ko:
 kernel/drivers/gpu/drm/panel/panel-tpo-td043mtea1.ko:
 kernel/drivers/gpu/drm/panel/panel-tpo-tpg110.ko:
-kernel/drivers/gpu/drm/panel/panel-truly-nt35597.ko:
 kernel/drivers/gpu/drm/bridge/synopsys/dw-hdmi-ahb-audio.ko:
 kernel/drivers/gpu/drm/bridge/synopsys/dw-hdmi-cec.ko:
 kernel/drivers/gpu/drm/bridge/display-connector.ko:
-kernel/drivers/gpu/drm/bridge/lvds-codec.ko:
-kernel/drivers/gpu/drm/bridge/simple-bridge.ko:
-kernel/drivers/gpu/drm/bridge/thc63lvd1024.ko:
-kernel/drivers/gpu/drm/bridge/tc358764.ko:
-kernel/drivers/gpu/drm/bridge/tc358768.ko:
 kernel/drivers/gpu/drm/tiny/gm12u320.ko:
 kernel/drivers/gpu/drm/tiny/simpledrm.ko:
 kernel/drivers/gpu/drm/tiny/hx8357d.ko: kernel/drivers/gpu/drm/drm_mipi_dbi.ko
@@ -329,7 +316,6 @@ kernel/drivers/gpu/drm/tiny/repaper.ko:
 kernel/drivers/gpu/drm/tiny/st7586.ko: kernel/drivers/gpu/drm/drm_mipi_dbi.ko
 kernel/drivers/gpu/drm/tiny/st7735r.ko: kernel/drivers/gpu/drm/drm_mipi_dbi.ko
 kernel/drivers/gpu/drm/gud/gud.ko:
-kernel/drivers/gpu/drm/drm_dp_aux_bus.ko:
 kernel/drivers/gpu/drm/drm_mipi_dbi.ko:
 kernel/drivers/gpu/drm/scheduler/gpu-sched.ko:
 kernel/drivers/gpu/drm/vkms/vkms.ko:

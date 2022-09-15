@@ -1841,7 +1841,6 @@ alias symbol:l2tp_tunnel_get l2tp_core
 alias symbol:nxp_nci_probe nxp_nci
 alias symbol:sas_expander_alloc scsi_transport_sas
 alias symbol:__ata_ehi_push_desc libata
-alias symbol:dp_aux_dp_driver_unregister drm_dp_aux_bus
 alias symbol:rc_keyup rc_core
 alias symbol:ceph_get_snap_context libceph
 alias symbol:ieee80211_tx_status_8023 mac80211
@@ -2339,7 +2338,6 @@ alias symbol:as102_attach as102_fe
 alias symbol:sctp_do_peeloff sctp
 alias symbol:adxl355_core_probe adxl355_core
 alias symbol:ieee80211_queue_delayed_work mac80211
-alias symbol:__dp_aux_dp_driver_register drm_dp_aux_bus
 alias symbol:l2tp_session_get_nth l2tp_core
 alias symbol:nfs4_schedule_session_recovery nfsv4
 alias symbol:edac_queue_work edac_core
@@ -3049,7 +3047,6 @@ alias symbol:fuse_sync_release fuse
 alias symbol:target_nacl_find_deve target_core_mod
 alias symbol:usb_wwan_dtr_rts usb_wwan
 alias symbol:ata_pio_need_iordy libata
-alias symbol:of_dp_aux_depopulate_ep_devices drm_dp_aux_bus
 alias symbol:__cfg80211_alloc_reply_skb cfg80211
 alias symbol:sw842_compress 842_compress
 alias symbol:asoc_simple_set_dailink_name snd_soc_simple_card_utils
@@ -3980,7 +3977,6 @@ alias symbol:dvb_create_media_graph dvb_core
 alias symbol:fsg_common_create_luns usb_f_mass_storage
 alias symbol:xchacha20poly1305_encrypt libchacha20poly1305
 alias symbol:bmp280_dev_pm_ops bmp280
-alias symbol:devm_of_dp_aux_populate_ep_devices drm_dp_aux_bus
 alias symbol:cdrom_get_last_written cdrom
 alias symbol:virtio_transport_notify_poll_in vmw_vsock_virtio_transport_common
 alias symbol:ceph_cls_set_cookie libceph

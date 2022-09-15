@@ -45,87 +45,89 @@
 /**
  * struct drm_bridge_connector - A connector backed by a chain of bridges
  */
-struct drm_bridge_connector {
-	/**
-	 * @base: The base DRM connector
-	 */
-	struct drm_connector base;
-	/**
-	 * @encoder:
-	 *
-	 * The encoder at the start of the bridges chain.
-	 */
-	struct drm_encoder *encoder;
-	/**
-	 * @bridge_edid:
-	 *
-	 * The last bridge in the chain (closest to the connector) that provides
-	 * EDID read support, if any (see &DRM_BRIDGE_OP_EDID).
-	 */
-	struct drm_bridge *bridge_edid;
-	/**
-	 * @bridge_hpd:
-	 *
-	 * The last bridge in the chain (closest to the connector) that provides
-	 * hot-plug detection notification, if any (see &DRM_BRIDGE_OP_HPD).
-	 */
-	struct drm_bridge *bridge_hpd;
-	/**
-	 * @bridge_detect:
-	 *
-	 * The last bridge in the chain (closest to the connector) that provides
-	 * connector detection, if any (see &DRM_BRIDGE_OP_DETECT).
-	 */
-	struct drm_bridge *bridge_detect;
-	/**
-	 * @bridge_modes:
-	 *
-	 * The last bridge in the chain (closest to the connector) that provides
-	 * connector modes detection, if any (see &DRM_BRIDGE_OP_MODES).
-	 */
-	struct drm_bridge *bridge_modes;
+struct drm_bridge_connector
+{
+    /**
+     * @base: The base DRM connector
+     */
+    struct drm_connector base;
+    /**
+     * @encoder:
+     *
+     * The encoder at the start of the bridges chain.
+     */
+    struct drm_encoder *encoder;
+    /**
+     * @bridge_edid:
+     *
+     * The last bridge in the chain (closest to the connector) that provides
+     * EDID read support, if any (see &DRM_BRIDGE_OP_EDID).
+     */
+    struct drm_bridge *bridge_edid;
+    /**
+     * @bridge_hpd:
+     *
+     * The last bridge in the chain (closest to the connector) that provides
+     * hot-plug detection notification, if any (see &DRM_BRIDGE_OP_HPD).
+     */
+    struct drm_bridge *bridge_hpd;
+    /**
+     * @bridge_detect:
+     *
+     * The last bridge in the chain (closest to the connector) that provides
+     * connector detection, if any (see &DRM_BRIDGE_OP_DETECT).
+     */
+    struct drm_bridge *bridge_detect;
+    /**
+     * @bridge_modes:
+     *
+     * The last bridge in the chain (closest to the connector) that provides
+     * connector modes detection, if any (see &DRM_BRIDGE_OP_MODES).
+     */
+    struct drm_bridge *bridge_modes;
 };
 
 #define to_drm_bridge_connector(x) \
-	container_of(x, struct drm_bridge_connector, base)
+    container_of(x, struct drm_bridge_connector, base)
 
 /* -----------------------------------------------------------------------------
  * Bridge Connector Hot-Plug Handling
  */
 
 static void drm_bridge_connector_hpd_notify(struct drm_connector *connector,
-					    enum drm_connector_status status)
+                                            enum drm_connector_status status)
 {
-	struct drm_bridge_connector *bridge_connector =
-		to_drm_bridge_connector(connector);
-	struct drm_bridge *bridge;
+    struct drm_bridge_connector *bridge_connector =
+        to_drm_bridge_connector(connector);
+    struct drm_bridge *bridge;
 
-	/* Notify all bridges in the pipeline of hotplug events. */
-	drm_for_each_bridge_in_chain(bridge_connector->encoder, bridge) {
-		if (bridge->funcs->hpd_notify)
-			bridge->funcs->hpd_notify(bridge, status);
-	}
+    /* Notify all bridges in the pipeline of hotplug events. */
+    drm_for_each_bridge_in_chain(bridge_connector->encoder, bridge)
+    {
+        if (bridge->funcs->hpd_notify)
+            bridge->funcs->hpd_notify(bridge, status);
+    }
 }
 
 static void drm_bridge_connector_hpd_cb(void *cb_data,
-					enum drm_connector_status status)
+                                        enum drm_connector_status status)
 {
-	struct drm_bridge_connector *drm_bridge_connector = cb_data;
-	struct drm_connector *connector = &drm_bridge_connector->base;
-	struct drm_device *dev = connector->dev;
-	enum drm_connector_status old_status;
+    struct drm_bridge_connector *drm_bridge_connector = cb_data;
+    struct drm_connector *connector = &drm_bridge_connector->base;
+    struct drm_device *dev = connector->dev;
+    enum drm_connector_status old_status;
 
-	mutex_lock(&dev->mode_config.mutex);
-	old_status = connector->status;
-	connector->status = status;
-	mutex_unlock(&dev->mode_config.mutex);
+    mutex_lock(&dev->mode_config.mutex);
+    old_status = connector->status;
+    connector->status = status;
+    mutex_unlock(&dev->mode_config.mutex);
 
-	if (old_status == status)
-		return;
+    if (old_status == status)
+        return;
 
-	drm_bridge_connector_hpd_notify(connector, status);
+    drm_bridge_connector_hpd_notify(connector, status);
 
-	drm_kms_helper_hotplug_event(dev);
+    drm_kms_helper_hotplug_event(dev);
 }
 
 /**
@@ -137,13 +139,13 @@ static void drm_bridge_connector_hpd_cb(void *cb_data,
  */
 void drm_bridge_connector_enable_hpd(struct drm_connector *connector)
 {
-	struct drm_bridge_connector *bridge_connector =
-		to_drm_bridge_connector(connector);
-	struct drm_bridge *hpd = bridge_connector->bridge_hpd;
+    struct drm_bridge_connector *bridge_connector =
+        to_drm_bridge_connector(connector);
+    struct drm_bridge *hpd = bridge_connector->bridge_hpd;
 
-	if (hpd)
-		drm_bridge_hpd_enable(hpd, drm_bridge_connector_hpd_cb,
-				      bridge_connector);
+    if (hpd)
+        drm_bridge_hpd_enable(hpd, drm_bridge_connector_hpd_cb,
+                              bridge_connector);
 }
 EXPORT_SYMBOL_GPL(drm_bridge_connector_enable_hpd);
 
@@ -157,12 +159,12 @@ EXPORT_SYMBOL_GPL(drm_bridge_connector_enable_hpd);
  */
 void drm_bridge_connector_disable_hpd(struct drm_connector *connector)
 {
-	struct drm_bridge_connector *bridge_connector =
-		to_drm_bridge_connector(connector);
-	struct drm_bridge *hpd = bridge_connector->bridge_hpd;
+    struct drm_bridge_connector *bridge_connector =
+        to_drm_bridge_connector(connector);
+    struct drm_bridge *hpd = bridge_connector->bridge_hpd;
 
-	if (hpd)
-		drm_bridge_hpd_disable(hpd);
+    if (hpd)
+        drm_bridge_hpd_disable(hpd);
 }
 EXPORT_SYMBOL_GPL(drm_bridge_connector_disable_hpd);
 
@@ -173,56 +175,61 @@ EXPORT_SYMBOL_GPL(drm_bridge_connector_disable_hpd);
 static enum drm_connector_status
 drm_bridge_connector_detect(struct drm_connector *connector, bool force)
 {
-	struct drm_bridge_connector *bridge_connector =
-		to_drm_bridge_connector(connector);
-	struct drm_bridge *detect = bridge_connector->bridge_detect;
-	enum drm_connector_status status;
+    struct drm_bridge_connector *bridge_connector =
+        to_drm_bridge_connector(connector);
+    struct drm_bridge *detect = bridge_connector->bridge_detect;
+    enum drm_connector_status status;
 
-	if (detect) {
-		status = detect->funcs->detect(detect);
+    if (detect)
+    {
+        status = detect->funcs->detect(detect);
 
-		drm_bridge_connector_hpd_notify(connector, status);
-	} else {
-		switch (connector->connector_type) {
-		case DRM_MODE_CONNECTOR_DPI:
-		case DRM_MODE_CONNECTOR_LVDS:
-		case DRM_MODE_CONNECTOR_DSI:
-		case DRM_MODE_CONNECTOR_eDP:
-			status = connector_status_connected;
-			break;
-		default:
-			status = connector_status_unknown;
-			break;
-		}
-	}
+        drm_bridge_connector_hpd_notify(connector, status);
+    }
+    else
+    {
+        switch (connector->connector_type)
+        {
+        case DRM_MODE_CONNECTOR_DPI:
+        case DRM_MODE_CONNECTOR_LVDS:
+        case DRM_MODE_CONNECTOR_DSI:
+        case DRM_MODE_CONNECTOR_eDP:
+            status = connector_status_connected;
+            break;
+        default:
+            status = connector_status_unknown;
+            break;
+        }
+    }
 
-	return status;
+    return status;
 }
 
 static void drm_bridge_connector_destroy(struct drm_connector *connector)
 {
-	struct drm_bridge_connector *bridge_connector =
-		to_drm_bridge_connector(connector);
+    struct drm_bridge_connector *bridge_connector =
+        to_drm_bridge_connector(connector);
 
-	if (bridge_connector->bridge_hpd) {
-		struct drm_bridge *hpd = bridge_connector->bridge_hpd;
+    if (bridge_connector->bridge_hpd)
+    {
+        struct drm_bridge *hpd = bridge_connector->bridge_hpd;
 
-		drm_bridge_hpd_disable(hpd);
-	}
+        drm_bridge_hpd_disable(hpd);
+    }
 
-	drm_connector_unregister(connector);
-	drm_connector_cleanup(connector);
+    drm_connector_unregister(connector);
+    drm_connector_cleanup(connector);
 
-	kfree(bridge_connector);
+    kfree(bridge_connector);
 }
 
 static const struct drm_connector_funcs drm_bridge_connector_funcs = {
-	.reset = drm_atomic_helper_connector_reset,
-	.detect = drm_bridge_connector_detect,
-	.fill_modes = drm_helper_probe_single_connector_modes,
-	.destroy = drm_bridge_connector_destroy,
-	.atomic_duplicate_state = drm_atomic_helper_connector_duplicate_state,
-	.atomic_destroy_state = drm_atomic_helper_connector_destroy_state,
+    .reset = drm_atomic_helper_connector_reset,
+    .detect = drm_bridge_connector_detect,
+    .fill_modes = drm_helper_probe_single_connector_modes,
+    .destroy = drm_bridge_connector_destroy,
+    .atomic_duplicate_state = drm_atomic_helper_connector_duplicate_state,
+    .atomic_destroy_state = drm_atomic_helper_connector_destroy_state,
 };
 
 /* -----------------------------------------------------------------------------
@@ -230,66 +237,66 @@ static const struct drm_connector_funcs drm_bridge_connector_funcs = {
  */
 
 static int drm_bridge_connector_get_modes_edid(struct drm_connector *connector,
-					       struct drm_bridge *bridge)
+                                               struct drm_bridge *bridge)
 {
-	enum drm_connector_status status;
-	struct edid *edid;
-	int n;
+    enum drm_connector_status status;
+    struct edid *edid;
+    int n;
 
-	status = drm_bridge_connector_detect(connector, false);
-	if (status != connector_status_connected)
-		goto no_edid;
+    status = drm_bridge_connector_detect(connector, false);
+    if (status != connector_status_connected)
+        goto no_edid;
 
-	edid = bridge->funcs->get_edid(bridge, connector);
-	if (!drm_edid_is_valid(edid)) {
-		kfree(edid);
-		goto no_edid;
-	}
+    edid = bridge->funcs->get_edid(bridge, connector);
+    if (!drm_edid_is_valid(edid))
+    {
+        kfree(edid);
+        goto no_edid;
+    }
 
-	drm_connector_update_edid_property(connector, edid);
-	n = drm_add_edid_modes(connector, edid);
+    drm_connector_update_edid_property(connector, edid);
+    n = drm_add_edid_modes(connector, edid);
 
-	kfree(edid);
-	return n;
+    kfree(edid);
+    return n;
 
 no_edid:
-	drm_connector_update_edid_property(connector, NULL);
-	return 0;
+    drm_connector_update_edid_property(connector, NULL);
+    return 0;
 }
 
 static int drm_bridge_connector_get_modes(struct drm_connector *connector)
 {
-	struct drm_bridge_connector *bridge_connector =
-		to_drm_bridge_connector(connector);
-	struct drm_bridge *bridge;
+    struct drm_bridge_connector *bridge_connector = to_drm_bridge_connector(connector);
+    struct drm_bridge *bridge;
 
-	/*
-	 * If display exposes EDID, then we parse that in the normal way to
-	 * build table of supported modes.
-	 */
-	bridge = bridge_connector->bridge_edid;
-	if (bridge)
-		return drm_bridge_connector_get_modes_edid(connector, bridge);
+    /*
+     * If display exposes EDID, then we parse that in the normal way to
+     * build table of supported modes.
+     */
+    bridge = bridge_connector->bridge_edid;
+    if (bridge)
+        return drm_bridge_connector_get_modes_edid(connector, bridge);
 
-	/*
-	 * Otherwise if the display pipeline reports modes (e.g. with a fixed
-	 * resolution panel or an analog TV output), query it.
-	 */
-	bridge = bridge_connector->bridge_modes;
-	if (bridge)
-		return bridge->funcs->get_modes(bridge, connector);
+    /*
+     * Otherwise if the display pipeline reports modes (e.g. with a fixed
+     * resolution panel or an analog TV output), query it.
+     */
+    bridge = bridge_connector->bridge_modes;
+    if (bridge)
+        return bridge->funcs->get_modes(bridge, connector);
 
-	/*
-	 * We can't retrieve modes, which can happen for instance for a DVI or
-	 * VGA output with the DDC bus unconnected. The KMS core will add the
-	 * default modes.
-	 */
-	return 0;
+    /*
+     * We can't retrieve modes, which can happen for instance for a DVI or
+     * VGA output with the DDC bus unconnected. The KMS core will add the
+     * default modes.
+     */
+    return 0;
 }
 
 static const struct drm_connector_helper_funcs drm_bridge_connector_helper_funcs = {
-	.get_modes = drm_bridge_connector_get_modes,
-	/* No need for .mode_valid(), the bridges are checked by the core. */
+    .get_modes = drm_bridge_connector_get_modes,
+    /* No need for .mode_valid(), the bridges are checked by the core. */
 };
 
 /* -----------------------------------------------------------------------------
@@ -311,70 +318,71 @@ static const struct drm_connector_helper_funcs drm_bridge_connector_helper_funcs
  * pointer otherwise.
  */
 struct drm_connector *drm_bridge_connector_init(struct drm_device *drm,
-						struct drm_encoder *encoder)
+                                                struct drm_encoder *encoder)
 {
-	struct drm_bridge_connector *bridge_connector;
-	struct drm_connector *connector;
-	struct i2c_adapter *ddc = NULL;
-	struct drm_bridge *bridge;
-	int connector_type;
+    struct drm_bridge_connector *bridge_connector;
+    struct drm_connector *connector;
+    struct i2c_adapter *ddc = NULL;
+    struct drm_bridge *bridge;
+    int connector_type;
 
-	bridge_connector = kzalloc(sizeof(*bridge_connector), GFP_KERNEL);
-	if (!bridge_connector)
-		return ERR_PTR(-ENOMEM);
+    bridge_connector = kzalloc(sizeof(*bridge_connector), GFP_KERNEL);
+    if (!bridge_connector)
+        return ERR_PTR(-ENOMEM);
 
-	bridge_connector->encoder = encoder;
+    bridge_connector->encoder = encoder;
 
-	/*
-	 * TODO: Handle doublescan_allowed, stereo_allowed and
-	 * ycbcr_420_allowed.
-	 */
-	connector = &bridge_connector->base;
-	connector->interlace_allowed = true;
+    /*
+     * TODO: Handle doublescan_allowed, stereo_allowed and
+     * ycbcr_420_allowed.
+     */
+    connector = &bridge_connector->base;
+    connector->interlace_allowed = true;
 
-	/*
-	 * Initialise connector status handling. First locate the furthest
-	 * bridges in the pipeline that support HPD and output detection. Then
-	 * initialise the connector polling mode, using HPD if available and
-	 * falling back to polling if supported. If neither HPD nor output
-	 * detection are available, we don't support hotplug detection at all.
-	 */
-	connector_type = DRM_MODE_CONNECTOR_Unknown;
-	drm_for_each_bridge_in_chain(encoder, bridge) {
-		if (!bridge->interlace_allowed)
-			connector->interlace_allowed = false;
+    /*
+     * Initialise connector status handling. First locate the furthest
+     * bridges in the pipeline that support HPD and output detection. Then
+     * initialise the connector polling mode, using HPD if available and
+     * falling back to polling if supported. If neither HPD nor output
+     * detection are available, we don't support hotplug detection at all.
+     */
+    connector_type = DRM_MODE_CONNECTOR_Unknown;
+    drm_for_each_bridge_in_chain(encoder, bridge)
+    {
+        if (!bridge->interlace_allowed)
+            connector->interlace_allowed = false;
 
-		if (bridge->ops & DRM_BRIDGE_OP_EDID)
-			bridge_connector->bridge_edid = bridge;
-		if (bridge->ops & DRM_BRIDGE_OP_HPD)
-			bridge_connector->bridge_hpd = bridge;
-		if (bridge->ops & DRM_BRIDGE_OP_DETECT)
-			bridge_connector->bridge_detect = bridge;
-		if (bridge->ops & DRM_BRIDGE_OP_MODES)
-			bridge_connector->bridge_modes = bridge;
+        if (bridge->ops & DRM_BRIDGE_OP_EDID)
+            bridge_connector->bridge_edid = bridge;
+        if (bridge->ops & DRM_BRIDGE_OP_HPD)
+            bridge_connector->bridge_hpd = bridge;
+        if (bridge->ops & DRM_BRIDGE_OP_DETECT)
+            bridge_connector->bridge_detect = bridge;
+        if (bridge->ops & DRM_BRIDGE_OP_MODES)
+            bridge_connector->bridge_modes = bridge;
 
-		if (!drm_bridge_get_next_bridge(bridge))
-			connector_type = bridge->type;
+        if (!drm_bridge_get_next_bridge(bridge))
+            connector_type = bridge->type;
 
-		if (bridge->ddc)
-			ddc = bridge->ddc;
-	}
+        if (bridge->ddc)
+            ddc = bridge->ddc;
+    }
 
-	if (connector_type == DRM_MODE_CONNECTOR_Unknown) {
-		kfree(bridge_connector);
-		return ERR_PTR(-EINVAL);
-	}
+    if (connector_type == DRM_MODE_CONNECTOR_Unknown)
+    {
+        kfree(bridge_connector);
+        return ERR_PTR(-EINVAL);
+    }
 
-	drm_connector_init_with_ddc(drm, connector, &drm_bridge_connector_funcs,
-				    connector_type, ddc);
-	drm_connector_helper_add(connector, &drm_bridge_connector_helper_funcs);
+    drm_connector_init_with_ddc(drm, connector, &drm_bridge_connector_funcs,
+                                connector_type, ddc);
+    drm_connector_helper_add(connector, &drm_bridge_connector_helper_funcs);
 
-	if (bridge_connector->bridge_hpd)
-		connector->polled = DRM_CONNECTOR_POLL_HPD;
-	else if (bridge_connector->bridge_detect)
-		connector->polled = DRM_CONNECTOR_POLL_CONNECT
-				  | DRM_CONNECTOR_POLL_DISCONNECT;
+    if (bridge_connector->bridge_hpd)
+        connector->polled = DRM_CONNECTOR_POLL_HPD;
+    else if (bridge_connector->bridge_detect)
+        connector->polled = DRM_CONNECTOR_POLL_CONNECT | DRM_CONNECTOR_POLL_DISCONNECT;
 
-	return connector;
+    return connector;
 }
 EXPORT_SYMBOL_GPL(drm_bridge_connector_init);

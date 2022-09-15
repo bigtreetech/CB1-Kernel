@@ -190,16 +190,10 @@ kernel/drivers/iommu/iova.ko
 kernel/drivers/iommu/sun50i-iommu.ko
 kernel/drivers/gpu/drm/drm_kms_helper.ko
 kernel/drivers/gpu/drm/drm.ko
-kernel/drivers/gpu/drm/drm_mipi_dsi.ko
 kernel/drivers/gpu/drm/drm_panel_orientation_quirks.ko
 kernel/drivers/gpu/drm/sun4i/sun4i-drm.ko
 kernel/drivers/gpu/drm/sun4i/sun4i-tcon.ko
 kernel/drivers/gpu/drm/sun4i/sun4i_tv.ko
-kernel/drivers/gpu/drm/sun4i/sun6i_drc.ko
-kernel/drivers/gpu/drm/sun4i/sun4i-backend.ko
-kernel/drivers/gpu/drm/sun4i/sun4i-frontend.ko
-kernel/drivers/gpu/drm/sun4i/sun4i-drm-hdmi.ko
-kernel/drivers/gpu/drm/sun4i/sun6i_mipi_dsi.ko
 kernel/drivers/gpu/drm/sun4i/sun8i-drm-hdmi.ko
 kernel/drivers/gpu/drm/sun4i/sun8i-mixer.ko
 kernel/drivers/gpu/drm/sun4i/sun8i_tcon_top.ko

@@ -1093,7 +1093,7 @@
 		};
 
 		tcon_top: tcon-top@6510000 {
-			compatible = "allwinner,sun50i-h6-tcon-top";
+			compatible = "allwinner,sun50i-h616-tcon-top";
 			reg = <0x06510000 0x1000>;
 			clocks = <&ccu CLK_BUS_TCON_TOP>,
 				 <&ccu CLK_TCON_TV0>;

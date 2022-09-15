@@ -26,7 +26,6 @@
 #include <uapi/drm/sun4i_drm.h>
 
 #include "sun4i_drv.h"
-#include "sun4i_frontend.h"
 #include "sun4i_framebuffer.h"
 #include "sun4i_tcon.h"
 #include "sun8i_tcon_top.h"
@@ -196,8 +195,8 @@ static bool sun4i_drv_node_is_deu(struct device_node *node)
 
 static bool sun4i_drv_node_is_supported_frontend(struct device_node *node)
 {
-    if (IS_ENABLED(CONFIG_DRM_SUN4I_BACKEND))
-        return !!of_match_node(sun4i_frontend_of_table, node);
+    // if (IS_ENABLED(CONFIG_DRM_SUN4I_BACKEND))
+    //     return !!of_match_node(sun4i_frontend_of_table, node);
 
     return false;
 }
@@ -345,27 +344,32 @@ static int sun4i_drv_add_endpoints(struct device *dev,
      * child, but without adding it to the component list.
      * Otherwise, we obviously want to add it to the list.
      */
-    if (!sun4i_drv_node_is_frontend(node) &&
-        !of_device_is_available(node))
-        return 0;
+    // if (!sun4i_drv_node_is_frontend(node) &&
+    //     !of_device_is_available(node))
+    // {
+    //     printk("=== sun4i_drv_add_endpoints, sun4i_drv_node_is_frontend ==== \n");
+    //     return 0;
+    // }
 
     /*
      * The connectors will be the last nodes in our pipeline, we
      * can just bail out.
      */
     if (sun4i_drv_node_is_connector(node))
+    {
+        printk("=== sun4i_drv_add_endpoints, sun4i_drv_node_is_connector ==== \n");
         return 0;
+    }
 
     /*
      * If the device is either just a regular device, or an
      * enabled frontend supported by the driver, we add it to our
      * component list.
      */
-    if (!(sun4i_drv_node_is_frontend(node) ||
-          sun4i_drv_node_is_deu(node)) ||
-        (sun4i_drv_node_is_supported_frontend(node) &&
-         of_device_is_available(node)))
+    if (!(sun4i_drv_node_is_frontend(node) || sun4i_drv_node_is_deu(node)))
     {
+
+        printk("=== sun4i_drv_add_endpoints, sun4i_drv_node_is_supported_frontend ==== \n");
         /* Add current component */
         DRM_DEBUG_DRIVER("Adding component %pOF\n", node);
         drm_of_component_match_add(dev, match, compare_of, node);
@@ -378,9 +382,11 @@ static int sun4i_drv_add_endpoints(struct device *dev,
     /* TCON TOP has second and third output */
     if (sun4i_drv_node_is_tcon_top(node))
     {
+        printk("=== sun4i_drv_add_endpoints, sun4i_drv_node_is_tcon_top ==== \n");
         sun4i_drv_traverse_endpoints(list, node, 3);
         sun4i_drv_traverse_endpoints(list, node, 5);
     }
+    printk("=== sun4i_drv_add_endpoints,  return count; ==== \n");
 
     return count;
 }
@@ -442,12 +448,10 @@ static int sun4i_drv_probe(struct platform_device *pdev)
             return ret;
 
         count += ret;
+        printk("===> sun4i_drv_probe , count: %d ==== \n", count);
     }
 
-    if (count)
-        return component_master_add_with_match(&pdev->dev, &sun4i_drv_master_ops, match);
-    else
-        return 0;
+    return component_master_add_with_match(&pdev->dev, &sun4i_drv_master_ops, match);
 }
 
 static int sun4i_drv_remove(struct platform_device *pdev)
