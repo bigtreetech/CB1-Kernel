@@ -27,12 +27,6 @@ menuconfig DRM
 	  details.  You should also select and configure AGP
 	  (/dev/agpgart) support if it is available for your platform.
 
-
-config DRM_DP_AUX_BUS
-	tristate
-	depends on DRM
-	depends on OF
-
 config DRM_DEBUG_MM
 	bool "Insert extra checks and debug info into the DRM range managers"
 	default n
@@ -53,21 +47,6 @@ config DRM_KMS_HELPER
 	depends on DRM
 	help
 	  CRTC helpers for KMS drivers.
-
-config DRM_DEBUG_DP_MST_TOPOLOGY_REFS
-        bool "Enable refcount backtrace history in the DP MST helpers"
-	depends on STACKTRACE_SUPPORT
-        select STACKDEPOT
-        depends on DRM_KMS_HELPER
-        depends on DEBUG_KERNEL
-        depends on EXPERT
-        help
-          Enables debug tracing for topology refs in DRM's DP MST helpers. A
-          history of each topology reference/dereference will be printed to the
-          kernel log once a port or branch device's topology refcount reaches 0.
-
-          This has the potential to use a lot of memory and print some very
-          large kernel messages. If in doubt, say "N".
 
 config DRM_DEBUG_MODESET_LOCK
 	bool "Enable backtrace history for lock contention"
@@ -160,24 +139,10 @@ config DRM_KMS_CMA_HELPER
 	help
 	  Choose this if you need the KMS CMA helper functions
 
-config DRM_GEM_SHMEM_HELPER
-	bool
-	depends on DRM && MMU
-	help
-	  Choose this if you need the GEM shmem helper functions
-
-
 
 source "drivers/gpu/drm/sun4i/Kconfig"
 
 source "drivers/gpu/drm/bridge/Kconfig"
-
-
-# Keep legacy drivers last
-
-
-config DRM_EXPORT_FOR_TESTS
-	bool
 
 # Separate option because drm_panel_orientation_quirks.c is shared with fbdev
 config DRM_PANEL_ORIENTATION_QUIRKS
