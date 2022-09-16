@@ -244,6 +244,7 @@ int sun8i_mixer_drm_format_to_hw(u32 format, u32 *hw_format)
         if (de2_formats[i].drm_fmt == format)
         {
             *hw_format = de2_formats[i].de2_fmt;
+            // printk("----> sun8i_mixer_drm_format_to_hw, format = %d; de2_fmt = %d *****\n", format, *hw_format);
             return 0;
         }
 
@@ -259,8 +260,7 @@ static void sun8i_mixer_commit(struct sunxi_engine *engine)
     regmap_write(mixer->top_regs, SUN50I_MIXER_GLOBAL_DBUFF, SUN8I_MIXER_GLOBAL_DBUFF_ENABLE);
 }
 
-static struct drm_plane **sun8i_layers_init(struct drm_device *drm,
-                                            struct sunxi_engine *engine)
+static struct drm_plane **sun8i_layers_init(struct drm_device *drm, struct sunxi_engine *engine)
 {
     struct drm_plane **planes;
     struct sun8i_mixer *mixer = engine_to_sun8i_mixer(engine);
@@ -279,8 +279,8 @@ static struct drm_plane **sun8i_layers_init(struct drm_device *drm,
         layer = sun8i_vi_layer_init_one(drm, mixer, i);
         if (IS_ERR(layer))
         {
-            dev_err(drm->dev,
-                    "Couldn't initialize overlay plane\n");
+            printk("---> sun8i_layer.c, sun8i_vi_layer_init_one == Couldn't initialize %s plane; i=%d\n", i ? "overlay" : "primary", i);
+            dev_err(drm->dev, "Couldn't initialize overlay plane\n");
             return ERR_CAST(layer);
         }
 
@@ -294,8 +294,8 @@ static struct drm_plane **sun8i_layers_init(struct drm_device *drm,
         layer = sun8i_ui_layer_init_one(drm, mixer, i);
         if (IS_ERR(layer))
         {
-            dev_err(drm->dev, "Couldn't initialize %s plane\n",
-                    i ? "overlay" : "primary");
+            printk("---> sun8i_layer.c, sun8i_ui_layer_init_one == Couldn't initialize %s plane; i=%d\n", i ? "overlay" : "primary", i);
+            dev_err(drm->dev, "Couldn't initialize %s plane\n", i ? "overlay" : "primary");
             return ERR_CAST(layer);
         }
 
@@ -558,7 +558,6 @@ static int sun8i_mixer_probe(struct platform_device *pdev)
 static int sun8i_mixer_remove(struct platform_device *pdev)
 {
     component_del(&pdev->dev, &sun8i_mixer_ops);
-
     return 0;
 }
 

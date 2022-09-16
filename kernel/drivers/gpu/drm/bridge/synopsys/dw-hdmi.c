@@ -2445,8 +2445,7 @@ static struct edid *dw_hdmi_get_edid(struct dw_hdmi *hdmi, struct drm_connector 
         return NULL;
     }
 
-    dev_dbg(hdmi->dev, "got edid: width[%d] x height[%d]\n",
-            edid->width_cm, edid->height_cm);
+    dev_dbg(hdmi->dev, "got edid: width[%d] x height[%d]\n", edid->width_cm, edid->height_cm);
 
     hdmi->sink_is_hdmi = drm_detect_hdmi_monitor(edid);
     hdmi->sink_has_audio = drm_detect_monitor_audio(edid);
@@ -2461,15 +2460,13 @@ static struct edid *dw_hdmi_get_edid(struct dw_hdmi *hdmi, struct drm_connector 
 static enum drm_connector_status
 dw_hdmi_connector_detect(struct drm_connector *connector, bool force)
 {
-    struct dw_hdmi *hdmi = container_of(connector, struct dw_hdmi,
-                                        connector);
+    struct dw_hdmi *hdmi = container_of(connector, struct dw_hdmi, connector);
     return dw_hdmi_detect(hdmi);
 }
 
 static int dw_hdmi_connector_get_modes(struct drm_connector *connector)
 {
-    struct dw_hdmi *hdmi = container_of(connector, struct dw_hdmi,
-                                        connector);
+    struct dw_hdmi *hdmi = container_of(connector, struct dw_hdmi, connector);
     struct edid *edid;
     int ret;
 

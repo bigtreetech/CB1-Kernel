@@ -1339,9 +1339,7 @@ static int sun4i_tcon_bind(struct device *dev, struct device *master, void *data
     }
 #endif
 
-    regmap_update_bits(tcon->regs, SUN4I_TCON_GCTL_REG,
-                       SUN4I_TCON_GCTL_PAD_SEL,
-                       SUN4I_TCON_GCTL_PAD_SEL);
+    regmap_update_bits(tcon->regs, SUN4I_TCON_GCTL_REG, SUN4I_TCON_GCTL_PAD_SEL, SUN4I_TCON_GCTL_PAD_SEL);
 
     if (tcon->quirks->needs_de_be_mux)
     {
@@ -1355,12 +1353,8 @@ static int sun4i_tcon_bind(struct device *dev, struct device *master, void *data
          * switch between groups of layers. There might not be
          * a way to represent this constraint in DRM.
          */
-        regmap_update_bits(tcon->regs, SUN4I_TCON0_CTL_REG,
-                           SUN4I_TCON0_CTL_SRC_SEL_MASK,
-                           tcon->id);
-        regmap_update_bits(tcon->regs, SUN4I_TCON1_CTL_REG,
-                           SUN4I_TCON1_CTL_SRC_SEL_MASK,
-                           tcon->id);
+        regmap_update_bits(tcon->regs, SUN4I_TCON0_CTL_REG, SUN4I_TCON0_CTL_SRC_SEL_MASK, tcon->id);
+        regmap_update_bits(tcon->regs, SUN4I_TCON1_CTL_REG, SUN4I_TCON1_CTL_SRC_SEL_MASK, tcon->id);
     }
 
     list_add_tail(&tcon->list, &drv->tcon_list);
@@ -1422,8 +1416,7 @@ static int sun4i_tcon_remove(struct platform_device *pdev)
 }
 
 /* platform specific TCON muxing callbacks */
-static int sun50i_h616_tcon_tv_set_mux(struct sun4i_tcon *tcon,
-                                       const struct drm_encoder *encoder)
+static int sun50i_h616_tcon_tv_set_mux(struct sun4i_tcon *tcon, const struct drm_encoder *encoder)
 {
     struct device_node *port, *remote;
     struct platform_device *pdev;

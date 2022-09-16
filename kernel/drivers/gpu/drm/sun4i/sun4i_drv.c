@@ -174,66 +174,29 @@ static const struct component_master_ops sun4i_drv_master_ops = {
 
 static bool sun4i_drv_node_is_connector(struct device_node *node)
 {
-    return of_device_is_compatible(node, "hdmi-connector");
-}
+    bool ret;
+    ret = of_device_is_compatible(node, "hdmi-connector");
 
-static bool sun4i_drv_node_is_frontend(struct device_node *node)
-{
-    return of_device_is_compatible(node, "allwinner,sun4i-a10-display-frontend") ||
-           of_device_is_compatible(node, "allwinner,sun5i-a13-display-frontend") ||
-           of_device_is_compatible(node, "allwinner,sun6i-a31-display-frontend") ||
-           of_device_is_compatible(node, "allwinner,sun7i-a20-display-frontend") ||
-           of_device_is_compatible(node, "allwinner,sun8i-a23-display-frontend") ||
-           of_device_is_compatible(node, "allwinner,sun8i-a33-display-frontend") ||
-           of_device_is_compatible(node, "allwinner,sun9i-a80-display-frontend");
-}
-
-static bool sun4i_drv_node_is_deu(struct device_node *node)
-{
-    return of_device_is_compatible(node, "allwinner,sun9i-a80-deu");
-}
-
-static bool sun4i_drv_node_is_supported_frontend(struct device_node *node)
-{
-    // if (IS_ENABLED(CONFIG_DRM_SUN4I_BACKEND))
-    //     return !!of_match_node(sun4i_frontend_of_table, node);
-
-    return false;
+    // printk("----> sun4i_drv_node_is_connector ret = %d\n", ret);
+    return ret;
 }
 
 static bool sun4i_drv_node_is_tcon(struct device_node *node)
 {
-    return !!of_match_node(sun4i_tcon_of_table, node);
-}
-
-static bool sun4i_drv_node_is_tcon_with_ch0(struct device_node *node)
-{
-    const struct of_device_id *match;
-
-    match = of_match_node(sun4i_tcon_of_table, node);
-    if (match)
-    {
-        struct sun4i_tcon_quirks *quirks;
-
-        quirks = (struct sun4i_tcon_quirks *)match->data;
-
-        return quirks->has_channel_0;
-    }
-
-    return false;
+    // printk("----> sun4i_drv_node_is_tcon ==== \n");
+    return of_match_node(sun4i_tcon_of_table, node);
 }
 
 static bool sun4i_drv_node_is_tcon_top(struct device_node *node)
 {
-    return IS_ENABLED(CONFIG_DRM_SUN8I_TCON_TOP) &&
-           !!of_match_node(sun8i_tcon_top_of_table, node);
+    // printk("?----> sun4i_drv_node_is_tcon_top ==== \n");
+
+    return IS_ENABLED(CONFIG_DRM_SUN8I_TCON_TOP) && of_match_node(sun8i_tcon_top_of_table, node);
 }
 
 static int compare_of(struct device *dev, void *data)
 {
-    DRM_DEBUG_DRIVER("Comparing of node %pOF with %pOF\n",
-                     dev->of_node,
-                     data);
+    DRM_DEBUG_DRIVER("Comparing of node %pOF with %pOF\n", dev->of_node, data);
 
     return dev->of_node == data;
 }
@@ -274,6 +237,7 @@ static void sun4i_drv_traverse_endpoints(struct endpoint_list *list,
     if (!port)
     {
         DRM_DEBUG_DRIVER("No output to bind on port %d\n", port_id);
+        // printk("? ---- > No output to bind on port %d ===== \n", port_id);
         return;
     }
 
@@ -283,11 +247,13 @@ static void sun4i_drv_traverse_endpoints(struct endpoint_list *list,
         if (!remote)
         {
             DRM_DEBUG_DRIVER("Error retrieving the output node\n");
+            // printk(" ? ====> Error retrieving the output node ===== \n");
             continue;
         }
 
         if (sun4i_drv_node_is_tcon(node))
         {
+            // printk("====> sun4i_drv_node_is_tcon ===== \n");
             /*
              * TCON TOP is always probed before TCON. However, TCON
              * points back to TCON TOP when it is source for HDMI.
@@ -297,32 +263,9 @@ static void sun4i_drv_traverse_endpoints(struct endpoint_list *list,
             if (sun4i_drv_node_is_tcon_top(remote))
             {
                 DRM_DEBUG_DRIVER("TCON output endpoint is TCON TOP... skipping\n");
+                // printk("???---> TCON output endpoint is TCON TOP... skipping -------\n");
                 of_node_put(remote);
                 continue;
-            }
-
-            /*
-             * If the node is our TCON with channel 0, the first
-             * port is used for panel or bridges, and will not be
-             * part of the component framework.
-             */
-            if (sun4i_drv_node_is_tcon_with_ch0(node))
-            {
-                struct of_endpoint endpoint;
-
-                if (of_graph_parse_endpoint(ep, &endpoint))
-                {
-                    DRM_DEBUG_DRIVER("Couldn't parse endpoint\n");
-                    of_node_put(remote);
-                    continue;
-                }
-
-                if (!endpoint.id)
-                {
-                    DRM_DEBUG_DRIVER("Endpoint is our panel... skipping\n");
-                    of_node_put(remote);
-                    continue;
-                }
             }
         }
 
@@ -338,26 +281,11 @@ static int sun4i_drv_add_endpoints(struct device *dev,
     int count = 0;
 
     /*
-     * The frontend has been disabled in some of our old device
-     * trees. If we find a node that is the frontend and is
-     * disabled, we should just follow through and parse its
-     * child, but without adding it to the component list.
-     * Otherwise, we obviously want to add it to the list.
-     */
-    // if (!sun4i_drv_node_is_frontend(node) &&
-    //     !of_device_is_available(node))
-    // {
-    //     printk("=== sun4i_drv_add_endpoints, sun4i_drv_node_is_frontend ==== \n");
-    //     return 0;
-    // }
-
-    /*
      * The connectors will be the last nodes in our pipeline, we
      * can just bail out.
      */
     if (sun4i_drv_node_is_connector(node))
     {
-        printk("=== sun4i_drv_add_endpoints, sun4i_drv_node_is_connector ==== \n");
         return 0;
     }
 
@@ -366,15 +294,10 @@ static int sun4i_drv_add_endpoints(struct device *dev,
      * enabled frontend supported by the driver, we add it to our
      * component list.
      */
-    if (!(sun4i_drv_node_is_frontend(node) || sun4i_drv_node_is_deu(node)))
-    {
-
-        printk("=== sun4i_drv_add_endpoints, sun4i_drv_node_is_supported_frontend ==== \n");
-        /* Add current component */
-        DRM_DEBUG_DRIVER("Adding component %pOF\n", node);
-        drm_of_component_match_add(dev, match, compare_of, node);
-        count++;
-    }
+    /* Add current component */
+    DRM_DEBUG_DRIVER("Adding component %pOF\n", node);
+    drm_of_component_match_add(dev, match, compare_of, node);
+    count++;
 
     /* each node has at least one output */
     sun4i_drv_traverse_endpoints(list, node, 1);
@@ -382,11 +305,9 @@ static int sun4i_drv_add_endpoints(struct device *dev,
     /* TCON TOP has second and third output */
     if (sun4i_drv_node_is_tcon_top(node))
     {
-        printk("=== sun4i_drv_add_endpoints, sun4i_drv_node_is_tcon_top ==== \n");
         sun4i_drv_traverse_endpoints(list, node, 3);
         sun4i_drv_traverse_endpoints(list, node, 5);
     }
-    printk("=== sun4i_drv_add_endpoints,  return count; ==== \n");
 
     return count;
 }
@@ -394,6 +315,7 @@ static int sun4i_drv_add_endpoints(struct device *dev,
 #ifdef CONFIG_PM_SLEEP
 static int sun4i_drv_drm_sys_suspend(struct device *dev)
 {
+    printk("===> sun4i_drv_drm_sys_suspend ==== \n");
     struct drm_device *drm = dev_get_drvdata(dev);
 
     return drm_mode_config_helper_suspend(drm);
@@ -401,6 +323,7 @@ static int sun4i_drv_drm_sys_suspend(struct device *dev)
 
 static int sun4i_drv_drm_sys_resume(struct device *dev)
 {
+    printk("===> sun4i_drv_drm_sys_resume ==== \n");
     struct drm_device *drm = dev_get_drvdata(dev);
 
     return drm_mode_config_helper_resume(drm);
@@ -419,26 +342,12 @@ static int sun4i_drv_probe(struct platform_device *pdev)
     struct endpoint_list list;
     int i, ret, count = 0;
 
-    const char *value;
-
     INIT_KFIFO(list.fifo);
 
-    for (i = 0;; i++)
-    {
-        struct device_node *pipeline = of_parse_phandle(np, "allwinner,pipelines", i);
-        printk("===> %s connector-hdmi,sun4i_drv_probe %d ==== \n", pipeline, i);
+    struct device_node *pipeline = of_parse_phandle(np, "allwinner,pipelines", 0);
+    kfifo_put(&list.fifo, pipeline); // put pipeline into the list.fifo
 
-        value = of_get_property(pipeline, "compatible", NULL);
-        if (value)
-            printk("---> pipeline: %s\n", value);
-
-        if (!pipeline)
-            break;
-
-        kfifo_put(&list.fifo, pipeline);
-    }
-
-    while (kfifo_get(&list.fifo, &endpoint))
+    while (kfifo_get(&list.fifo, &endpoint)) // get data from the list.fifo, endpoint:address where to store the data
     {
         /* process this endpoint */
         ret = sun4i_drv_add_endpoints(&pdev->dev, &list, &match, endpoint);
@@ -448,7 +357,7 @@ static int sun4i_drv_probe(struct platform_device *pdev)
             return ret;
 
         count += ret;
-        printk("===> sun4i_drv_probe , count: %d ==== \n", count);
+        // printk("===> sun4i_drv_probe , count: %d ==== \n", count);
     }
 
     return component_master_add_with_match(&pdev->dev, &sun4i_drv_master_ops, match);
@@ -457,7 +366,6 @@ static int sun4i_drv_probe(struct platform_device *pdev)
 static int sun4i_drv_remove(struct platform_device *pdev)
 {
     component_master_del(&pdev->dev, &sun4i_drv_master_ops);
-
     return 0;
 }
 

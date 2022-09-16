@@ -293,36 +293,9 @@ kernel/drivers/char/tpm/st33zp24/tpm_st33zp24_spi.ko: kernel/drivers/char/tpm/st
 kernel/drivers/char/tpm/tpm_vtpm_proxy.ko:
 kernel/drivers/char/xillybus/xillybus_class.ko:
 kernel/drivers/char/xillybus/xillyusb.ko: kernel/drivers/char/xillybus/xillybus_class.ko
-kernel/drivers/gpu/drm/arm/display/komeda/komeda.ko:
-kernel/drivers/gpu/drm/rcar-du/rcar_lvds.ko:
-kernel/drivers/gpu/drm/i2c/ch7006.ko:
-kernel/drivers/gpu/drm/i2c/sil164.ko:
-kernel/drivers/gpu/drm/i2c/tda9950.ko:
-kernel/drivers/gpu/drm/panel/panel-olimex-lcd-olinuxino.ko:
-kernel/drivers/gpu/drm/panel/panel-tpo-td028ttec1.ko:
-kernel/drivers/gpu/drm/panel/panel-tpo-td043mtea1.ko:
-kernel/drivers/gpu/drm/panel/panel-tpo-tpg110.ko:
 kernel/drivers/gpu/drm/bridge/synopsys/dw-hdmi-ahb-audio.ko:
 kernel/drivers/gpu/drm/bridge/synopsys/dw-hdmi-cec.ko:
 kernel/drivers/gpu/drm/bridge/display-connector.ko:
-kernel/drivers/gpu/drm/tiny/gm12u320.ko:
-kernel/drivers/gpu/drm/tiny/simpledrm.ko:
-kernel/drivers/gpu/drm/tiny/hx8357d.ko: kernel/drivers/gpu/drm/drm_mipi_dbi.ko
-kernel/drivers/gpu/drm/tiny/ili9225.ko: kernel/drivers/gpu/drm/drm_mipi_dbi.ko
-kernel/drivers/gpu/drm/tiny/ili9341.ko: kernel/drivers/gpu/drm/drm_mipi_dbi.ko
-kernel/drivers/gpu/drm/tiny/ili9486.ko: kernel/drivers/gpu/drm/drm_mipi_dbi.ko
-kernel/drivers/gpu/drm/tiny/mi0283qt.ko: kernel/drivers/gpu/drm/drm_mipi_dbi.ko
-kernel/drivers/gpu/drm/tiny/repaper.ko:
-kernel/drivers/gpu/drm/tiny/st7586.ko: kernel/drivers/gpu/drm/drm_mipi_dbi.ko
-kernel/drivers/gpu/drm/tiny/st7735r.ko: kernel/drivers/gpu/drm/drm_mipi_dbi.ko
-kernel/drivers/gpu/drm/gud/gud.ko:
-kernel/drivers/gpu/drm/drm_mipi_dbi.ko:
-kernel/drivers/gpu/drm/scheduler/gpu-sched.ko:
-kernel/drivers/gpu/drm/vkms/vkms.ko:
-kernel/drivers/gpu/drm/etnaviv/etnaviv.ko: kernel/drivers/gpu/drm/scheduler/gpu-sched.ko
-kernel/drivers/gpu/drm/lima/lima.ko: kernel/drivers/gpu/drm/scheduler/gpu-sched.ko
-kernel/drivers/gpu/drm/panfrost/panfrost.ko: kernel/drivers/gpu/drm/scheduler/gpu-sched.ko
-kernel/drivers/gpu/drm/tidss/tidss.ko:
 kernel/drivers/base/regmap/regmap-spmi.ko:
 kernel/drivers/base/regmap/regmap-w1.ko: kernel/drivers/w1/wire.ko kernel/drivers/connector/cn.ko
 kernel/drivers/base/regmap/regmap-sccb.ko:
