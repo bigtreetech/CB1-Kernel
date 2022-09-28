@@ -168,8 +168,7 @@
 		syscon: syscon@3000000 {
 			compatible = "allwinner,sun50i-h616-system-control";
 			// reg = <0x03000000 0x1000>;
-            reg = <0x3000000 0x30>,<0x3000038 0x0fc8>;
-            // reg = <0x03000038 0x0FC8>;
+            reg = <0x03000000 0x30>,<0x03000038 0x0fc8>;
 			#address-cells = <1>;
 			#size-cells = <1>;
 			ranges;
@@ -673,16 +672,16 @@
 			status = "disabled";
 		};
 
-		// uart1: serial@5000400 {
-		// 	compatible = "snps,dw-apb-uart";
-		// 	reg = <0x05000400 0x400>;
-		// 	interrupts = <GIC_SPI 1 IRQ_TYPE_LEVEL_HIGH>;
-		// 	reg-shift = <2>;
-		// 	reg-io-width = <4>;
-		// 	clocks = <&ccu CLK_BUS_UART1>;
-		// 	resets = <&ccu RST_BUS_UART1>;
-		// 	status = "disabled";
-		// };
+		uart1: serial@5000400 {
+			compatible = "snps,dw-apb-uart";
+			reg = <0x05000400 0x400>;
+			interrupts = <GIC_SPI 1 IRQ_TYPE_LEVEL_HIGH>;
+			reg-shift = <2>;
+			reg-io-width = <4>;
+			clocks = <&ccu CLK_BUS_UART1>;
+			resets = <&ccu RST_BUS_UART1>;
+			status = "disabled";
+		};
 
 		uart2: serial@5000800 {
 			compatible = "snps,dw-apb-uart";
@@ -852,29 +851,9 @@
 			};
 		};
 
-		// emac1: ethernet@5030000 {
-		// 	compatible = "allwinner,sun50i-h616-emac";
-		// 	syscon = <&syscon 1>;
-		// 	reg = <0x05030000 0x10000>;
-		// 	interrupts = <GIC_SPI 15 IRQ_TYPE_LEVEL_HIGH>;
-		// 	interrupt-names = "macirq";
-		// 	resets = <&ccu RST_BUS_EMAC1>;
-		// 	reset-names = "stmmaceth";
-		// 	clocks = <&ccu CLK_BUS_EMAC1>;
-		// 	clock-names = "stmmaceth";
-		// 	status = "disabled";
-
-		// 	mdio1: mdio {
-		// 		compatible = "snps,dwmac-mdio";
-		// 		#address-cells = <1>;
-		// 		#size-cells = <0>;
-		// 	};
-		// };
-
         emac1: ethernet@5030000 { 
             compatible = "allwinner,sunxi-gmac";
 			// syscon = <&syscon 1>;
-            // reg = <0x05030000 0x10000>;
 			reg = <0x05030000 0x10000>,
                   <0x03000034 0x4>;
 			reg-names = "gmac1_reg","ephy_reg";      
