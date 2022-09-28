@@ -516,7 +516,7 @@ struct sun8i_vi_layer *sun8i_vi_layer_init_one(struct drm_device *drm,
     const u32 *formats;
     int ret;
 
-    printk("---> vi_layer.c ===> sun8i_vi_layer_init_one ====\n");
+    // printk("---> vi_layer.c ===> sun8i_vi_layer_init_one ====\n");
 
     layer = devm_kzalloc(drm->dev, sizeof(*layer), GFP_KERNEL);
     if (!layer)

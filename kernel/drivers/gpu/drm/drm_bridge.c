@@ -162,8 +162,6 @@ static LIST_HEAD(bridge_list);
  */
 void drm_bridge_add(struct drm_bridge *bridge)
 {
-    printk("===> drm_bridge_add ==== \n");
-
     mutex_init(&bridge->hpd_mutex);
 
     mutex_lock(&bridge_lock);

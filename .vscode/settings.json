@@ -1,0 +1,5 @@
+{
+    "files.associations": {
+        "sunxi_sram.h": "c"
+    }
+}

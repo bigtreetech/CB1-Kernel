@@ -273,7 +273,6 @@ static const struct component_ops sun8i_dw_hdmi_ops = {
 
 static int sun8i_dw_hdmi_probe(struct platform_device *pdev)
 {
-    printk("=== connector-hdmi,sun8i_dw_hdmi_probe ==== \n");
     return component_add(&pdev->dev, &sun8i_dw_hdmi_ops);
 }
 

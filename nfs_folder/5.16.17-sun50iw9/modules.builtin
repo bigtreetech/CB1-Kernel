@@ -144,6 +144,8 @@ kernel/drivers/phy/samsung/phy-exynos-usb2.ko
 kernel/drivers/pinctrl/pinctrl-single.ko
 kernel/drivers/gpio/gpio-generic.ko
 kernel/drivers/gpio/gpio-dwapb.ko
+kernel/drivers/pwm/pwm-sun4i.ko
+kernel/drivers/pwm/pwm-sunxi-enhance.ko
 kernel/drivers/video/backlight/backlight.ko
 kernel/drivers/video/fbdev/core/fb.ko
 kernel/drivers/video/fbdev/core/cfbfillrect.ko
@@ -244,8 +246,8 @@ kernel/drivers/net/mdio/mdio-sun4i.ko
 kernel/drivers/net/pcs/pcs_xpcs.ko
 kernel/drivers/net/can/dev/can-dev.ko
 kernel/drivers/net/can/spi/mcp251x.ko
-kernel/drivers/net/ethernet/allwinner/sun4i-emac.ko
-kernel/drivers/net/ethernet/altera/altera_tse.ko
+kernel/drivers/net/ethernet/allwinner/sunxi-gmac.ko
+kernel/drivers/net/ethernet/allwinner/sunxi_gmac_ops.ko
 kernel/drivers/net/ethernet/stmicro/stmmac/stmmac.ko
 kernel/drivers/net/ethernet/stmicro/stmmac/stmmac-platform.ko
 kernel/drivers/net/ethernet/stmicro/stmmac/dwmac-generic.ko

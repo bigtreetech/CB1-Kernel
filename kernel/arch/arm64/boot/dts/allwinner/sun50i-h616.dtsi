@@ -167,7 +167,9 @@
 
 		syscon: syscon@3000000 {
 			compatible = "allwinner,sun50i-h616-system-control";
-			reg = <0x03000000 0x1000>;
+			// reg = <0x03000000 0x1000>;
+            reg = <0x3000000 0x30>,<0x3000038 0x0fc8>;
+            // reg = <0x03000038 0x0FC8>;
 			#address-cells = <1>;
 			#size-cells = <1>;
 			ranges;
@@ -260,7 +262,7 @@
 			pwm-base = <0x0>;
 			sunxi-pwms = <&pwm0>, <&pwm1>, <&pwm2>, <&pwm3>, <&pwm4>, <&pwm5>;
 			#pwm-cells = <3>;
-			status = "disabled";
+			status = "okay";
 		};
 
 		pwm0: pwm0@0300a000 {
@@ -388,7 +390,7 @@
 
 			pwm5_pin: pwm5-pin {
 				pins = "PA12";
-				function = "pwm4";
+				function = "pwm5";
 			};
 
 			mmc0_pins: mmc0-pins {
@@ -850,20 +852,52 @@
 			};
 		};
 
-		emac1: ethernet@5030000 {
-			compatible = "allwinner,sun50i-h616-emac";
-			syscon = <&syscon 1>;
-			reg = <0x05030000 0x10000>;
-			interrupts = <GIC_SPI 15 IRQ_TYPE_LEVEL_HIGH>;
-			interrupt-names = "macirq";
+		// emac1: ethernet@5030000 {
+		// 	compatible = "allwinner,sun50i-h616-emac";
+		// 	syscon = <&syscon 1>;
+		// 	reg = <0x05030000 0x10000>;
+		// 	interrupts = <GIC_SPI 15 IRQ_TYPE_LEVEL_HIGH>;
+		// 	interrupt-names = "macirq";
+		// 	resets = <&ccu RST_BUS_EMAC1>;
+		// 	reset-names = "stmmaceth";
+		// 	clocks = <&ccu CLK_BUS_EMAC1>;
+		// 	clock-names = "stmmaceth";
+		// 	status = "disabled";
+
+		// 	mdio1: mdio {
+		// 		compatible = "snps,dwmac-mdio";
+		// 		#address-cells = <1>;
+		// 		#size-cells = <0>;
+		// 	};
+		// };
+
+        emac1: ethernet@5030000 { 
+            compatible = "allwinner,sunxi-gmac";
+			// syscon = <&syscon 1>;
+            // reg = <0x05030000 0x10000>;
+			reg = <0x05030000 0x10000>,
+                  <0x03000034 0x4>;
+			reg-names = "gmac1_reg","ephy_reg";      
+            interrupts = <GIC_SPI 15 IRQ_TYPE_LEVEL_HIGH>;          
+			interrupt-names = "gmacirq";
 			resets = <&ccu RST_BUS_EMAC1>;
 			reset-names = "stmmaceth";
-			clocks = <&ccu CLK_BUS_EMAC1>;
-			clock-names = "stmmaceth";
-			status = "disabled";
+			clocks = <&ccu CLK_BUS_EMAC1>,<&ccu CLK_EMAC_25M>;
+			clock-names = "bus-emac1","emac-25m";
+			pinctrl-0 = <&rmii_pins>;
+			pinctrl-names = "default";
+			phy-mode = "rmii";
+			tx-delay = <7>;
+			rx-delay = <31>;
+			phy-rst;
+			gmac-power0;
+			gmac-power1;
+			gmac-power2;
+            status = "disabled";
 
 			mdio1: mdio {
-				compatible = "snps,dwmac-mdio";
+                // compatible = "snps,dwmac-mdio";
+				compatible = "ethernet-phy-ieee802.3-c22";
 				#address-cells = <1>;
 				#size-cells = <0>;
 			};

@@ -276,6 +276,9 @@ static inline const char *phy_modes(phy_interface_t interface)
 #define PHY_INIT_TIMEOUT	100000
 #define PHY_FORCE_TIMEOUT	10
 
+#define PHY_STATE_TIME		1
+#define PHY_AN_TIMEOUT		10
+
 #define PHY_MAX_ADDR	32
 
 /* Used when trying to connect to a specific phy (mii bus id:phy device id) */
@@ -490,6 +493,7 @@ struct phy_device *mdiobus_scan(struct mii_bus *bus, int addr);
  * PHY is in an error state.
  * - phy_start moves to @PHY_UP
  */
+/*
 enum phy_state {
 	PHY_DOWN = 0,
 	PHY_READY,
@@ -498,6 +502,22 @@ enum phy_state {
 	PHY_RUNNING,
 	PHY_NOLINK,
 	PHY_CABLETEST,
+};
+*/
+enum phy_state {
+	PHY_DOWN = 0,
+	PHY_STARTING,
+	PHY_READY,
+	PHY_PENDING,
+	PHY_UP,
+	PHY_AN,
+	PHY_RUNNING,
+	PHY_NOLINK,
+	PHY_FORCING,
+	PHY_CHANGELINK,
+	PHY_HALTED,
+	PHY_RESUMING,
+    PHY_CABLETEST
 };
 
 #define MDIO_MMD_NUM 32
@@ -1827,5 +1847,8 @@ module_exit(phy_module_exit)
 
 bool phy_driver_is_genphy(struct phy_device *phydev);
 bool phy_driver_is_genphy_10g(struct phy_device *phydev);
+
+int phy_ethtool_sset(struct phy_device *phydev, struct ethtool_cmd *cmd);
+int phy_ethtool_gset(struct phy_device *phydev, struct ethtool_cmd *cmd);
 
 #endif /* __PHY_H */

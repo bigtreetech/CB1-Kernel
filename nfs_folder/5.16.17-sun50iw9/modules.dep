@@ -245,10 +245,6 @@ kernel/drivers/gpio/gpio-syscon.ko:
 kernel/drivers/gpio/gpio-tpic2810.ko:
 kernel/drivers/gpio/gpio-virtio.ko:
 kernel/drivers/gpio/gpio-xra1403.ko:
-kernel/drivers/pwm/pwm-atmel-tcb.ko:
-kernel/drivers/pwm/pwm-pca9685.ko:
-kernel/drivers/pwm/pwm-sun4i.ko:
-kernel/drivers/pwm/pwm-sunxi-enhance.ko:
 kernel/drivers/video/backlight/lcd.ko:
 kernel/drivers/video/backlight/otm3225a.ko: kernel/drivers/video/backlight/lcd.ko
 kernel/drivers/video/backlight/gpio_backlight.ko:
@@ -407,16 +403,11 @@ kernel/drivers/spi/spi-slave-system-control.ko:
 kernel/drivers/net/phy/adin.ko:
 kernel/drivers/net/phy/aquantia.ko:
 kernel/drivers/net/phy/ax88796b.ko:
-kernel/drivers/net/phy/davicom.ko:
-kernel/drivers/net/phy/icplus.ko:
-kernel/drivers/net/phy/marvell.ko:
 kernel/drivers/net/phy/microchip.ko:
 kernel/drivers/net/phy/motorcomm.ko:
-kernel/drivers/net/phy/qsemi.ko:
 kernel/drivers/net/phy/realtek.ko:
 kernel/drivers/net/phy/smsc.ko:
 kernel/drivers/net/phy/ste10Xp.ko:
-kernel/drivers/net/phy/vitesse.ko:
 kernel/drivers/net/mdio/mdio-ipq8064.ko:
 kernel/drivers/net/mdio/mdio-mscc-miim.ko:
 kernel/drivers/net/mdio/mdio-mvusb.ko:
@@ -444,11 +435,6 @@ kernel/drivers/net/hamradio/bpqether.ko: kernel/net/ax25/ax25.ko
 kernel/drivers/net/hamradio/baycom_ser_fdx.ko: kernel/drivers/net/hamradio/hdlcdrv.ko kernel/net/ax25/ax25.ko
 kernel/drivers/net/hamradio/hdlcdrv.ko: kernel/net/ax25/ax25.ko
 kernel/drivers/net/hamradio/baycom_ser_hdx.ko: kernel/drivers/net/hamradio/hdlcdrv.ko kernel/net/ax25/ax25.ko
-kernel/drivers/net/wireless/realtek/rtlwifi/rtlwifi.ko: kernel/net/mac80211/mac80211.ko kernel/net/wireless/cfg80211.ko kernel/lib/crypto/libarc4.ko
-kernel/drivers/net/wireless/realtek/rtlwifi/rtl_usb.ko: kernel/drivers/net/wireless/realtek/rtlwifi/rtlwifi.ko kernel/net/mac80211/mac80211.ko kernel/net/wireless/cfg80211.ko kernel/lib/crypto/libarc4.ko
-kernel/drivers/net/wireless/realtek/rtlwifi/rtl8192c/rtl8192c-common.ko: kernel/drivers/net/wireless/realtek/rtlwifi/rtlwifi.ko kernel/net/mac80211/mac80211.ko kernel/net/wireless/cfg80211.ko kernel/lib/crypto/libarc4.ko
-kernel/drivers/net/wireless/realtek/rtlwifi/rtl8192cu/rtl8192cu.ko: kernel/drivers/net/wireless/realtek/rtlwifi/rtl_usb.ko kernel/drivers/net/wireless/realtek/rtlwifi/rtl8192c/rtl8192c-common.ko kernel/drivers/net/wireless/realtek/rtlwifi/rtlwifi.ko kernel/net/mac80211/mac80211.ko kernel/net/wireless/cfg80211.ko kernel/lib/crypto/libarc4.ko
-kernel/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu.ko: kernel/net/mac80211/mac80211.ko kernel/net/wireless/cfg80211.ko kernel/lib/crypto/libarc4.ko
 kernel/drivers/net/wireless/rndis_wlan.ko: kernel/drivers/net/usb/rndis_host.ko kernel/drivers/net/usb/cdc_ether.ko kernel/drivers/net/usb/usbnet.ko kernel/net/wireless/cfg80211.ko
 kernel/drivers/net/wireless/virt_wifi.ko: kernel/net/wireless/cfg80211.ko
 kernel/drivers/net/wireless/rtl8189fs/8189fs.ko: kernel/net/wireless/cfg80211.ko

@@ -230,7 +230,6 @@ static int hdmic_probe_of(struct platform_device *pdev)
 
 static int hdmic_probe(struct platform_device *pdev)
 {
-    printk("=== connector-hdmi,hdmic_probe ==== \n");
     struct panel_drv_data *ddata;
     struct omap_dss_device *dssdev;
     int r;

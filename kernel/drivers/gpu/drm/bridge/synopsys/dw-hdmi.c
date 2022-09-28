@@ -2431,8 +2431,6 @@ static enum drm_connector_status dw_hdmi_detect(struct dw_hdmi *hdmi)
 
 static struct edid *dw_hdmi_get_edid(struct dw_hdmi *hdmi, struct drm_connector *connector)
 {
-    printk("---> dw-hdmi.c ===> dw_hdmi_get_edid ====\n");
-
     struct edid *edid;
 
     if (!hdmi->ddc)

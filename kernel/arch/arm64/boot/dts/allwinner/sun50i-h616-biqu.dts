@@ -17,7 +17,8 @@
 	compatible = "allwinner,sun50i-h616";
 
 	aliases {
-		ethernet0 = &emac0;
+        ethernet0 = &emac1;
+		// ethernet0 = &emac0;
 		serial0 = &uart0;
 	};
 
@@ -163,7 +164,6 @@
 	status = "okay";
 };
 
-
 /* USB 2 & 3 are on headers only. */
 
 &emac0 {
@@ -174,11 +174,30 @@
     phy-supply = <&reg_dldo1>;
 	allwinner,rx-delay-ps = <3100>;
 	allwinner,tx-delay-ps = <700>;
-	status = "okay";
+	// status = "okay";
+    status = "disabled";
 };
 
 &mdio0 {
 	ext_rgmii_phy: ethernet-phy@1 {
+		compatible = "ethernet-phy-ieee802.3-c22";
+		reg = <1>;
+	};
+};
+
+&emac1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&rmii_pins>;
+	phy-mode = "rmii";
+	phy-handle = <&rmii_phy>;
+	phy-supply = <&reg_dldo1>;
+	allwinner,rx-delay-ps = <3100>;
+	allwinner,tx-delay-ps = <700>;
+	status = "okay";
+};
+
+&mdio1 {
+	rmii_phy: ethernet-phy@1 {
 		compatible = "ethernet-phy-ieee802.3-c22";
 		reg = <1>;
 	};
@@ -314,7 +333,7 @@
     can: mcp2515@0 {
         compatible = "microchip,mcp2515";
         clocks = <&mcp2515_clock>; 				
-        status = "okay";
+        status = "disabled";
         
         reg = <0>;
         spi-max-frequency = <5000000>;

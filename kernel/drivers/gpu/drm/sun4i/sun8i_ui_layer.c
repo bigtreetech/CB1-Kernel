@@ -380,7 +380,7 @@ struct sun8i_ui_layer *sun8i_ui_layer_init_one(struct drm_device *drm,
     unsigned int plane_cnt;
     int ret;
 
-    printk("---> ui_layer.c ===> sun8i_ui_layer_init_one ====\n");
+    // printk("---> ui_layer.c ===> sun8i_ui_layer_init_one ====\n");
 
     layer = devm_kzalloc(drm->dev, sizeof(*layer), GFP_KERNEL);
     if (!layer)

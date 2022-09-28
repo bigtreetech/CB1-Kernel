@@ -336,7 +336,6 @@ static const struct dev_pm_ops sun4i_drv_drm_pm_ops = {
 
 static int sun4i_drv_probe(struct platform_device *pdev)
 {
-    printk("=== connector-hdmi,sun4i_drv_probe ==== \n");
     struct component_match *match = NULL;
     struct device_node *np = pdev->dev.of_node, *endpoint;
     struct endpoint_list list;

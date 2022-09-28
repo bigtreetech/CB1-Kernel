@@ -23,7 +23,7 @@
 #include <linux/mii.h>
 #include <linux/mm.h>
 #include <linux/module.h>
-#include <linux/netdevice.h>
+#include <linux/netdevice.h> 
 #include <linux/phy.h>
 #include <linux/phy_led_triggers.h>
 #include <linux/property.h>
@@ -2374,50 +2374,179 @@ int genphy_read_status_fixed(struct phy_device *phydev)
 }
 EXPORT_SYMBOL(genphy_read_status_fixed);
 
-/**
- * genphy_read_status - check the link status and update current link state
- * @phydev: target phy_device struct
- *
- * Description: Check the link, then figure out the current state
- *   by comparing what we advertise with what the link partner
- *   advertises.  Start by checking the gigabit possibilities,
- *   then move on to 10/100.
- */
 int genphy_read_status(struct phy_device *phydev)
 {
-	int err, old_link = phydev->link;
+#if 1
+	int adv;
+	int err;
+	int lpa;
+	int lpagb = 0;
+	int common_adv;
+	int common_adv_gb = 0;
+    
+  //  printk("==> %s: enter\n",__func__);
 
 	/* Update the link, but return if there was an error */
 	err = genphy_update_link(phydev);
 	if (err)
 		return err;
 
+	//phydev->lp_advertising = 0;
+
+	if (AUTONEG_ENABLE == phydev->autoneg) {
+        /*
+		if (phydev->supported & (SUPPORTED_1000baseT_Half SUPPORTED_1000baseT_Full)) 
+        {
+			lpagb = phy_read(phydev, MII_STAT1000);
+			if (lpagb < 0)
+				return lpagb;
+
+			adv = phy_read(phydev, MII_CTRL1000);
+			if (adv < 0)
+				return adv;
+
+			//phydev->lp_advertising = mii_stat1000_to_ethtool_lpa_t(lpagb);
+			common_adv_gb = lpagb & adv << 2;
+		}
+*/
+		lpa = phy_read(phydev, MII_LPA);
+		if (lpa < 0)
+			return lpa;
+
+		//phydev->lp_advertising |= mii_lpa_to_ethtool_lpa_t(lpa);
+
+		adv = phy_read(phydev, MII_ADVERTISE);
+		if (adv < 0)
+			return adv;
+
+		common_adv = lpa & adv;
+
+		phydev->speed = SPEED_10;
+		phydev->duplex = DUPLEX_HALF;
+		phydev->pause = 0;
+		phydev->asym_pause = 0;
+        
+      //  printk("==> %s: adv = 0x%04x , lpa = 0x%04x , common_adv_gb = 0x%08x\n",__func__,adv,lpa,common_adv_gb); //adv = 01e1 , lpa = 4de1
+        
+
+		if (common_adv_gb & (LPA_1000FULL | LPA_1000HALF)) {
+			phydev->speed = SPEED_1000;
+
+			if (common_adv_gb & LPA_1000FULL)
+            {
+				phydev->duplex = DUPLEX_FULL;
+                printk("==> %s: phydev->speed = 1000\n",__func__);
+            }
+		} 
+		else if (common_adv & (LPA_100FULL | LPA_100HALF)) 
+        {
+			phydev->speed = SPEED_100;
+            
+          //  printk("==> %s: phydev->speed = 100\n",__func__);
+          
+			if (common_adv & LPA_100FULL)
+            {
+				phydev->duplex = DUPLEX_FULL;
+                printk("==> %s: phydev->speed = 100 full\n",__func__);
+            }
+		} 
+		else
+			if (common_adv & LPA_10FULL)
+            {
+                printk("==> %s: phydev->speed = 10 full\n",__func__);
+				phydev->duplex = DUPLEX_FULL;
+            }
+#if 1
+		if (phydev->duplex == DUPLEX_FULL) {
+           // printk("==> %s: pause\n",__func__);
+			phydev->pause = lpa & LPA_PAUSE_CAP ? 1 : 0;
+			phydev->asym_pause = lpa & LPA_PAUSE_ASYM ? 1 : 0;
+		}
+#endif
+	} 
+	else {
+		int bmcr = phy_read(phydev, MII_BMCR);
+        
+        
+
+		if (bmcr < 0)
+			return bmcr;
+
+		if (bmcr & BMCR_FULLDPLX)
+			phydev->duplex = DUPLEX_FULL;
+		else
+			phydev->duplex = DUPLEX_HALF;
+
+		if (bmcr & BMCR_SPEED1000)
+			phydev->speed = SPEED_1000;
+		else if (bmcr & BMCR_SPEED100)
+			phydev->speed = SPEED_100;
+		else
+			phydev->speed = SPEED_10;
+
+		phydev->pause = 0;
+		phydev->asym_pause = 0;
+        
+        printk("==> %s: bmcr = 0x%04x,phydev->speed = %d\n",__func__,bmcr,phydev->speed);
+	}
+
+	return 0;  
+    
+#else 
+	int err, old_link = phydev->link;
+
+	/* Update the link, but return if there was an error */
+	err = genphy_update_link(phydev);
+	if (err)
+    {
+        printk("==> %s: err 1\n",__func__);
+		return err;
+    }
+
 	/* why bother the PHY if nothing can have changed */
 	if (phydev->autoneg == AUTONEG_ENABLE && old_link && phydev->link)
+    {
+        printk("==> %s: err 2\n",__func__);
 		return 0;
+    }
 
-	phydev->speed = SPEED_UNKNOWN;
-	phydev->duplex = DUPLEX_UNKNOWN;
+	phydev->speed = 100;
+	phydev->duplex = 1;
 	phydev->pause = 0;
 	phydev->asym_pause = 0;
 
 	err = genphy_read_master_slave(phydev);
 	if (err < 0)
+    {
+        printk("==> %s: err 3\n",__func__);
 		return err;
+    }
 
 	err = genphy_read_lpa(phydev);
 	if (err < 0)
+    {
+        printk("==> %s: err 4\n",__func__);
 		return err;
+    }
 
-	if (phydev->autoneg == AUTONEG_ENABLE && phydev->autoneg_complete) {
+	if (phydev->autoneg == AUTONEG_ENABLE && phydev->autoneg_complete) 
+    {
 		phy_resolve_aneg_linkmode(phydev);
-	} else if (phydev->autoneg == AUTONEG_DISABLE) {
+        printk("==> %s: phy_resolve_aneg_linkmode\n",__func__);
+	} 
+	else if (phydev->autoneg == AUTONEG_DISABLE) 
+    {
+        printk("==> %s: genphy_read_status_fixed\n",__func__);
 		err = genphy_read_status_fixed(phydev);
 		if (err < 0)
+        {
+            printk("==> %s: err 5\n",__func__);
 			return err;
+        }
 	}
 
 	return 0;
+#endif
 }
 EXPORT_SYMBOL(genphy_read_status);
 
