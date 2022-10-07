@@ -258,7 +258,7 @@ fingerprint_image()
 # Create kernel boot logo from packages/blobs/splash/logo.png and packages/blobs/splash/spinner.gif (animated)
 # and place to the file /lib/firmware/bootsplash
 #--------------------------------------------------------------------------------------------------------------------------------
-function boot_logo ()
+function boot_logo()
 {
     display_alert "Building kernel splash logo" "$RELEASE" "info"
 
@@ -315,53 +315,6 @@ function boot_logo ()
 	--blob "${SDCARD}"/tmp/throbber25.rgb \
 	--blob "${SDCARD}"/tmp/throbber26.rgb \
 	--blob "${SDCARD}"/tmp/throbber27.rgb \
-	--blob "${SDCARD}"/tmp/throbber28.rgb \
-	--blob "${SDCARD}"/tmp/throbber29.rgb \
-	--blob "${SDCARD}"/tmp/throbber30.rgb \
-	--blob "${SDCARD}"/tmp/throbber31.rgb \
-	--blob "${SDCARD}"/tmp/throbber32.rgb \
-	--blob "${SDCARD}"/tmp/throbber33.rgb \
-	--blob "${SDCARD}"/tmp/throbber34.rgb \
-	--blob "${SDCARD}"/tmp/throbber35.rgb \
-	--blob "${SDCARD}"/tmp/throbber36.rgb \
-	--blob "${SDCARD}"/tmp/throbber37.rgb \
-	--blob "${SDCARD}"/tmp/throbber38.rgb \
-	--blob "${SDCARD}"/tmp/throbber39.rgb \
-	--blob "${SDCARD}"/tmp/throbber40.rgb \
-	--blob "${SDCARD}"/tmp/throbber41.rgb \
-	--blob "${SDCARD}"/tmp/throbber42.rgb \
-	--blob "${SDCARD}"/tmp/throbber43.rgb \
-	--blob "${SDCARD}"/tmp/throbber44.rgb \
-	--blob "${SDCARD}"/tmp/throbber45.rgb \
-	--blob "${SDCARD}"/tmp/throbber46.rgb \
-	--blob "${SDCARD}"/tmp/throbber47.rgb \
-	--blob "${SDCARD}"/tmp/throbber48.rgb \
-	--blob "${SDCARD}"/tmp/throbber49.rgb \
-	--blob "${SDCARD}"/tmp/throbber50.rgb \
-	--blob "${SDCARD}"/tmp/throbber51.rgb \
-	--blob "${SDCARD}"/tmp/throbber52.rgb \
-	--blob "${SDCARD}"/tmp/throbber53.rgb \
-	--blob "${SDCARD}"/tmp/throbber54.rgb \
-	--blob "${SDCARD}"/tmp/throbber55.rgb \
-	--blob "${SDCARD}"/tmp/throbber56.rgb \
-	--blob "${SDCARD}"/tmp/throbber57.rgb \
-	--blob "${SDCARD}"/tmp/throbber58.rgb \
-	--blob "${SDCARD}"/tmp/throbber59.rgb \
-	--blob "${SDCARD}"/tmp/throbber60.rgb \
-	--blob "${SDCARD}"/tmp/throbber61.rgb \
-	--blob "${SDCARD}"/tmp/throbber62.rgb \
-	--blob "${SDCARD}"/tmp/throbber63.rgb \
-	--blob "${SDCARD}"/tmp/throbber64.rgb \
-	--blob "${SDCARD}"/tmp/throbber65.rgb \
-	--blob "${SDCARD}"/tmp/throbber66.rgb \
-	--blob "${SDCARD}"/tmp/throbber67.rgb \
-	--blob "${SDCARD}"/tmp/throbber68.rgb \
-	--blob "${SDCARD}"/tmp/throbber69.rgb \
-	--blob "${SDCARD}"/tmp/throbber70.rgb \
-	--blob "${SDCARD}"/tmp/throbber71.rgb \
-	--blob "${SDCARD}"/tmp/throbber72.rgb \
-	--blob "${SDCARD}"/tmp/throbber73.rgb \
-	--blob "${SDCARD}"/tmp/throbber74.rgb \
 	"${SDCARD}"/lib/firmware/bootsplash.armbian >/dev/null 2>&1
 
 	# enable additional services

@@ -16,7 +16,7 @@
 	compatible = "allwinner,sun50i-h616";
 
 	aliases {
-		ethernet0 = &emac0;
+		ethernet0 = &emac1;
 		serial0 = &uart0;
 	};
 

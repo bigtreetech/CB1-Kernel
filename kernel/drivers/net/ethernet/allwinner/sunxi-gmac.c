@@ -402,8 +402,7 @@ static int geth_mdio_read(struct mii_bus *bus, int phyaddr, int phyreg)
     return (int)sunxi_mdio_read(priv->base, phyaddr, phyreg);
 }
 
-static int geth_mdio_write(struct mii_bus *bus, int phyaddr,
-                           int phyreg, u16 data)
+static int geth_mdio_write(struct mii_bus *bus, int phyaddr, int phyreg, u16 data)
 {
     struct net_device *ndev = bus->priv;
     struct geth_priv *priv = netdev_priv(ndev);
@@ -444,8 +443,7 @@ static void geth_adjust_link(struct net_device *ndev)
         }
         /* Flow Control operation */
         if (phydev->pause)
-            sunxi_flow_ctrl(priv->base, phydev->duplex,
-                            flow_ctrl, pause);
+            sunxi_flow_ctrl(priv->base, phydev->duplex, flow_ctrl, pause);
 
         if (phydev->speed != priv->speed)
         {
@@ -463,8 +461,6 @@ static void geth_adjust_link(struct net_device *ndev)
 
         if (new_state)
             sunxi_set_link_mode(priv->base, priv->duplex, priv->speed);
-
-        printk("==> link mode: duplex = %d , speed = %d\n", priv->duplex, priv->speed);
 
 #ifdef LOOPBACK_DEBUG
         phydev->state = PHY_FORCING;
@@ -492,8 +488,6 @@ static int geth_phy_init(struct net_device *ndev)
     struct phy_device *phydev = ndev->phydev;
     int tries = 3;
 
-    printk("==> geth_phy_init\n");
-
     /* Fixup the phy interface type */
     if (priv->phy_ext == INT_PHY)
     {
@@ -504,11 +498,9 @@ static int geth_phy_init(struct net_device *ndev)
         /* If config gpio to reset the phy device, we should reset it */
         if (gpio_is_valid(priv->phyrst))
         {
-            gpio_direction_output(priv->phyrst,
-                                  priv->rst_active_low);
+            gpio_direction_output(priv->phyrst, priv->rst_active_low);
             msleep(50);
-            gpio_direction_output(priv->phyrst,
-                                  !priv->rst_active_low);
+            gpio_direction_output(priv->phyrst, !priv->rst_active_low);
             msleep(50);
         }
     }
@@ -516,7 +508,6 @@ static int geth_phy_init(struct net_device *ndev)
     new_bus = mdiobus_alloc();
     if (!new_bus)
     {
-        printk("==> mdiobus_alloc failed\n");
         return -ENOMEM;
     }
 
@@ -530,26 +521,12 @@ static int geth_phy_init(struct net_device *ndev)
     new_bus->priv = ndev;
 
     if (mdiobus_register(new_bus))
-    // if( __mdiobus_register(new_bus, THIS_MODULE) )
     {
-        printk("==> %s: Cannot register as MDIO bus\n", new_bus->name);
         goto reg_fail;
     }
 
-    printk("==> ephy new_bus->name = %s \n", new_bus->name);
-
     priv->mii = new_bus;
-#if 0   
-	printk("===> %s: read EPHY id\n",__func__);
-    mdiobus_read(new_bus,0,2);
-    mdiobus_read(new_bus,0,3);
-    
-    printk("===> %s: read AC300 id\n",__func__);    
-    mdiobus_read(new_bus,16,2);
-    mdiobus_read(new_bus,16,3);
-#endif
 
-    // printk("===> %s: start scan phy\n",__func__);
 FindPhy:
 {
     int addr;
@@ -561,50 +538,29 @@ FindPhy:
         {
             if (!IS_ERR_OR_NULL(phydev_tmp))
             {
-                // printk("==> phydev_tmp->phy_id = %08x is null,remove\n",phydev_tmp->phy_id);
                 phy_device_remove(phydev_tmp);
             }
             phydev_tmp = mdiobus_scan(new_bus, addr);
-            // printk("==> mdiobus_scan: phydev_tmp->phy_id = %08x addr = %d\n",phydev_tmp->phy_id,addr);
         }
-
-        printk("==> phydev_tmp->phy_id = %08x addr = %d\n", phydev_tmp->phy_id, addr);
 
         if (IS_ERR_OR_NULL(phydev_tmp) || phydev_tmp->phy_id == 0xffff ||
             phydev_tmp->phy_id == 0x00 || phydev_tmp->phy_id == AC300_ID)
         {
-            if (phydev_tmp->phy_id == AC300_ID)
-                printk("--------------- find AC300\n");
             continue;
         }
 
         phydev = phydev_tmp;
         g_phy_addr = addr;
-        // printk("==> g_phy_addr= %08x \n",addr);
+
         break;
     }
 }
 
-    //	printk("==> AC300_ID = %08x phydev_tmp->phy_id = %08x PHY_MAX_ADDR = %08x\n",AC300_ID,phydev_tmp->phy_id,PHY_MAX_ADDR);
-
     if (!phydev)
     {
-#if 0
-        if( tries-- )
-        {
-            printk("===> %s: find phy fail,try again %d .. \n",__func__,tries);
-            
- 	        printk("===> %s: read EPHY id\n",__func__);
-            mdiobus_read(new_bus,0,2);
-            mdiobus_read(new_bus,0,3);            
-            goto FindPhy;
-        }
-#endif
         netdev_err(ndev, "No PHY found!\n");
         goto err;
     }
-
-    // ephy_config_init(phydev);
 
     phy_write(phydev, MII_BMCR, BMCR_RESET);
     while (BMCR_RESET & phy_read(phydev, MII_BMCR))
@@ -614,57 +570,14 @@ FindPhy:
     phy_write(phydev, MII_BMCR, (value & ~BMCR_PDOWN));
 
     phydev->irq = PHY_POLL;
-
-#if 0
-	phydev->supported &= PHY_GBIT_FEATURES; //kandy 000002cf
-	phydev->advertising = phydev->supported;
-#else
-    // linkmode_and(phydev->supported,PHY_GBIT_FEATURES,phydev->supported);
-    //  linkmode_clear_bit(PHY_GBIT_FEATURES,phydev->supported);
-    // linkmode_set_bit(PHY_BASIC_FEATURES,phydev->supported);
-
     u32 supported = 0, advertising = 0;
 
     ethtool_convert_link_mode_to_legacy_u32(&supported, phydev->supported);
 
     advertising = supported &= *PHY_BASIC_FEATURES; // kandy 000002cf
 
-    printk("==> supported = %08x\n", supported);
-
     ethtool_convert_legacy_u32_to_link_mode(phydev->supported, supported);
     ethtool_convert_legacy_u32_to_link_mode(phydev->advertising, advertising);
-
-/*
-    printk("==> PHY_GBIT_FEATURES = %08x\n", *PHY_GBIT_FEATURES);
-
-    linkmode_zero(phydev->supported);
-
-    printk("==> phydev->supported zero = %08x\n", *phydev->supported);
-
-    linkmode_and(phydev->supported, PHY_GBIT_FEATURES, phydev->supported);
-
-    printk("==> phydev->supported and bit = %08x\n", *phydev->supported);
-
-    linkmode_zero(phydev->supported);
-
-    linkmode_set_bit(PHY_GBIT_FEATURES, phydev->supported);
-
-    printk("==> phydev->supported set bit = %08x\n", *phydev->supported);
-
-    linkmode_zero(phydev->supported);
-
-    linkmode_clear_bit(PHY_GBIT_FEATURES, phydev->supported);
-
-    printk("==> phydev->supported clear bit = %08x\n", *phydev->supported);
-
-    // const unsigned long *supported = 0x000002cf;
-
-    // linkmode_copy(phydev->supported,supported);
-    linkmode_copy(phydev->advertising, phydev->supported);
-    */
-#endif
-
-    printk("==> phydev->advertising = %08x\n", *phydev->advertising);
 
     value = phy_connect_direct(ndev, phydev, &geth_adjust_link, priv->phy_interface);
     if (value)
@@ -767,13 +680,11 @@ static int geth_dma_desc_init(struct net_device *ndev)
     struct geth_priv *priv = netdev_priv(ndev);
     unsigned int buf_sz;
 
-    priv->rx_sk = kzalloc(sizeof(struct sk_buff *) * dma_desc_rx,
-                          GFP_KERNEL);
+    priv->rx_sk = kzalloc(sizeof(struct sk_buff *) * dma_desc_rx, GFP_KERNEL);
     if (!priv->rx_sk)
         return -ENOMEM;
 
-    priv->tx_sk = kzalloc(sizeof(struct sk_buff *) * dma_desc_tx,
-                          GFP_KERNEL);
+    priv->tx_sk = kzalloc(sizeof(struct sk_buff *) * dma_desc_tx, GFP_KERNEL);
     if (!priv->tx_sk)
         goto tx_sk_err;
 
@@ -781,16 +692,14 @@ static int geth_dma_desc_init(struct net_device *ndev)
     buf_sz = MAX_BUF_SZ;
 
     priv->dma_tx = dma_alloc_coherent(priv->dev,
-                                      dma_desc_tx *
-                                          sizeof(struct dma_desc),
+                                      dma_desc_tx * sizeof(struct dma_desc),
                                       &priv->dma_tx_phy,
                                       GFP_KERNEL);
     if (!priv->dma_tx)
         goto dma_tx_err;
 
     priv->dma_rx = dma_alloc_coherent(priv->dev,
-                                      dma_desc_rx *
-                                          sizeof(struct dma_desc),
+                                      dma_desc_rx * sizeof(struct dma_desc),
                                       &priv->dma_rx_phy,
                                       GFP_KERNEL);
     if (!priv->dma_rx)
@@ -801,8 +710,7 @@ static int geth_dma_desc_init(struct net_device *ndev)
     return 0;
 
 dma_rx_err:
-    dma_free_coherent(priv->dev, dma_desc_rx * sizeof(struct dma_desc),
-                      priv->dma_tx, priv->dma_tx_phy);
+    dma_free_coherent(priv->dev, dma_desc_rx * sizeof(struct dma_desc), priv->dma_tx, priv->dma_tx_phy);
 dma_tx_err:
     kfree(priv->tx_sk);
 tx_sk_err:
@@ -821,9 +729,7 @@ static void geth_free_rx_sk(struct geth_priv *priv)
         {
             struct dma_desc *desc = priv->dma_rx + i;
 
-            dma_unmap_single(priv->dev, (u32)desc_buf_get_addr(desc),
-                             desc_buf_get_len(desc),
-                             DMA_FROM_DEVICE);
+            dma_unmap_single(priv->dev, (u32)desc_buf_get_addr(desc), desc_buf_get_len(desc), DMA_FROM_DEVICE);
             dev_kfree_skb_any(priv->rx_sk[i]);
             priv->rx_sk[i] = NULL;
         }
@@ -841,9 +747,7 @@ static void geth_free_tx_sk(struct geth_priv *priv)
             struct dma_desc *desc = priv->dma_tx + i;
 
             if (desc_buf_get_addr(desc))
-                dma_unmap_single(priv->dev, (u32)desc_buf_get_addr(desc),
-                                 desc_buf_get_len(desc),
-                                 DMA_TO_DEVICE);
+                dma_unmap_single(priv->dev, (u32)desc_buf_get_addr(desc), desc_buf_get_len(desc), DMA_TO_DEVICE);
             dev_kfree_skb_any(priv->tx_sk[i]);
             priv->tx_sk[i] = NULL;
         }
@@ -853,10 +757,8 @@ static void geth_free_tx_sk(struct geth_priv *priv)
 static void geth_free_dma_desc(struct geth_priv *priv)
 {
     /* Free the region of consistent memory previously allocated for the DMA */
-    dma_free_coherent(priv->dev, dma_desc_tx * sizeof(struct dma_desc),
-                      priv->dma_tx, priv->dma_tx_phy);
-    dma_free_coherent(priv->dev, dma_desc_rx * sizeof(struct dma_desc),
-                      priv->dma_rx, priv->dma_rx_phy);
+    dma_free_coherent(priv->dev, dma_desc_tx * sizeof(struct dma_desc), priv->dma_tx, priv->dma_tx_phy);
+    dma_free_coherent(priv->dev, dma_desc_rx * sizeof(struct dma_desc), priv->dma_rx, priv->dma_rx_phy);
 
     kfree(priv->rx_sk);
     kfree(priv->tx_sk);
@@ -871,15 +773,13 @@ static int geth_select_gpio_state(struct pinctrl *pctrl, char *name)
     pctrl_state = pinctrl_lookup_state(pctrl, name);
     if (IS_ERR(pctrl_state))
     {
-        pr_err("gmac pinctrl_lookup_state(%s) failed! return %p\n",
-               name, pctrl_state);
+        pr_err("gmac pinctrl_lookup_state(%s) failed! return %p\n", name, pctrl_state);
         return -EINVAL;
     }
 
     ret = pinctrl_select_state(pctrl, pctrl_state);
     if (ret < 0)
-        pr_err("gmac pinctrl_select_state(%s) failed! return %d\n",
-               name, ret);
+        pr_err("gmac pinctrl_select_state(%s) failed! return %d\n", name, ret);
 
     return ret;
 }
@@ -916,16 +816,7 @@ static void geth_resume_work(struct work_struct *work)
 
     if (priv->phy_ext == EXT_PHY)
         geth_select_gpio_state(priv->pinctrl, PINCTRL_STATE_DEFAULT);
-#if 0
-	if (!ephy_is_enable()) {
-		pr_info("[geth_resume] ephy is not enable, waiting...\n");
-		msleep(2000);
-		if (!ephy_is_enable()) {
-			netdev_err(ndev, "Wait for ephy resume timeout.\n");
-			return;
-		}
-	}
-#endif
+
     geth_open(ndev);
 
     spin_lock(&priv->lock);
@@ -1141,8 +1032,6 @@ static irqreturn_t geth_interrupt(int irq, void *dev_id)
     struct geth_priv *priv = netdev_priv(ndev);
     int status;
 
-    // printk("==> eth INT\n");
-
     if (unlikely(!ndev))
     {
         pr_err("%s: invalid ndev pointer\n", __func__);
@@ -1167,8 +1056,6 @@ static int geth_open(struct net_device *ndev)
 {
     struct geth_priv *priv = netdev_priv(ndev);
     int ret = 0;
-
-    printk("==> %s: enter \n", __func__);
 
     ret = geth_dma_desc_init(ndev);
     if (ret)
@@ -1227,16 +1114,11 @@ static int geth_open(struct net_device *ndev)
 
     if (ndev->phydev)
     {
-        printk("==> phy_start\n");
         phy_start(ndev->phydev);
     }
 
-    sunxi_start_rx(priv->base, (unsigned long)((struct dma_desc *)
-                                                   priv->dma_rx_phy +
-                                               priv->rx_dirty));
-    sunxi_start_tx(priv->base, (unsigned long)((struct dma_desc *)
-                                                   priv->dma_tx_phy +
-                                               priv->tx_clean));
+    sunxi_start_rx(priv->base, (unsigned long)((struct dma_desc *)priv->dma_rx_phy + priv->rx_dirty));
+    sunxi_start_tx(priv->base, (unsigned long)((struct dma_desc *)priv->dma_tx_phy + priv->tx_clean));
 
     /* Enable the Rx/Tx */
     sunxi_mac_enable(priv->base);
@@ -1245,8 +1127,6 @@ static int geth_open(struct net_device *ndev)
 
     napi_enable(&priv->napi);
     netif_start_queue(ndev);
-
-    printk("==> %s: OK \n", __func__);
 
     return 0;
 
@@ -1321,8 +1201,7 @@ static void geth_tx_complete(struct geth_priv *priv)
                 priv->ndev->stats.tx_errors++;
         }
 
-        dma_unmap_single(priv->dev, (u32)desc_buf_get_addr(desc),
-                         desc_buf_get_len(desc), DMA_TO_DEVICE);
+        dma_unmap_single(priv->dev, (u32)desc_buf_get_addr(desc), desc_buf_get_len(desc), DMA_TO_DEVICE);
 
         skb = priv->tx_sk[entry];
         priv->tx_sk[entry] = NULL;
@@ -1337,9 +1216,7 @@ static void geth_tx_complete(struct geth_priv *priv)
         dev_kfree_skb(skb);
     }
 
-    if (unlikely(netif_queue_stopped(priv->ndev)) &&
-        circ_space(priv->tx_dirty, priv->tx_clean, dma_desc_tx) >
-            TX_THRESH)
+    if (unlikely(netif_queue_stopped(priv->ndev)) && circ_space(priv->tx_dirty, priv->tx_clean, dma_desc_tx) > TX_THRESH)
     {
         netif_wake_queue(priv->ndev);
     }
@@ -1357,8 +1234,7 @@ static netdev_tx_t geth_xmit(struct sk_buff *skb, struct net_device *ndev)
     dma_addr_t paddr;
 
     spin_lock(&priv->tx_lock);
-    if (unlikely(circ_space(priv->tx_dirty, priv->tx_clean,
-                            dma_desc_tx) < (nfrags + 1)))
+    if (unlikely(circ_space(priv->tx_dirty, priv->tx_clean, dma_desc_tx) < (nfrags + 1)))
     {
         if (!netif_queue_stopped(ndev))
         {
@@ -1435,12 +1311,10 @@ static netdev_tx_t geth_xmit(struct sk_buff *skb, struct net_device *ndev)
     desc_set_own(first);
     spin_unlock(&priv->tx_lock);
 
-    if (circ_space(priv->tx_dirty, priv->tx_clean, dma_desc_tx) <=
-        (MAX_SKB_FRAGS + 1))
+    if (circ_space(priv->tx_dirty, priv->tx_clean, dma_desc_tx) <= (MAX_SKB_FRAGS + 1))
     {
         netif_stop_queue(ndev);
-        if (circ_space(priv->tx_dirty, priv->tx_clean, dma_desc_tx) >
-            TX_THRESH)
+        if (circ_space(priv->tx_dirty, priv->tx_clean, dma_desc_tx) > TX_THRESH)
             netif_wake_queue(ndev);
     }
 
@@ -1479,8 +1353,7 @@ static int geth_rx(struct geth_priv *priv, int limit)
         frame_len = desc_rx_frame_len(desc);
         status = desc_get_rx_status(desc, (void *)(&priv->xstats));
 
-        netdev_dbg(priv->ndev, "Rx frame size %d, status: %d\n",
-                   frame_len, status);
+        netdev_dbg(priv->ndev, "Rx frame size %d, status: %d\n", frame_len, status);
 
         skb = priv->rx_sk[entry];
         if (unlikely(!skb))
@@ -1510,11 +1383,9 @@ static int geth_rx(struct geth_priv *priv, int limit)
         priv->rx_sk[entry] = NULL;
 
         skb_put(skb, frame_len);
-        dma_unmap_single(priv->dev, (u32)desc_buf_get_addr(desc),
-                         desc_buf_get_len(desc), DMA_FROM_DEVICE);
+        dma_unmap_single(priv->dev, (u32)desc_buf_get_addr(desc), desc_buf_get_len(desc), DMA_FROM_DEVICE);
 
         skb->protocol = eth_type_trans(skb, priv->ndev);
-
         skb->ip_summed = CHECKSUM_UNNECESSARY;
         napi_gro_receive(&priv->napi, skb);
 
@@ -1576,8 +1447,7 @@ static int geth_change_mtu(struct net_device *ndev, int new_mtu)
     return 0;
 }
 
-static netdev_features_t geth_fix_features(struct net_device *ndev,
-                                           netdev_features_t features)
+static netdev_features_t geth_fix_features(struct net_device *ndev, netdev_features_t features)
 {
     return features;
 }
@@ -1729,7 +1599,6 @@ static const struct net_device_ops geth_netdev_ops = {
     .ndo_tx_timeout = geth_tx_timeout,
     .ndo_do_ioctl = geth_ioctl,
     .ndo_set_config = geth_config,
-
     .ndo_set_mac_address = geth_set_mac_address,
     .ndo_set_features = geth_set_features,
 };
@@ -1754,48 +1623,6 @@ static int geth_get_sset_count(struct net_device *netdev, int sset)
         return -EOPNOTSUPP;
     }
 }
-#if 0
-static int geth_ethtool_getsettings(struct net_device *ndev,
-				    struct ethtool_cmd *cmd)
-{
-	struct geth_priv *priv = netdev_priv(ndev);
-	struct phy_device *phy = ndev->phydev;
-	int rc;
-
-	if (phy == NULL) {
-		netdev_err(ndev, "%s: %s: PHY is not registered\n",
-		       __func__, ndev->name);
-		return -ENODEV;
-	}
-
-	if (!netif_running(ndev)) {
-		pr_err("%s: interface is disabled: we cannot track "
-		       "link speed / duplex setting\n", ndev->name);
-		return -EBUSY;
-	}
-
-	cmd->transceiver = XCVR_INTERNAL;
-	spin_lock_irq(&priv->lock);
-	rc = phy_ethtool_gset(phy, cmd);
-	spin_unlock_irq(&priv->lock);
-
-	return rc;
-}
-
-static int geth_ethtool_setsettings(struct net_device *ndev,
-				    struct ethtool_cmd *cmd)
-{
-	struct geth_priv *priv = netdev_priv(ndev);
-	struct phy_device *phy = ndev->phydev;
-	int rc;
-
-	spin_lock(&priv->lock);
-	rc = phy_ethtool_sset(phy, cmd);
-	spin_unlock(&priv->lock);
-
-	return rc;
-}
-#endif
 
 static void geth_ethtool_getdrvinfo(struct net_device *ndev,
                                     struct ethtool_drvinfo *info)
@@ -1810,8 +1637,6 @@ static void geth_ethtool_getdrvinfo(struct net_device *ndev,
 
 static const struct ethtool_ops geth_ethtool_ops = {
     .begin = geth_check_if_running,
-    //.get_settings = geth_ethtool_getsettings,
-    //.set_settings = geth_ethtool_setsettings,
     .get_link_ksettings = phy_ethtool_get_link_ksettings,
     .set_link_ksettings = phy_ethtool_set_link_ksettings,
     .get_link = ethtool_op_get_link,
@@ -1892,10 +1717,6 @@ static int geth_hw_init(struct platform_device *pdev)
         goto irq_err;
     }
 
-    // enable_irq(ndev->irq);
-
-    printk("==> geth_hw_init: ndev->irq = %d\n", ndev->irq);
-
     /* config clock */
     priv->geth_clk = of_clk_get_by_name(np, "bus-emac1");
     if (unlikely(!priv->geth_clk || IS_ERR(priv->geth_clk)))
@@ -1946,7 +1767,7 @@ static int geth_hw_init(struct platform_device *pdev)
 
     if (!of_property_read_u32(np, "rx-delay", &value))
         rx_delay = value;
-#if 1
+
     /* config pinctrl */
     if (EXT_PHY == priv->phy_ext)
     {
@@ -1972,15 +1793,12 @@ static int geth_hw_init(struct platform_device *pdev)
             goto pin_err;
         }
     }
-#endif
 
     priv->ephy_rst = devm_reset_control_get_optional(&pdev->dev, "stmmaceth");
     reset_control_assert(priv->ephy_rst);
     reset_control_deassert(priv->ephy_rst);
 
     msleep(800);
-
-    printk("==> devname = %s ,priv->phy_interface = %d\n", dev_name(&pdev->dev), priv->phy_interface);
 
     return 0;
 
@@ -2166,32 +1984,6 @@ static struct platform_driver geth_driver = {
     },
 };
 
-#if 0
-#define GPIO_SYS_LED 229 // H5
-
-struct timer_list mytimer;
-
-static int led_counter=0;
-
-static void timer_func(unsigned long _musb)
-{
-    // printk("timer run\n");
-     led_counter = !led_counter;
-     if(led_counter)
-        gpio_set_value(GPIO_SYS_LED,0);
-     else
-        gpio_set_value(GPIO_SYS_LED,1); 
-     
-     mod_timer(&mytimer,jiffies + msecs_to_jiffies(500) );
-}
-static timer_init(void)
-{
-    setup_timer(&mytimer, timer_func, (unsigned long)NULL);
-    mytimer.expires = jiffies + msecs_to_jiffies(500);
-    add_timer(&mytimer);
-}
-#endif
-
 #include <linux/pwm.h>
 static struct pwm_device *pwm;
 
@@ -2199,31 +1991,14 @@ static int __init phy_init(void)
 {
     int ret = 0;
 
-    printk("===> sunxi-gmac init \n");
-
-#if 1
     pwm = pwm_request(5, NULL);
     if (!IS_ERR_OR_NULL(pwm))
     {
         //	pwm_config(pwm, 205, 410);
         pwm_config(pwm, 20, 40); // 25MHz
         pwm_enable(pwm);
-        printk("==> ac300 pwm5 clk enable OK\n");
     }
-    else
-    {
-        printk("==> ac300 pwm5 clk enable failed\n");
-    }
-#endif
 
-#if 0
-    gpio_request(GPIO_SYS_LED,"SysLed");
-    if(ret)
-       printk("==> request sys led failed\n");    
-    
-    gpio_direction_output(GPIO_SYS_LED,0);
-    timer_init();
-#endif
     return platform_driver_register(&geth_driver);
 }
 module_init(phy_init);

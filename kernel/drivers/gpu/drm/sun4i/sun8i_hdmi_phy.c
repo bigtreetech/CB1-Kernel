@@ -283,7 +283,6 @@ int sun8i_hdmi_phy_get(struct sun8i_dw_hdmi *hdmi, struct device_node *node)
 
 static int sun8i_hdmi_phy_probe(struct platform_device *pdev)
 {
-    printk("== sun8i_hdmi_phy ---> sun8i_hdmi_phy_probe ----\n");
     const struct of_device_id *match;
     struct device *dev = &pdev->dev;
     struct device_node *node = dev->of_node;

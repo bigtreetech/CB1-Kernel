@@ -128,8 +128,6 @@ int ephy_config_init(struct phy_device *phydev)
 {
     int value;
 
-    printk("==> ephy_config_init 345\n");
-
     /* Iint ephy */
     phy_write(phydev, 0x1f, 0x0100); /* Switch to Page 1 */
     phy_write(phydev, 0x12, 0x4824); /* Disable APS */
@@ -144,13 +142,7 @@ int ephy_config_init(struct phy_device *phydev)
 
     phy_write(phydev, 0x1f, 0x0800); /* Switch to Page 6 */
     phy_write(phydev, 0x18, 0x00bc); /* PHYAFE TRX optimization */
-#if 0
-	/* Disable Auto Power Saving mode */
-	phy_write(phydev, 0x1f, 0x0100);	/* Switch to Page 1 */
-	value = phy_read(phydev, 0x17);
-	value &= ~BIT(13);
-	phy_write(phydev, 0x17, value);
-#endif
+
     disable_intelligent_ieee(phydev); /* Disable Intelligent IEEE */
     disable_802_3az_ieee(phydev);     /* Disable 802.3az IEEE */
     phy_write(phydev, 0x1f, 0x0000);  /* Switch to Page 0 */
@@ -162,31 +154,12 @@ int ephy_config_init(struct phy_device *phydev)
 
     phy_write(ac300_ephy.ac300, 0x06, 0x0800); // RMII
 
-    int i;
-
-    // msleep(500);
-
-    printk("==> EPHY reg list:\n");
-    for (i = 0; i < 32; i++)
-    {
-        phy_read(phydev, i);
-    }
-
-    msleep(500);
-
-    printk("==> AC300 reg list:\n");
-    for (i = 0; i < 16; i++)
-    {
-        phy_read(ac300_ephy.ac300, i);
-    }
-
     return 0;
 }
 EXPORT_SYMBOL(ephy_config_init);
 
 static int ephy_probe(struct phy_device *phydev)
 {
-    printk("==> ephy_probe\n");
     return 0;
 }
 
@@ -206,7 +179,6 @@ static struct phy_driver sunxi_phy_driver = {
 
 static void ac300_ephy_enable(struct ephy_res *priv)
 {
-    printk("==> ac300_ephy_enable\n");
     /* release reset */
     phy_write(priv->ac300, 0x00, 0x1f83);
     /* clk gating */
@@ -216,7 +188,6 @@ static void ac300_ephy_enable(struct ephy_res *priv)
     phy_write(priv->ac300, 0x06, 0);
 
     msleep(1000); /* FIXME: fix some board compatible issues. */
-
     atomic_set(&ac300_ephy.ephy_en, 1);
 }
 
@@ -230,7 +201,6 @@ static void ac300_ephy_disable(struct ephy_res *priv)
 
 int ac300_ephy_probe(struct phy_device *phydev)
 {
-    printk("==> ac300_ephy_probe\n");
     ac300_ephy.ac300 = phydev;
 
     atomic_set(&ac300_ephy.ephy_en, 0);
@@ -244,9 +214,7 @@ EXPORT_SYMBOL_GPL(ac300_ephy_probe);
 
 static void ac300_ephy_shutdown(struct phy_device *phydev)
 {
-    printk("==> ac300_ephy_shutdown\n");
     ac300_ephy.ac300 = phydev;
-
     phy_write(ac300_ephy.ac300, 0x00, 0x1f40);
 }
 
@@ -370,14 +338,12 @@ static int acx00_ephy_probe(struct platform_device *pdev)
 static int acx00_ephy_remove(struct platform_device *pdev)
 {
     acx00_ephy_disable(&acx00_ephy);
-
     return 0;
 }
 
 static int acx00_ephy_suspend(struct device *dev)
 {
     acx00_ephy_disable(&acx00_ephy);
-
     return 0;
 }
 
@@ -409,30 +375,17 @@ static int ephy_init(void)
 {
     int ret = 0;
 
-    printk("\n===> sunxi-ephy init--------------------------\n\n");
-    /*
-        ret = platform_driver_register(&acx00_ephy_driver);
-        if (ret)
-        {
-            printk("===> reg acx00_ephy_driver failed\n");
-            return ret;
-        }
-      */
     ret = phy_driver_register(&ac300_ephy_driver, THIS_MODULE);
     if (ret)
     {
-        printk("===> reg ac300_ephy_driver failed\n");
         goto ac300_ephy_error;
     }
 
     ret = phy_driver_register(&sunxi_phy_driver, THIS_MODULE);
     if (ret)
     {
-        printk("===> reg phy_driver_register failed\n");
         goto ephy_driver_error;
     }
-
-    printk("===> sunxi-ephy init OK\n");
 
     return ret;
 

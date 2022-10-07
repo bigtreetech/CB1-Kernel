@@ -886,8 +886,6 @@ int mdiobus_read(struct mii_bus *bus, int addr, u32 regnum)
     retval = __mdiobus_read(bus, addr, regnum);
     mutex_unlock(&bus->mdio_lock);
 
-    //    printk("==> mdiobus_read: addr = %d regnum = %d , retval = %04x\n", addr, regnum, retval);
-
     return retval;
 }
 EXPORT_SYMBOL(mdiobus_read);

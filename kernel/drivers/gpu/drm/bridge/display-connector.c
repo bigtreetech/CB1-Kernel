@@ -52,51 +52,12 @@ static enum drm_connector_status display_connector_detect(struct drm_bridge *bri
         return connector_status_connected;
 
     return connector_status_disconnected;
-
-#if 0
-    switch (conn->bridge.type)
-    {
-    case DRM_MODE_CONNECTOR_DVIA:
-    case DRM_MODE_CONNECTOR_DVID:
-    case DRM_MODE_CONNECTOR_DVII:
-    case DRM_MODE_CONNECTOR_HDMIA:
-    case DRM_MODE_CONNECTOR_HDMIB:
-        /*
-         * For DVI and HDMI connectors a DDC probe failure indicates
-         * that no cable is connected.
-         */
-        return connector_status_disconnected;
-
-    case DRM_MODE_CONNECTOR_Composite:
-    case DRM_MODE_CONNECTOR_SVIDEO:
-    case DRM_MODE_CONNECTOR_VGA:
-    default:
-        /*
-         * Composite and S-Video connectors have no other detection
-         * mean than the HPD GPIO. For VGA connectors, even if we have
-         * an I2C bus, we can't assume that the cable is disconnected
-         * if drm_probe_ddc fails, as some cables don't wire the DDC
-         * pins.
-         */
-        return connector_status_unknown;
-    }
-#endif
 }
 
-static struct edid *display_connector_get_edid(struct drm_bridge *bridge,
-                                               struct drm_connector *connector)
+static struct edid *display_connector_get_edid(struct drm_bridge *bridge, struct drm_connector *connector)
 {
-    struct edid *r_edid;
-
     struct display_connector *conn = to_display_connector(bridge);
-    printk("---> drm_get_edid ====\n");
-
-    r_edid = drm_get_edid(connector, conn->bridge.ddc);
-
-    printk("---> connector: %s\n", connector);
-
-    return r_edid;
-    // return drm_get_edid(connector, conn->bridge.ddc);
+    return drm_get_edid(connector, conn->bridge.ddc);
 }
 
 static const struct drm_bridge_funcs display_connector_bridge_funcs = {
@@ -117,8 +78,6 @@ static irqreturn_t display_connector_hpd_irq(int irq, void *arg)
 
 static int display_connector_probe(struct platform_device *pdev)
 {
-    printk("=== hdmi probe ==== \n");
-
     struct display_connector *conn;
     unsigned int type;
     const char *label = NULL;
@@ -161,61 +120,8 @@ static int display_connector_probe(struct platform_device *pdev)
         return PTR_ERR(conn->hpd_gpio);
     }
 
-#if 0
-    conn->hpd_irq = gpiod_to_irq(conn->hpd_gpio);
-
-    if (conn->hpd_irq >= 0)
-    {
-        printk("=== devm_request_threaded_irq ==== \n");
-        ret = devm_request_threaded_irq(&pdev->dev, conn->hpd_irq,
-                                        NULL, display_connector_hpd_irq,
-                                        IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
-                                        "HPD", conn);
-        if (ret)
-        {
-            printk("=== Failed to request HPD edge interrupt, falling back to polling ==== \n");
-            dev_info(&pdev->dev, "Failed to request HPD edge interrupt, falling back to polling\n");
-            conn->hpd_irq = -EINVAL;
-        }
-    }
-
-    /* Retrieve the DDC I2C adapter for DVI, HDMI and VGA connectors. */
-    struct device_node *phandle;
-
-    phandle = of_parse_phandle(pdev->dev.of_node, "ddc-i2c-bus", 0);
-    if (phandle)
-    {
-        printk("=== ddc-i2c-bus phandle ==== \n");
-        conn->bridge.ddc = of_get_i2c_adapter_by_node(phandle);
-        of_node_put(phandle);
-        if (!conn->bridge.ddc)
-            return -EPROBE_DEFER;
-    }
-    else
-    {
-        printk("=== No I2C bus specified, disabling EDID readout ==== \n");
-        dev_dbg(&pdev->dev, "No I2C bus specified, disabling EDID readout\n");
-    }
-#endif
-
     conn->bridge.funcs = &display_connector_bridge_funcs;
     conn->bridge.of_node = pdev->dev.of_node;
-
-#if 0
-    if (conn->bridge.ddc)
-        conn->bridge.ops |= DRM_BRIDGE_OP_EDID | DRM_BRIDGE_OP_DETECT;
-    if (conn->hpd_gpio)
-        conn->bridge.ops |= DRM_BRIDGE_OP_DETECT;
-    if (conn->hpd_irq >= 0)
-        conn->bridge.ops |= DRM_BRIDGE_OP_HPD;
-#endif
-
-    printk("---> Found %s display connector '%s' %s DDC bus and %s HPD GPIO (ops 0x%x)\n",
-           drm_get_connector_type_name(conn->bridge.type),
-           label ? label : "<unlabelled>",
-           conn->bridge.ddc ? "with" : "without",
-           conn->hpd_gpio ? "with" : "without",
-           conn->bridge.ops);
 
     dev_dbg(&pdev->dev,
             "Found %s display connector '%s' %s DDC bus and %s HPD GPIO (ops 0x%x)\n",

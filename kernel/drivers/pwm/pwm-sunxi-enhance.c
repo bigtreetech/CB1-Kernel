@@ -27,7 +27,6 @@
 #include <linux/of_device.h>
 #include <linux/of_platform.h>
 #include <linux/printk.h>
-
 #include <linux/io.h>
 #include <linux/clk.h>
 #include <linux/reset.h>
@@ -1097,8 +1096,6 @@ static int __init pwm_module_init(void)
 {
     int ret = 0;
 
-    printk("\n=====>pwm module init! 111 \n");
-
 #if !IS_ENABLED(CONFIG_OF)
     ret = platform_device_register(&sunxi_pwm_device);
 #endif
@@ -1107,15 +1104,11 @@ static int __init pwm_module_init(void)
         ret = platform_driver_register(&sunxi_pwm_driver);
     }
 
-    printk("=====>pwm module init OK\n");
-
     return ret;
 }
 
 static void __exit pwm_module_exit(void)
 {
-    printk("pwm module exit!\n");
-
     platform_driver_unregister(&sunxi_pwm_driver);
 #if !IS_ENABLED(CONFIG_OF)
     platform_device_unregister(&sunxi_pwm_device);

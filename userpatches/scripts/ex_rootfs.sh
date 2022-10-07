@@ -38,9 +38,10 @@ sudo resize2fs /dev/${filelist[2]}           # 扩展分区;
 unset filelist
 
 #-----------------
-sudo usermod -a -G root $username
-# sudo chmod 777 /var/run/wpa_supplicant/wlan0
+# sudo usermod -a -G root $username         # 将biqu加入root用户组
+# sudo gpasswd -d biqu root     # 将biqu移出root用户组
 
+# sudo chmod 777 /var/run/wpa_supplicant/wlan0
 
 cd $shell_path
 
@@ -111,6 +112,7 @@ git config --global --unset https.proxy
 history -c          # 清除历史shell记录
 history -w
 cd /home/$username/
+sudo rm ./.gitconfig -fr        # 取消代理
 sudo rm ./.bash_history -fr
 
 sudo sed -i 's/ex_rootfs.sh/init.sh \&/' /etc/rc.local
