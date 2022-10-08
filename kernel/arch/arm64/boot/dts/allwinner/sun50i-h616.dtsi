@@ -508,7 +508,7 @@
 			pinctrl-names = "default";
 			pinctrl-0 = <&mmc1_pins>;
 			status = "disabled";
-			max-frequency = <25000000>;
+			max-frequency = <50000000>;
 			cap-sd-highspeed;
 			cap-mmc-highspeed;
 			mmc-ddr-3_3v;

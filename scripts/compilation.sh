@@ -302,8 +302,6 @@ compile_kernel()
 	rm -f linux-firmware-image-*.deb
 
 	rsync --remove-source-files -rq ./*.deb "${DEB_STORAGE}/" || exit_with_error "Failed moving kernel DEBs"
-
-    display_alert "=== compiled kernel end ==="
 }
 
 compile_sunxi_tools()

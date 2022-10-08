@@ -118,7 +118,6 @@ static const char *const sunxi_mbus_platforms[] __initconst = {
 
 static int __init sunxi_mbus_init(void)
 {
-    printk("\n===> sunxi_mbus.c, sunxi_mbus_init ==== \n\n");
     if (!of_device_compatible_match(of_root, sunxi_mbus_platforms))
         return 0;
 
