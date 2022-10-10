@@ -27,7 +27,6 @@ nfs-common
 ntfs-3g
 pciutils
 pv
-qrencode
 rfkill
 screen
 software-properties-common
@@ -37,5 +36,3 @@ unzip
 vim
 vlan
 tofrodos
-udhcpc
-udhcpd
