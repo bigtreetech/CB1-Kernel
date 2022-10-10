@@ -16,6 +16,8 @@
 
 .tmp
 output
+nfs_folder
+!nfs_folder/update_kernel.sh
 
 toolchains/libexec/
 
