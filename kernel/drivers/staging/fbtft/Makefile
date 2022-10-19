@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: GPL-2.0
 # Core module
 obj-$(CONFIG_FB_TFT)             += fbtft.o
-fbtft-y                          += fbtft-core.o fbtft-sysfs.o fbtft-bus.o fbtft-io.o
+fbtft-y                          += fbtft-core.o fbtft-sysfs.o fbtft-bus.o fbtft-io.o 
 
 # drivers
 obj-$(CONFIG_FB_TFT_AGM1264K_FL) += fb_agm1264k-fl.o
@@ -37,3 +37,5 @@ obj-$(CONFIG_FB_TFT_UC1611)      += fb_uc1611.o
 obj-$(CONFIG_FB_TFT_UC1701)      += fb_uc1701.o
 obj-$(CONFIG_FB_TFT_UPD161704)   += fb_upd161704.o
 obj-$(CONFIG_FB_TFT_WATTEROTT)   += fb_watterott.o
+
+obj-$(CONFIG_FB_TFT_ST7796)   += fb_st7796.o

@@ -74,6 +74,30 @@
 		clock-frequency  = <12000000>;          //对应模块上晶振的频率，我的是12MHz的
 	};
 
+    i2c_gpio0: i2c-gpio-0 {
+        #address-cells = <1>;
+        #size-cells = <0>;
+        
+        compatible = "i2c-gpio";
+        pinctrl-0 = <&tft_ts_pins>;           
+        reg = <0x0>;
+
+        gpios = <&pio 2 12 GPIO_ACTIVE_HIGH>, /* sda PC12 */
+                <&pio 2 10 GPIO_ACTIVE_HIGH>; /* scl PC10 */
+
+        // i2c-gpio,sda-open-drain;
+        //i2c-gpio,scl-open-drain;
+        i2c-gpio,delay-us = <5>; /* 100 kHz */
+        
+        status = "okay";
+
+        ns2009@48 {
+            compatible = "ns2009";
+            reg = <0x48>;
+            status = "okay";
+        };
+    };
+
 	reg_vcc5v: vcc5v {
 		/* board wide 5V supply directly from the USB-C socket */
 		compatible = "regulator-fixed";
@@ -129,12 +153,14 @@
 };
 
 &de {
-	status = "okay";
+	// status = "okay";
+    status = "disabled";
 };
 
 &hdmi {
 	hvcc-supply = <&reg_aldo1>;
-	status = "okay";
+	// status = "okay";
+    status = "disabled";
 };
 
 &hdmi_out {
@@ -325,8 +351,7 @@
     pinctrl-names = "default";
     // pinctrl-0 = <&spi1_pins &spi1_cs_pin>;
     pinctrl-0 = <&spi1_pins>;
-    // cs-gpios = <&pio 7 9 GPIO_ACTIVE_HIGH>;		/* PH9 */
-    cs-gpios = <&pio 2 11 GPIO_ACTIVE_HIGH>;		/* PC11 */
+    cs-gpios = <&pio 2 7 GPIO_ACTIVE_HIGH>;		/* PC7 */
 
     status = "okay";
 
@@ -343,6 +368,29 @@
         
         vdd-supply = <&reg_vcc33_wifi>;
         xceiver-supply = <&reg_vcc33_wifi>;
+    };
+
+    tft_35: st7796@0 {
+        compatible =  "sitronix,st7796";
+        status = "okay";
+
+        reg = <0x0>;
+        spi-max-frequency = <50000000>;
+        fps = <60>;
+        rotate = <0>;
+        buswidth = <8>;
+        width = <480>;
+        height = <320>;
+        bpp = <24>;
+        bgr;
+        regwidth = <8>;
+        debug = <0x00>;     //0x20 show fps
+        
+        //mul_sel,pull,drv_level,data
+        
+        // lcd_reset = <&pio PG 9 1 1 2 1 >;
+        //  lcd_bl    = <&pio PG 6 1 1 2 1 >;
+        
     };
 
     spidev@1 {

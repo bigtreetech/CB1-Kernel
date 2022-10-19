@@ -80,12 +80,12 @@ chmod +x pwr_status.sh
 cat >> pwr_status.sh << EOF
 #!/bin/bash
 
-if [[ \`lsusb\` == *"BTT-HDMI"* ]]
-then
-    sed -i "s/self.blanking_time = 0*$/self.blanking_time = abs(int(time))/" /home/$username/KlipperScreen/screen.py
-else
-    sed -i "s/self.blanking_time = abs(int(time))*$/self.blanking_time = 0/" /home/$username/KlipperScreen/screen.py
-fi
+# if [[ \`lsusb\` == *"BTT-HDMI"* ]]
+# then
+#     sed -i "s/self.blanking_time = 0*$/self.blanking_time = abs(int(time))/" /home/$username/KlipperScreen/screen.py
+# else
+#     sed -i "s/self.blanking_time = abs(int(time))*$/self.blanking_time = 0/" /home/$username/KlipperScreen/screen.py
+# fi
 
 cd /sys/class/gpio
 echo 229 > export

@@ -170,6 +170,10 @@ config FB_TFT_ST7789V
 	  displays with a resolution of up to 320x240 pixels.
 
 	  Say Y if you have such a display that utilizes this controller.
+	  
+config FB_TFT_ST7796
+	tristate "FB driver for the ST7796 LCD Controller"
+	depends on FB_TFT
 
 config FB_TFT_TINYLCD
 	tristate "FB driver for tinylcd.com display"

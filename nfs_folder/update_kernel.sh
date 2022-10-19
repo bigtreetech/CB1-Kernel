@@ -2,7 +2,7 @@
 
 cd ~
 
-version=2.2.0
+version=2.2.1
 
 uboot_img="linux-u-boot-current-h616_${version}_arm64.deb"
 dtb_img="linux-dtb-current-sun50iw9_${version}_arm64.deb"
