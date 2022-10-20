@@ -77,6 +77,7 @@
     i2c_gpio0: i2c-gpio-0 {
         #address-cells = <1>;
         #size-cells = <0>;
+        status = "okay";
         
         compatible = "i2c-gpio";
         pinctrl-0 = <&tft_ts_pins>;           
@@ -86,11 +87,9 @@
                 <&pio 2 10 GPIO_ACTIVE_HIGH>; /* scl PC10 */
 
         // i2c-gpio,sda-open-drain;
-        //i2c-gpio,scl-open-drain;
+        // i2c-gpio,scl-open-drain;
         i2c-gpio,delay-us = <5>; /* 100 kHz */
         
-        status = "okay";
-
         ns2009@48 {
             compatible = "ns2009";
             reg = <0x48>;
@@ -152,26 +151,9 @@
 	status = "okay";
 };
 
-&de {
-	// status = "okay";
-    status = "disabled";
-};
-
-&hdmi {
-	hvcc-supply = <&reg_aldo1>;
-	// status = "okay";
-    status = "disabled";
-};
-
-&hdmi_out {
-	hdmi_out_con: endpoint {
-		remote-endpoint = <&hdmi_con_in>;
-	};
-};
-
 &gpu {
     mali-supply = <&reg_dcdc3>;
-    status = "disabled";
+    status = "okay";
 };
 
 &ehci0 {
@@ -372,7 +354,8 @@
 
     tft_35: st7796@0 {
         compatible =  "sitronix,st7796";
-        status = "okay";
+        // status = "okay";
+        status = "disabled";
 
         reg = <0x0>;
         spi-max-frequency = <50000000>;
@@ -385,12 +368,6 @@
         bgr;
         regwidth = <8>;
         debug = <0x00>;     //0x20 show fps
-        
-        //mul_sel,pull,drv_level,data
-        
-        // lcd_reset = <&pio PG 9 1 1 2 1 >;
-        //  lcd_bl    = <&pio PG 6 1 1 2 1 >;
-        
     };
 
     spidev@1 {
@@ -400,6 +377,22 @@
         reg = <1>;
         spi-max-frequency = <1000000>;
     };
+};
+
+&de {
+	status = "okay";
+};
+
+&hdmi {
+	hvcc-supply = <&reg_aldo1>;
+	status = "okay";
+    // status = "disabled";
+};
+
+&hdmi_out {
+	hdmi_out_con: endpoint {
+		remote-endpoint = <&hdmi_con_in>;
+	};
 };
 
 &uart0 {

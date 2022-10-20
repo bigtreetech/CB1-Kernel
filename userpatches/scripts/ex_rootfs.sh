@@ -45,6 +45,9 @@ unset filelist
 
 cd $shell_path
 
+#######################################################
+#---------------------- init.sh ----------------------#
+#######################################################
 [[ -e "init.sh" ]] && rm init.sh -fr
 
 touch init.sh
@@ -68,11 +71,15 @@ fi
 sync
 
 cd $shell_path
+./disp_chose.sh
 ./pwr_status.sh &
 ./reconnect_wifi.sh
 
 EOF
 
+#######################################################
+#------------------- pwr_status.sh -------------------#
+#######################################################
 [[ -e "pwr_status.sh" ]] && rm pwr_status.sh -fr
 touch pwr_status.sh
 chmod +x pwr_status.sh
@@ -102,18 +109,52 @@ done
 
 EOF
 
+#######################################################
+#------------------- disp_chose.sh -------------------#
+#######################################################
+[[ -e "disp_chose.sh" ]] && rm disp_chose.sh -fr
+touch disp_chose.sh
+chmod +x disp_chose.sh
+
+cat >> disp_chose.sh << EOF
+#!/bin/bash
+
+tft_dtb=/boot/h616_tft.deb
+hdmi_dtb=/boot/h616_hdmi.deb
+
+CFG_FILE="/boot/system.cfg"
+
+if [ \`grep -c "DISP_OUT=\"TFT\"" \$CFG_FILE\` -ne '0' ];then
+    if [[ \`dmesg\` =~ "BQ-TFT" ]]
+    then
+        echo "TFT is installed"
+    else
+        sudo apt purge -y linux-dtb-current-sun50iw9
+        echo "change to TFT"
+        sudo dpkg -i \$tft_dtb
+        reboot
+    fi
+fi
+
+if [ \`grep -c "DISP_OUT=\"HDMI\"" \$CFG_FILE\` -ne '0' ];then
+    if [[ \`dmesg\` =~ "BQ-HDMI" ]]
+    then
+        echo "HDMI is installed"
+    else
+        sudo apt purge -y linux-dtb-current-sun50iw9
+        echo "change to HDMI"
+        sudo dpkg -i \$hdmi_dtb
+        reboot
+    fi
+fi
+
+EOF
+
+# ================================================ #
+
 [[ -d "/boot/gcode" ]] || sudo mkdir /boot/gcode -p
 [[ -d "/home/${username}/klipper_logs" ]] && rm /home/${username}/klipper_logs/* -fr
 [[ -d "/home/${username}/gcode_files" ]] && rm /home/${username}/gcode_files/* -fr
-
-git config --global --unset http.proxy      # 取消代理
-git config --global --unset https.proxy
-
-history -c          # 清除历史shell记录
-history -w
-cd /home/$username/
-sudo rm ./.gitconfig -fr        # 取消代理
-sudo rm ./.bash_history -fr
 
 sudo sed -i 's/ex_rootfs.sh/init.sh \&/' /etc/rc.local
 

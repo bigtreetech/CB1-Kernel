@@ -382,6 +382,9 @@ install_system_cfg()
     mkdir "${SDCARD}"/boot/gcode -p
     mkdir "${SDCARD}"/etc/scripts -p
 
+    cp $USERPATCHES_PATH/h616_hdmi.deb ${SDCARD}/boot/
+    cp $USERPATCHES_PATH/h616_tft.deb ${SDCARD}/boot/
+
     cp $USERPATCHES_PATH/scripts/system.cfg ${SDCARD}/boot/system.cfg
     chmod +x "${SDCARD}"/boot/system.cfg
 
