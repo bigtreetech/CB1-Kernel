@@ -77,10 +77,10 @@
     i2c_gpio0: i2c-gpio-0 {
         #address-cells = <1>;
         #size-cells = <0>;
-        status = "okay";
+        status = "disabled";
         
         compatible = "i2c-gpio";
-        pinctrl-0 = <&tft_ts_pins>;           
+        pinctrl-0 = <&tft_ts_pins>;
         reg = <0x0>;
 
         gpios = <&pio 2 12 GPIO_ACTIVE_HIGH>, /* sda PC12 */
@@ -149,6 +149,21 @@
 &usbphy {
 	usb1_vbus-supply = <&reg_usb1_vbus>;
 	status = "okay";
+};
+
+&de {
+	status = "okay";
+};
+
+&hdmi {
+	hvcc-supply = <&reg_aldo1>;
+    status = "okay";
+};
+
+&hdmi_out {
+	hdmi_out_con: endpoint {
+		remote-endpoint = <&hdmi_con_in>;
+	};
 };
 
 &gpu {
@@ -311,10 +326,6 @@
 	};
 };
 
-&cpu0 {
-    cpu-supply = <&reg_dcdc2>;
-};
-
 &spi0  {
 	status = "disabled";
 
@@ -331,33 +342,33 @@
     #address-cells = <1>;
     #size-cells = <0>;
     pinctrl-names = "default";
-    // pinctrl-0 = <&spi1_pins &spi1_cs_pin>;
+
     pinctrl-0 = <&spi1_pins>;
-    cs-gpios = <&pio 2 7 GPIO_ACTIVE_HIGH>;		/* PC7 */
+    cs-gpios = <&pio 2 11 GPIO_ACTIVE_HIGH>,    /* PC11 */ 
+                <&pio 2 7 GPIO_ACTIVE_HIGH>;    /* PC7 */
 
-    status = "okay";
-
+    status = "disabled";
+    
     can: mcp2515@0 {
         compatible = "microchip,mcp2515";
-        clocks = <&mcp2515_clock>; 				
+        clocks = <&mcp2515_clock>;
         status = "disabled";
         
-        reg = <0>;
+        reg = <0x0>;
         spi-max-frequency = <5000000>;
 
         interrupt-parent = <&pio>;
-        interrupts = <2 9 IRQ_TYPE_EDGE_FALLING>;			/* PC9 */
+        interrupts = <2 9 IRQ_TYPE_EDGE_FALLING>;   /* PC9 */
         
         vdd-supply = <&reg_vcc33_wifi>;
         xceiver-supply = <&reg_vcc33_wifi>;
     };
 
-    tft_35: st7796@0 {
-        compatible =  "sitronix,st7796";
-        // status = "okay";
+    tft_35: st7796@1 {
+        compatible = "sitronix,st7796";
         status = "disabled";
 
-        reg = <0x0>;
+        reg = <0x1>;
         spi-max-frequency = <50000000>;
         fps = <60>;
         rotate = <0>;
@@ -369,30 +380,6 @@
         regwidth = <8>;
         debug = <0x00>;     //0x20 show fps
     };
-
-    spidev@1 {
-        compatible = "spidev";
-        // compatible = "rohm,dh2228fv";
-        status = "okay";
-        reg = <1>;
-        spi-max-frequency = <1000000>;
-    };
-};
-
-&de {
-	status = "okay";
-};
-
-&hdmi {
-	hvcc-supply = <&reg_aldo1>;
-	status = "okay";
-    // status = "disabled";
-};
-
-&hdmi_out {
-	hdmi_out_con: endpoint {
-		remote-endpoint = <&hdmi_con_in>;
-	};
 };
 
 &uart0 {
@@ -431,6 +418,10 @@
 
 &ahub_codec {
 	status = "okay";
+};
+
+&cpu0 {
+    cpu-supply = <&reg_dcdc2>;
 };
 
 &ahub_cpudai0 {

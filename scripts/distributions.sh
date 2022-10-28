@@ -60,7 +60,7 @@ install_common()
 	fi
 
 	# console fix due to Debian bug
-	sed -e 's/CHARMAP=".*"/CHARMAP="'$CONSOLE_CHAR'"/g' -i "${SDCARD}"/etc/default/console-setup
+	# sed -e 's/CHARMAP=".*"/CHARMAP="'$CONSOLE_CHAR'"/g' -i "${SDCARD}"/etc/default/console-setup
 
 	# add the /dev/urandom path to the rng config file
 	echo "HRNGDEVICE=/dev/urandom" >> "${SDCARD}"/etc/default/rng-tools
@@ -153,7 +153,7 @@ install_common()
 		for PKG_REMOVE in ${PACKAGE_LIST_BOARD_REMOVE}; do
 			chroot "${SDCARD}" /bin/bash -c "DEBIAN_FRONTEND=noninteractive apt-get ${APT_EXTRA_DIST_PARAMS} -yqq remove --auto-remove ${PKG_REMOVE}" >> "${DEST}"/${LOG_SUBPATH}/install.log
 		done
-	fi  
+	fi
 
 	# install u-boot
 	# @TODO: add install_bootloader() extension method, refactor into u-boot extension
@@ -193,7 +193,6 @@ install_common()
 	chroot "${SDCARD}" /bin/bash -c "chown ${USER_NAME}:${USER_NAME} /home/${USER_NAME}/.Xauthority"
 
     echo -e "%${USER_NAME} ALL=(ALL) NOPASSWD: ALL" >> ${SDCARD}/etc/sudoers
-
     echo -e 'export PATH="$PATH:/usr/sbin:/sbin"' >> ${SDCARD}/etc/profile
 
 	# remove deb files
@@ -217,17 +216,17 @@ install_common()
 	chroot "${SDCARD}" /bin/bash -c "systemctl --no-reload enable armbian-firstrun-config.service >/dev/null 2>&1"
 	chroot "${SDCARD}" /bin/bash -c "systemctl --no-reload enable armbian-zram-config.service >/dev/null 2>&1"
 	chroot "${SDCARD}" /bin/bash -c "systemctl --no-reload enable armbian-hardware-optimize.service >/dev/null 2>&1"
-	chroot "${SDCARD}" /bin/bash -c "systemctl --no-reload enable armbian-ramlog.service >/dev/null 2>&1"
+	# chroot "${SDCARD}" /bin/bash -c "systemctl --no-reload enable armbian-ramlog.service >/dev/null 2>&1"
 	chroot "${SDCARD}" /bin/bash -c "systemctl --no-reload enable armbian-resize-filesystem.service >/dev/null 2>&1"
 	chroot "${SDCARD}" /bin/bash -c "systemctl --no-reload enable armbian-hardware-monitor.service >/dev/null 2>&1"
 
 	# Cosmetic fix [FAILED] Failed to start Set console font and keymap at first boot
-	[[ -f "${SDCARD}"/etc/console-setup/cached_setup_font.sh ]] \
-	&& sed -i "s/^printf '.*/printf '\\\033\%\%G'/g" "${SDCARD}"/etc/console-setup/cached_setup_font.sh
-	[[ -f "${SDCARD}"/etc/console-setup/cached_setup_terminal.sh ]] \
-	&& sed -i "s/^printf '.*/printf '\\\033\%\%G'/g" "${SDCARD}"/etc/console-setup/cached_setup_terminal.sh
-	[[ -f "${SDCARD}"/etc/console-setup/cached_setup_keyboard.sh ]] \
-	&& sed -i "s/-u/-x'/g" "${SDCARD}"/etc/console-setup/cached_setup_keyboard.sh
+	# [[ -f "${SDCARD}"/etc/console-setup/cached_setup_font.sh ]] \
+	# && sed -i "s/^printf '.*/printf '\\\033\%\%G'/g" "${SDCARD}"/etc/console-setup/cached_setup_font.sh
+	# [[ -f "${SDCARD}"/etc/console-setup/cached_setup_terminal.sh ]] \
+	# && sed -i "s/^printf '.*/printf '\\\033\%\%G'/g" "${SDCARD}"/etc/console-setup/cached_setup_terminal.sh
+	# [[ -f "${SDCARD}"/etc/console-setup/cached_setup_keyboard.sh ]] \
+	# && sed -i "s/-u/-x'/g" "${SDCARD}"/etc/console-setup/cached_setup_keyboard.sh
 
 	# fix for https://bugs.launchpad.net/ubuntu/+source/blueman/+bug/1542723
 	chroot "${SDCARD}" /bin/bash -c "chown root:messagebus /usr/lib/dbus-1.0/dbus-daemon-launch-helper"
@@ -253,27 +252,27 @@ install_common()
 	#
 	# example: SERIALCON="ttyS0:15000000,ttyGS1"
 	#
-	ifs=$IFS
-	for i in $(echo "${SERIALCON:-'ttyS0'}" | sed "s/,/ /g")
-	do
-		IFS=':' read -r -a array <<< "$i"
-		[[ "${array[0]}" == "tty1" ]] && continue # Don't enable tty1 as serial console.
-		display_alert "Enabling serial console" "${array[0]}" "info"
-		# add serial console to secure tty list
-		[ -z "$(grep -w '^${array[0]}' "${SDCARD}"/etc/securetty 2> /dev/null)" ] && \
-		echo "${array[0]}" >>  "${SDCARD}"/etc/securetty
-		if [[ ${array[1]} != "115200" && -n ${array[1]} ]]; then
-			# make a copy, fix speed and enable
-			cp "${SDCARD}"/lib/systemd/system/serial-getty@.service \
-			"${SDCARD}/lib/systemd/system/serial-getty@${array[0]}.service"
-			sed -i "s/--keep-baud 115200/--keep-baud ${array[1]},115200/" \
-			"${SDCARD}/lib/systemd/system/serial-getty@${array[0]}.service"
-		fi
-		chroot "${SDCARD}" /bin/bash -c "systemctl daemon-reload" >> "${DEST}"/${LOG_SUBPATH}/install.log 2>&1
-		chroot "${SDCARD}" /bin/bash -c "systemctl --no-reload enable serial-getty@${array[0]}.service" \
-		>> "${DEST}"/${LOG_SUBPATH}/install.log 2>&1
-	done
-	IFS=$ifs
+	# ifs=$IFS
+	# for i in $(echo "${SERIALCON:-'ttyS0'}" | sed "s/,/ /g")
+	# do
+	# 	IFS=':' read -r -a array <<< "$i"
+	# 	[[ "${array[0]}" == "tty1" ]] && continue # Don't enable tty1 as serial console.
+	# 	display_alert "Enabling serial console" "${array[0]}" "info"
+	# 	# add serial console to secure tty list
+	# 	[ -z "$(grep -w '^${array[0]}' "${SDCARD}"/etc/securetty 2> /dev/null)" ] && \
+	# 	echo "${array[0]}" >>  "${SDCARD}"/etc/securetty
+	# 	if [[ ${array[1]} != "115200" && -n ${array[1]} ]]; then
+	# 		# make a copy, fix speed and enable
+	# 		cp "${SDCARD}"/lib/systemd/system/serial-getty@.service \
+	# 		"${SDCARD}/lib/systemd/system/serial-getty@${array[0]}.service"
+	# 		sed -i "s/--keep-baud 115200/--keep-baud ${array[1]},115200/" \
+	# 		"${SDCARD}/lib/systemd/system/serial-getty@${array[0]}.service"
+	# 	fi
+	# 	chroot "${SDCARD}" /bin/bash -c "systemctl daemon-reload" >> "${DEST}"/${LOG_SUBPATH}/install.log 2>&1
+	# 	chroot "${SDCARD}" /bin/bash -c "systemctl --no-reload enable serial-getty@${array[0]}.service" \
+	# 	>> "${DEST}"/${LOG_SUBPATH}/install.log 2>&1
+	# done
+	# IFS=$ifs
 
 	[[ $LINUXFAMILY == sun*i ]] && mkdir -p "${SDCARD}"/boot/overlay-user
 
@@ -342,10 +341,10 @@ install_common()
 	fi
 
 	# avahi daemon defaults if exists
-	[[ -f "${SDCARD}"/usr/share/doc/avahi-daemon/examples/sftp-ssh.service ]] && \
-	cp "${SDCARD}"/usr/share/doc/avahi-daemon/examples/sftp-ssh.service "${SDCARD}"/etc/avahi/services/
-	[[ -f "${SDCARD}"/usr/share/doc/avahi-daemon/examples/ssh.service ]] && \
-	cp "${SDCARD}"/usr/share/doc/avahi-daemon/examples/ssh.service "${SDCARD}"/etc/avahi/services/
+	# [[ -f "${SDCARD}"/usr/share/doc/avahi-daemon/examples/sftp-ssh.service ]] && \
+	# cp "${SDCARD}"/usr/share/doc/avahi-daemon/examples/sftp-ssh.service "${SDCARD}"/etc/avahi/services/
+	# [[ -f "${SDCARD}"/usr/share/doc/avahi-daemon/examples/ssh.service ]] && \
+	# cp "${SDCARD}"/usr/share/doc/avahi-daemon/examples/ssh.service "${SDCARD}"/etc/avahi/services/
 
 	# nsswitch settings for sane DNS behavior: remove resolve, assure libnss-myhostname support
 	sed "s/hosts\:.*/hosts:          files mymachines dns myhostname/g" -i "${SDCARD}"/etc/nsswitch.conf
@@ -381,9 +380,6 @@ install_system_cfg()
 {
     mkdir "${SDCARD}"/boot/gcode -p
     mkdir "${SDCARD}"/etc/scripts -p
-
-    cp $USERPATCHES_PATH/h616_hdmi.deb ${SDCARD}/boot/
-    cp $USERPATCHES_PATH/h616_tft.deb ${SDCARD}/boot/
 
     cp $USERPATCHES_PATH/scripts/system.cfg ${SDCARD}/boot/system.cfg
     chmod +x "${SDCARD}"/boot/system.cfg
@@ -464,7 +460,7 @@ install_distribution_specific()
 			sed -i "s/#RateLimitBurst=.*/RateLimitBurst=10000/g" "${SDCARD}"/etc/systemd/journald.conf
 
 			# Chrony temporal fix https://bugs.launchpad.net/ubuntu/+source/chrony/+bug/1878005
-			sed -i '/DAEMON_OPTS=/s/"-F -1"/"-F 0"/' "${SDCARD}"/etc/default/chrony
+			# sed -i '/DAEMON_OPTS=/s/"-F -1"/"-F 0"/' "${SDCARD}"/etc/default/chrony
 
 			# disable conflicting services
 			chroot "${SDCARD}" /bin/bash -c "systemctl --no-reload mask ondemand.service >/dev/null 2>&1"

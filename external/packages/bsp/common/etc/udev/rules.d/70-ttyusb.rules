@@ -1,3 +1,4 @@
 KERNEL=="ttyUSB[0-9]*", MODE="0666"
 KERNEL=="ttyACM[0-9]*", MODE="0666"
 KERNEL=="ttySTM[0-9]*", MODE="0666"
+KERNEL=="ttyS[0-9]*", MODE="0666"

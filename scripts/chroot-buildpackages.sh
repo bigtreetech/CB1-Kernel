@@ -199,7 +199,6 @@ chroot_build_packages()
 				local dist_builddeps_name="package_builddeps_${release}"
 				[[ -v $dist_builddeps_name ]] && package_builddeps="${package_builddeps} ${!dist_builddeps_name}"
 
-				# create build script
 				create_build_script
 
 				fetch_from_repo "$package_repo" "${EXTER}/cache/sources/extra/$package_name" "$package_ref"
@@ -357,26 +356,25 @@ chroot_installpackages()
 		unset package_install_target package_checkinstall
 	done
 	if [[ -n $PACKAGE_LIST_RM ]]; then
-        install_list=$(sed -r "s/\W($(tr ' ' '|' <<< ${PACKAGE_LIST_RM}))\W/ /g" <<< " ${install_list} ")
-        install_list="$(echo ${install_list})"
+		install_list=$(sed -r "s/\W($(tr ' ' '|' <<< ${PACKAGE_LIST_RM}))\W/ /g" <<< " ${install_list} ")
+		install_list="$(echo ${install_list})"
 	fi
 	display_alert "Installing extras-buildpkgs" "$install_list"
 
 	local apt_extra="-o Acquire::http::Proxy=\"http://${APT_PROXY_ADDR:-localhost:3142}\" -o Acquire::http::Proxy::localhost=\"DIRECT\""
 	
-    cat <<-EOF > "${SDCARD}"/tmp/install.sh
-#!/bin/bash
-apt-key add /tmp/buildpkg.key
-apt-get $apt_extra -q update
-apt-get -q ${apt_extra} --show-progress -o DPKG::Progress-Fancy=1 install -y ${install_list}
-apt-get clean
-apt-key del "925644A6"
-rm /etc/apt/sources.list.d/armbian-temp.list 2>/dev/null
-rm /etc/apt/preferences.d/90-armbian-temp.pref 2>/dev/null
-rm /tmp/buildpkg.key 2>/dev/null
-rm -- "\$0"
-
-EOF
+	cat <<-EOF > "${SDCARD}"/tmp/install.sh
+	#!/bin/bash
+	apt-key add /tmp/buildpkg.key
+	apt-get $apt_extra -q update
+	apt-get -q ${apt_extra} --show-progress -o DPKG::Progress-Fancy=1 install -y ${install_list}
+	apt-get clean
+	apt-key del "925644A6"
+	rm /etc/apt/sources.list.d/armbian-temp.list 2>/dev/null
+	rm /etc/apt/preferences.d/90-armbian-temp.pref 2>/dev/null
+	rm /tmp/buildpkg.key 2>/dev/null
+	rm -- "\$0"
+	EOF
 
 	chmod +x "${SDCARD}"/tmp/install.sh
 	chroot "${SDCARD}" /bin/bash -c "/tmp/install.sh" >> "${DEST}"/${LOG_SUBPATH}/install.log 2>&1

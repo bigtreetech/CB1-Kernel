@@ -26,9 +26,25 @@ function Env_init() {
     sleep 4
     [[ $(ifconfig | grep $wlan) == "" ]] && nmcli radio wifi on
 
-    sudo nmcli dev wifi connect $WIFI_SSID password $WIFI_PASSWD ifname $wlan
+    if [[ `nmcli device wifi list` =~ $WIFI_SSID ]]
+    then
+        if [[ ! `sudo nmcli dev wifi connect $WIFI_SSID password $WIFI_PASSWD ifname $wlan` =~ "successfully" ]]
+        then
+            echo " ===> Specify the WPA encryption method: $WIFI_SSID " >> $log_file
+            sudo nmcli c modify $WIFI_SSID wifi-sec.key-mgmt wpa-psk
+            sudo nmcli dev wifi connect $WIFI_SSID password $WIFI_PASSWD ifname $wlan
+        fi
+    else
+        echo " ===> Hide wifi_ssid: $WIFI_SSID " >> $log_file
+        sudo nmcli c add type wifi con-name $WIFI_SSID ifname wlan0 ssid $WIFI_SSID
+        sudo nmcli c modify $WIFI_SSID wifi-sec.key-mgmt wpa-psk wifi-sec.psk $WIFI_PASSWD
+        sudo nmcli c up $WIFI_SSID
+    fi
+
     sleep 6
 }
+
+
 
 function is_network() {
     local Result=no
@@ -83,7 +99,20 @@ function Create_AP_OFF() {
     if [[ $(is_network $wlan) == no ]]; then
         source $cfg_file
         echo -e $(date)" ==== $wlan prepare connection... -WIFI_SSID:$WIFI_SSID " >> $log_file
-        sudo nmcli dev wifi connect $WIFI_SSID password $WIFI_PASSWD ifname $wlan
+        if [[ `nmcli device wifi list` =~ $WIFI_SSID ]]
+        then
+            if [[ ! `sudo nmcli dev wifi connect $WIFI_SSID password $WIFI_PASSWD ifname $wlan` =~ "successfully" ]]
+            then
+                echo " ===> Specify the WPA encryption method: $WIFI_SSID " >> $log_file
+                sudo nmcli c modify $WIFI_SSID wifi-sec.key-mgmt wpa-psk
+                sudo nmcli dev wifi connect $WIFI_SSID password $WIFI_PASSWD ifname $wlan
+            fi
+        else
+            echo " ===> Hide wifi_ssid: $WIFI_SSID " >> $log_file
+            sudo nmcli c add type wifi con-name $WIFI_SSID ifname wlan0 ssid $WIFI_SSID
+            sudo nmcli c modify $WIFI_SSID wifi-sec.key-mgmt wpa-psk wifi-sec.psk $WIFI_PASSWD
+            sudo nmcli c up $WIFI_SSID
+        fi
         sleep 5
     fi
     sta_mount=0

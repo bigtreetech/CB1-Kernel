@@ -1,3 +1,2 @@
 bootlogo=true
-console=both
-disp_mode=1920x1080p60
+console=display

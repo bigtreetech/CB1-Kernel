@@ -5,7 +5,6 @@ bridge-utils
 build-essential
 ca-certificates
 command-not-found
-console-setup
 crda
 dkms
 expect
@@ -23,16 +22,12 @@ libnl-genl-3-dev
 libssl-dev
 libwrap0-dev
 linux-base
-man-db
-networkd-dispatcher
-nfs-common
-nfs-kernel-server
 python3-distutils
 python3-lib2to3
 sudo
-unattended-upgrades
+fake-hwclock
+ntp
 unicode-data
-vnstat
 wireless-regdb
 wpasupplicant
 ntpdate

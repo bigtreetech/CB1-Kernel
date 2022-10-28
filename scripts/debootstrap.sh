@@ -157,11 +157,11 @@ create_rootfs_cache()
 		eval 'LC_ALL=C LANG=C chroot $SDCARD /bin/bash -c "update-locale LANG=$DEST_LANG LANGUAGE=$DEST_LANG LC_MESSAGES=$DEST_LANG"' \
 			${OUTPUT_VERYSILENT:+' >/dev/null 2>/dev/null'}
 
-		if [[ -f $SDCARD/etc/default/console-setup ]]; then
-			sed -e 's/CHARMAP=.*/CHARMAP="UTF-8"/' -e 's/FONTSIZE=.*/FONTSIZE="8x16"/' \
-				-e 's/CODESET=.*/CODESET="guess"/' -i $SDCARD/etc/default/console-setup
-			eval 'LC_ALL=C LANG=C chroot $SDCARD /bin/bash -c "setupcon --save --force"'
-		fi
+		# if [[ -f $SDCARD/etc/default/console-setup ]]; then
+		# 	sed -e 's/CHARMAP=.*/CHARMAP="UTF-8"/' -e 's/FONTSIZE=.*/FONTSIZE="8x16"/' \
+		# 		-e 's/CODESET=.*/CODESET="guess"/' -i $SDCARD/etc/default/console-setup
+		# 	eval 'LC_ALL=C LANG=C chroot $SDCARD /bin/bash -c "setupcon --save --force"'
+		# fi
 
 		# stage: create apt-get sources list
 		create_sources_list "$RELEASE" "$SDCARD/"

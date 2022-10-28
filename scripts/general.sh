@@ -147,7 +147,7 @@ create_sources_list()
 
 	case $release in
 
-	bullseye|bookworm|trixie)
+	bullseye|bookworm)
 	cat <<-EOF > "${basedir}"/etc/apt/sources.list
 	deb http://${DEBIAN_MIRROR} $release main contrib non-free
 	#deb-src http://${DEBIAN_MIRROR} $release main contrib non-free
@@ -163,7 +163,7 @@ create_sources_list()
 	EOF
 	;;
 
-	xenial|bionic|focal|impish|jammy)
+	focal|jammy)
 	cat <<-EOF > "${basedir}"/etc/apt/sources.list
 	deb http://${UBUNTU_MIRROR} $release main restricted universe multiverse
 	#deb-src http://${UBUNTU_MIRROR} $release main restricted universe multiverse
@@ -365,9 +365,9 @@ function boot_logo()
 	"${SDCARD}"/lib/firmware/bootsplash.armbian >/dev/null 2>&1
 
 	# enable additional services
-	chroot "${SDCARD}" /bin/bash -c "systemctl --no-reload enable bootsplash-ask-password-console.path >/dev/null 2>&1"
+	# chroot "${SDCARD}" /bin/bash -c "systemctl --no-reload enable bootsplash-ask-password-console.path >/dev/null 2>&1"
 	chroot "${SDCARD}" /bin/bash -c "systemctl --no-reload enable bootsplash-hide-when-booted.service >/dev/null 2>&1"
-	chroot "${SDCARD}" /bin/bash -c "systemctl --no-reload enable bootsplash-show-on-shutdown.service >/dev/null 2>&1"
+	# chroot "${SDCARD}" /bin/bash -c "systemctl --no-reload enable bootsplash-show-on-shutdown.service >/dev/null 2>&1"
 }
 
 DISTRIBUTIONS_DESC_DIR="external/config/distributions"

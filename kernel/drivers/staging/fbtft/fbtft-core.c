@@ -112,15 +112,15 @@ static int fbtft_request_gpios(struct fbtft_par *par)
     // if(ret)
     //   printk("==> request LCD reset failed\n");
 
-    ret = gpio_request(GPIO_LCD_DC, "LcdDC");
+    ret = gpio_request(GPIO_LCD_DC, "TFT-DC");
     if (ret)
         printk("==> request LCD dc failed\n");
 
-    ret = gpio_request(GPIO_LCD_BL, "Lcd_BL");
-    if (ret)
-        printk("==> request LCD BL failed\n");
+    // ret = gpio_request(GPIO_LCD_BL, "Lcd_BL");
+    // if (ret)
+    //     printk("==> request LCD BL failed\n");
 
-    gpio_direction_output(GPIO_LCD_BL, 1);
+    // gpio_direction_output(GPIO_LCD_BL, 1);
     // gpio_direction_output(GPIO_LCD_RESET,0);
     gpio_direction_output(GPIO_LCD_DC, 1);
 

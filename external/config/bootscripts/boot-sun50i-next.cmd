@@ -21,8 +21,10 @@ if test -e ${devtype} ${devnum} ${prefix}BoardEnv.txt; then
 	env import -t ${load_addr} ${filesize}
 fi
 
-if test "${console}" = "display" || test "${console}" = "both"; then setenv consoleargs "console=tty0 console=ttyS0,115200"; fi
-if test "${console}" = "serial"; then setenv consoleargs "console=ttyS0,115200"; fi
+if test "${console}" = "detail"; then setenv consoleargs "console=tty0 console=ttyS0,115200"; fi
+if test "${console}" = "display"; then setenv consoleargs "console=ttyS0,115200 console=tty1"; fi
+if test "${console}" = "serial"; then setenv consoleargs "console=tty1"; fi
+
 if test "${bootlogo}" = "true"; then setenv consoleargs "bootsplash.bootfile=bootsplash.armbian ${consoleargs}"; fi
 
 # get PARTUUID of first partition on SD/eMMC it was loaded from

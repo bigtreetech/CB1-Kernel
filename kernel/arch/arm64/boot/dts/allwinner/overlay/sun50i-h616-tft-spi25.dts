@@ -1,0 +1,33 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+	fragment@0 {
+		target = <&i2c_gpio0>;
+		 __overlay__ {
+			status = "okay";
+		};
+	};
+
+    fragment@1 {
+		target = <&spi1>;
+		 __overlay__ {
+			status = "okay";
+		};
+	};
+
+    fragment@2 {
+		target = <&hdmi>;
+		__overlay__ {
+            status = "disabled";
+		};
+	};
+
+    fragment@3 {
+		target = <&tft_35>;
+		__overlay__ {
+            status = "okay";
+            spi-max-frequency = <25000000>;
+		};
+	};
+};

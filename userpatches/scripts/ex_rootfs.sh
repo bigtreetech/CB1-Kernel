@@ -34,7 +34,7 @@ y
 w
 EOF
 
-sudo resize2fs /dev/${filelist[2]}           # 扩展分区;
+sudo resize2fs /dev/${filelist[2]}          # 扩展分区;
 unset filelist
 
 #-----------------
@@ -65,13 +65,12 @@ sudo chown $username:$username /home/$username/ -R
 
 cd /boot/gcode
 if ls *.gcode > /dev/null 2>&1;then
-    sudo cp ./*.gcode /home/$username/gcode_files -fr
+    sudo cp ./*.gcode /home/$username/printer_data/gcodes -fr
     sudo rm ./*.gcode -fr
 fi
 sync
 
 cd $shell_path
-./disp_chose.sh
 ./pwr_status.sh &
 ./reconnect_wifi.sh
 
@@ -109,9 +108,21 @@ done
 
 EOF
 
+# ================================================ #
+
+[[ -d "/boot/gcode" ]] || sudo mkdir /boot/gcode -p
+[[ -d "/home/${username}/klipper_logs" ]] && rm /home/${username}/klipper_logs/* -fr
+[[ -d "/home/${username}/printer_data/gcodes" ]] && rm /home/${username}/printer_data/gcodes/* -fr
+
+sudo sed -i 's/ex_rootfs.sh/init.sh \&/' /etc/rc.local
+
+sudo reboot
+
 #######################################################
 #------------------- disp_chose.sh -------------------#
 #######################################################
+function disp_chose() {
+
 [[ -e "disp_chose.sh" ]] && rm disp_chose.sh -fr
 touch disp_chose.sh
 chmod +x disp_chose.sh
@@ -150,12 +161,4 @@ fi
 
 EOF
 
-# ================================================ #
-
-[[ -d "/boot/gcode" ]] || sudo mkdir /boot/gcode -p
-[[ -d "/home/${username}/klipper_logs" ]] && rm /home/${username}/klipper_logs/* -fr
-[[ -d "/home/${username}/gcode_files" ]] && rm /home/${username}/gcode_files/* -fr
-
-sudo sed -i 's/ex_rootfs.sh/init.sh \&/' /etc/rc.local
-
-sudo reboot
+}

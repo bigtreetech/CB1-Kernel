@@ -56,8 +56,6 @@ static int init_display(struct fbtft_par *par)
     write_reg(par, 0x29);
     mdelay(20);
 
-    printk("===> BQ-TFT: st7796 init complete!\n");
-
     return 0;
 }
 

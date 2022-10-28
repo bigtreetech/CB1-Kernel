@@ -3,7 +3,6 @@ bison
 bridge-utils
 build-essential
 ca-certificates
-console-setup
 dkms
 expect
 fbset
@@ -20,16 +19,12 @@ libnl-genl-3-dev
 libssl-dev
 libwrap0-dev
 linux-base
-man-db
-networkd-dispatcher
-nfs-common
-nfs-kernel-server
 python3-distutils
 python3-lib2to3
 selinux-policy-default
 sudo
-unattended-upgrades
+fake-hwclock
+ntp
 unicode-data
-vnstat
 wireless-regdb
 wpasupplicant

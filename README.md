@@ -11,6 +11,8 @@ sudo apt-get install ccache debian-archive-keyring debootstrap device-tree-compi
 - kernel 5.16.17
 - uboot 2021.10
 
+> uboot config: Allwinner-H616/u-boot/configs/h616_defconfig
+
 ## 编译
 
 直接在项目主目录下运行

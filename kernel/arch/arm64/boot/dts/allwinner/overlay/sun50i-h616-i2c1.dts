@@ -19,10 +19,10 @@
 		};
 	};
 
-        fragment@2 {
-                target = <&uart0>;
-                __overlay__ {
-                        status = "disabled";
-                };
+    fragment@2 {
+        target = <&uart0>;
+        __overlay__ {
+            status = "disabled";
         };
+    };
 };

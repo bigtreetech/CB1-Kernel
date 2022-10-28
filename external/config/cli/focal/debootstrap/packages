@@ -1,7 +1,6 @@
 apt-utils
 bzip2
 ca-certificates
-console-setup
 cpio
 crda
 cron
@@ -10,7 +9,6 @@ dbus-user-session
 dmsetup
 fdisk
 gnupg
-ifupdown
 init
 initramfs-tools
 iputils-ping
@@ -20,11 +18,8 @@ less
 libpam-systemd
 linux-base
 locales
-logrotate
 netbase
-netcat-openbsd
 rsync
-rsyslog
 sudo
 systemd
 tzdata
