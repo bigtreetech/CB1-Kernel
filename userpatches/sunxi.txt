@@ -1,2 +1,26 @@
 bootlogo=true
+overlay_prefix=sun50i-h616
+
+# default 'display' for debug, 'serial' for /dev/ttyS0
 console=display
+
+# Specify HDMI output resolution (eg. extraargs=video=HDMI-A-1:800x480-24@60)
+#extraargs=video=HDMI-A-1:1024x600-24@60
+
+# uncomment the following overlays for TFT35_SPI screen
+#overlays=tft35_spi
+
+# uncomment the following overlays for MCP2515 spi to canbus module
+#overlays=mcp2515
+
+# uncomment the following overlays in order to use both TFT35_SPI and MCP2515
+#overlays=tft35_spi mcp2515
+
+# uncomment the following overlays and parameters to release 'spidev1.1' to user space
+# NOTE: 'spidev1.1' cannot be used together with TFT35_SPI and MCP2515
+#overlays=spi-spidev
+#param_spidev_spi_bus=1
+#param_spidev_spi_cs=1
+#param_spidev_max_freq=1000000
+
+#------------------------------------------------#

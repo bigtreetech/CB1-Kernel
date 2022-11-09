@@ -427,7 +427,7 @@
 			};
 
 			spi0_pins: spi0-pins {
-				pins = "PC0", "PC2", "PC3", "PC4";
+				pins = "PC0", "PC2", "PC4";
 				function = "spi0";
 			};
 
@@ -495,7 +495,7 @@
 			pinctrl-names = "default";
 			pinctrl-0 = <&mmc0_pins>;
 			status = "disabled";
-			max-frequency = <120000000>;
+			max-frequency = <50000000>;
 			cap-sd-highspeed;
 			cap-mmc-highspeed;
 			mmc-ddr-3_3v;
@@ -517,7 +517,7 @@
 			pinctrl-names = "default";
 			pinctrl-0 = <&mmc1_pins>;
 			status = "disabled";
-			max-frequency = <50000000>;
+			max-frequency = <25000000>;
 			cap-sd-highspeed;
 			cap-mmc-highspeed;
 			mmc-ddr-3_3v;

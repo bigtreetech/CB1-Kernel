@@ -1,0 +1,26 @@
+(ExpressProject ""
+  (ProjectVersion "19981106")
+  (ProjectType "PCB")
+  (Folder "Design Resources"
+    (Folder "Library")
+    (File ".\est-h616-v2.0-20210105.dsn"
+      (Type "Schematic Design"))
+    (BuildFileAddedOrDeleted "x")
+    (CompileFileAddedOrDeleted "x")
+    (NoModify))
+  (Folder "Outputs")
+  (Folder "Referenced Projects")
+  (PartMRUSelector)
+  (GlobalState
+    (FileView
+      (Path "Design Resources")
+      (Path "Design Resources" ".\est-h616-v2.0-20210105.dsn")
+      (Path "Design Resources" ".\est-h616-v2.0-20210105.dsn"
+         "H616_PRO1_DDR3_4X8")
+      (Select "Design Resources" ".\est-h616-v2.0-20210105.dsn"))
+    (HierarchyView)
+    (Doc
+      (Type "COrCapturePMDoc")
+      (Frame
+        (Placement "44 2 3 -1 -1 -9 -36 0 200 0 150"))
+      (Tab 0))))

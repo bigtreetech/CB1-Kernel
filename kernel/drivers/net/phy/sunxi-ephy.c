@@ -185,7 +185,7 @@ static void ac300_ephy_enable(struct ephy_res *priv)
     phy_write(priv->ac300, 0x00, 0x1f37); // 25MHz clock
 
     phy_write(priv->ac300, 0x05, 0xa81f);
-    phy_write(priv->ac300, 0x06, 0);
+    phy_write(priv->ac300, 0x06, 0x02);
 
     msleep(1000); /* FIXME: fix some board compatible issues. */
     atomic_set(&ac300_ephy.ephy_en, 1);
@@ -194,9 +194,9 @@ static void ac300_ephy_enable(struct ephy_res *priv)
 static void ac300_ephy_disable(struct ephy_res *priv)
 {
     printk("==> ac300_ephy_disable\n");
-    //	phy_write(priv->ac300, 0x00, 0x1f40);
-    //	phy_write(priv->ac300, 0x05, 0xa800);
-    //	phy_write(priv->ac300, 0x06, 0x01);
+    phy_write(priv->ac300, 0x00, 0x1f40);
+    phy_write(priv->ac300, 0x05, 0xa800);
+    phy_write(priv->ac300, 0x06, 0x01);
 }
 
 int ac300_ephy_probe(struct phy_device *phydev)
@@ -251,7 +251,6 @@ int acx00_enable(void)
 
 static void acx00_ephy_enble(struct ephy_res *priv)
 {
-
     int value;
     unsigned char i = 0;
 
@@ -277,6 +276,7 @@ static void acx00_ephy_enble(struct ephy_res *priv)
     acx00_reg_write(priv->acx, EXTEPHY_CTRL0, value);
     value = acx00_reg_read(priv->acx, EXTEPHY_CTRL1);
 
+#if 0
     /* disable link led to avoid conflict with twi2 */
     value |= 0x09;
 
@@ -286,6 +286,7 @@ static void acx00_ephy_enble(struct ephy_res *priv)
     /*for ephy */
     value = acx00_reg_read(priv->acx, EPHY_CTRL);
     value &= ~(0xf << 12);
+#endif
 
     ephy_read_sid(&ephy_cali);
     value |= (0x0F & (0x03 + ephy_cali)) << 12;

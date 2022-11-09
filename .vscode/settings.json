@@ -1,5 +1,7 @@
 {
     "files.associations": {
-        "sunxi_sram.h": "c"
+        "sunxi_sram.h": "c",
+        "phy_led_triggers.h": "c",
+        "phy.h": "c"
     }
 }

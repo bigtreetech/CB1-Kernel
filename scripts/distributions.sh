@@ -97,7 +97,7 @@ install_common()
     fi
 
     cp "${USERPATCHES_PATH}/sunxi.txt" "${SDCARD}"/boot/BoardEnv.txt
-    echo "overlay_prefix=$OVERLAY_PREFIX" >> "${SDCARD}"/boot/BoardEnv.txt
+    # echo "overlay_prefix=$OVERLAY_PREFIX" >> "${SDCARD}"/boot/BoardEnv.txt
 
 	# initial date for fake-hwclock
 	date -u '+%Y-%m-%d %H:%M:%S' > "${SDCARD}"/etc/fake-hwclock.data
@@ -212,8 +212,8 @@ install_common()
 	[[ $(type -t family_tweaks) == function ]] && family_tweaks
 
 	# enable additional services
-	chroot "${SDCARD}" /bin/bash -c "systemctl --no-reload enable armbian-firstrun.service >/dev/null 2>&1"
-	chroot "${SDCARD}" /bin/bash -c "systemctl --no-reload enable armbian-firstrun-config.service >/dev/null 2>&1"
+	# chroot "${SDCARD}" /bin/bash -c "systemctl --no-reload enable armbian-firstrun.service >/dev/null 2>&1"
+	# chroot "${SDCARD}" /bin/bash -c "systemctl --no-reload enable armbian-firstrun-config.service >/dev/null 2>&1"
 	chroot "${SDCARD}" /bin/bash -c "systemctl --no-reload enable armbian-zram-config.service >/dev/null 2>&1"
 	chroot "${SDCARD}" /bin/bash -c "systemctl --no-reload enable armbian-hardware-optimize.service >/dev/null 2>&1"
 	# chroot "${SDCARD}" /bin/bash -c "systemctl --no-reload enable armbian-ramlog.service >/dev/null 2>&1"
