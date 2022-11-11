@@ -86,7 +86,7 @@ LINUXFAMILY="sun50iw9"
 
 ###################################################
 BOARD="h616"
-BOARD_NAME="Hurakan"
+BOARD_NAME="BTT-CB1"
 
 USER_NAME="biqu"
 USER_PWD="biqu"

@@ -40,9 +40,7 @@ void phy_led_trigger_change_speed(struct phy_device *phy)
     plt = phy_speed_to_led_trigger(phy, phy->speed);
     if (!plt)
     {
-        netdev_alert(phy->attached_dev,
-                     "No phy led trigger registered for speed(%d)\n",
-                     phy->speed);
+        netdev_alert(phy->attached_dev, "No phy led trigger registered for speed(%d)\n", phy->speed);
         return phy_led_trigger_no_link(phy);
     }
 
@@ -64,10 +62,7 @@ static void phy_led_trigger_format_name(struct phy_device *phy, char *buf, size_
     snprintf(buf, size, PHY_ID_FMT ":%s", phy->mdio.bus->id, phy->mdio.addr, suffix);
 }
 
-static int phy_led_trigger_register(struct phy_device *phy,
-                                    struct phy_led_trigger *plt,
-                                    unsigned int speed,
-                                    const char *suffix)
+static int phy_led_trigger_register(struct phy_device *phy, struct phy_led_trigger *plt, unsigned int speed, const char *suffix)
 {
     plt->speed = speed;
     phy_led_trigger_format_name(phy, plt->name, sizeof(plt->name), suffix);

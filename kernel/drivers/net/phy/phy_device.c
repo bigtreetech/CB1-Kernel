@@ -1489,8 +1489,7 @@ int phy_attach_direct(struct net_device *dev, struct phy_device *phydev,
 
     if (!phydev->attached_dev)
     {
-        err = sysfs_create_file(&phydev->mdio.dev.kobj,
-                                &dev_attr_phy_standalone.attr);
+        err = sysfs_create_file(&phydev->mdio.dev.kobj, &dev_attr_phy_standalone.attr);
         if (err)
             phydev_err(phydev, "error creating 'phy_standalone' sysfs entry\n");
     }

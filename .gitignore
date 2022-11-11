@@ -15,6 +15,7 @@
 *.tar.gz
 
 .tmp
+.vscode
 output
 nfs_folder
 !nfs_folder/update_kernel.sh

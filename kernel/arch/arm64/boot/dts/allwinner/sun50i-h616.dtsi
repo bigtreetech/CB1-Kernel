@@ -1077,6 +1077,7 @@
 			reset-names = "ctrl", "hdcp";
 			phys = <&hdmi_phy>;
 			phy-names = "phy";
+            drive-strength = <10>;
 			status = "disabled";
 
 			ports {
