@@ -98,6 +98,8 @@ config I2C_SMBUS
 source "drivers/i2c/algos/Kconfig"
 source "drivers/i2c/busses/Kconfig"
 
+
+
 config I2C_STUB
 	tristate "I2C/SMBus Test Stub"
 	depends on m

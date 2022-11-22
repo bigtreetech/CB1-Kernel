@@ -56,9 +56,9 @@ cat >> init.sh << EOF
 #!/bin/bash
 
 cd $shell_path
-if [ -e "ex_rootfs.sh" ];then
-    sudo rm ./ex_rootfs.sh -fr
-fi
+./pwr_status.sh &
+
+[[ -e "ex_rootfs.sh" ]] && sudo rm ./ex_rootfs.sh -fr
 
 sudo chown $username:$username /home/$username/ -R
 # sudo ntpdate stdtime.gov.hk
@@ -70,8 +70,6 @@ if ls *.gcode > /dev/null 2>&1;then
 fi
 sync
 
-cd $shell_path
-./pwr_status.sh &
 ./reconnect_wifi.sh
 
 EOF
@@ -86,6 +84,13 @@ chmod +x pwr_status.sh
 cat >> pwr_status.sh << EOF
 #!/bin/bash
 
+source /boot/system.cfg
+
+sudo timedatectl set-timezone \${TimeZone}
+# [[ -e "/etc/localtime" ]] && sudo rm /etc/localtime -fr
+# sudo ln -s /usr/share/zoneinfo/\${TimeZone} /etc/localtime
+
+#######################################################
 # if [[ \`lsusb\` == *"BTT-HDMI"* ]]
 # then
 #     sed -i "s/self.blanking_time = 0*$/self.blanking_time = abs(int(time))/" /home/$username/KlipperScreen/screen.py
@@ -100,6 +105,22 @@ echo out > direction
 
 while [ 1 ]
 do
+#######################################################
+    string=\`DISPLAY=:0 xinput --list | grep \${HDMI_Vendor}\`
+    string=\${string#*id=}
+    input_id=\${string%[*}
+
+    [[ \${dis_angle} != "normal" ]] && DISPLAY=:0 xrandr --output HDMI-1 --rotate \${dis_angle}
+
+    if [[ \${dis_angle} == "left" ]]; then
+        DISPLAY=:0 xinput --set-prop \${input_id} 'Coordinate Transformation Matrix' 0 -1 1 1 0 0 0 0 1
+    elif [[ \${dis_angle} == "right" ]]; then
+        DISPLAY=:0 xinput --set-prop \${input_id} 'Coordinate Transformation Matrix' 0 1 0 -1 0 1 0 0 1
+    elif [[ \${dis_angle} == "inverted" ]]; then
+        DISPLAY=:0 xinput --set-prop \${input_id} 'Coordinate Transformation Matrix' -1 0 1 0 -1 1 0 0 1
+    fi
+
+#######################################################
     echo 1 > value
     sleep 0.5
     echo 0 > value

@@ -172,6 +172,32 @@ while [ 1 ]; do
         fi
     fi
 
+    if [[ ${IP_MODE} == "auto" ]]; then
+        if [[ ${IP_STATIC_DEVICE} == "eth" ]]; then
+            if [[ -e "/etc/NetworkManager/system-connections/Wired connection 1.nmconnection" ]]; then
+                sudo rm /etc/NetworkManager/system-connections/Wired\ connection\ 1.nmconnection -fr
+                sudo nmcli con up "Wired connection 1"
+            fi
+        elif [[ ${IP_STATIC_DEVICE} == "wifi" ]]; then
+            if [ `sudo grep -c "manual" /etc/NetworkManager/system-connections/${WIFI_SSID}.nmconnection` -eq '1' ]; then
+                sudo nmcli con mod ${WIFI_SSID} ipv4.addresses "" ipv4.gateway "" ipv4.dns "" ipv4.method "auto"
+                sudo nmcli con up ${WIFI_SSID}
+            fi
+        fi
+    elif [[ ${IP_MODE} == "static" ]]; then
+        if [[ ${IP_STATIC_DEVICE} == "eth" ]]; then
+            if [[ ! -e "/etc/NetworkManager/system-connections/Wired connection 1.nmconnection" ]]; then
+                sudo nmcli con mod "Wired connection 1" ipv4.addresses ${IP_ADDR} ipv4.gateway ${IP_GATEWAY} ipv4.dns ${IP_DNS} ipv4.method "manual"
+                sudo nmcli con up "Wired connection 1"
+            fi
+        elif [[ ${IP_STATIC_DEVICE} == "wifi" ]]; then
+            if [ `sudo grep -c "manual" /etc/NetworkManager/system-connections/${WIFI_SSID}.nmconnection` -eq '0' ]; then
+                sudo nmcli con mod ${WIFI_SSID} ipv4.addresses ${IP_ADDR} ipv4.gateway ${IP_GATEWAY} ipv4.dns ${IP_DNS} ipv4.method "manual"
+                sudo nmcli con up ${WIFI_SSID}
+            fi
+        fi
+    fi
+
     sync
     sleep $check_interval
 done

@@ -357,15 +357,15 @@
 				function = "i2c4";
 			};
 
-            tft_ts_pins: i2c_gpio0@0 {
+            i2c_gpio_pins: i2c_gpio@0 {
 				pins = "PC12", "PC10";
 				pname = "ts_sda", "ts_clk";
-				function = "i2c_gpio0";
+				function = "i2c_gpio";
                 drive-strength = <40>;
                 bias-pull-up;
 				// allwinner,muxsel = <1>;		
-			}; 		
-
+			};
+            
 			i2s3_pins: i2s3-pins {
 				pins = "PH5", "PH6", "PH7", "PH8", "PH9";
 				function = "i2s3";

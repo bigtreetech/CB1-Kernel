@@ -74,13 +74,15 @@
 		clock-frequency  = <12000000>;          //对应模块上晶振的频率，我的是12MHz的
 	};
 
-    i2c_gpio0: i2c-gpio-0 {
+    i2c_gpio: i2c-gpio-0 {
         #address-cells = <1>;
         #size-cells = <0>;
-        status = "disabled";
+        // status = "disabled";
+        status = "okay";
         
         compatible = "i2c-gpio";
-        pinctrl-0 = <&tft_ts_pins>;
+        pinctrl-0 = <&i2c_gpio_pins>;
+        
         reg = <0x0>;
 
         gpios = <&pio 2 12 GPIO_ACTIVE_HIGH>, /* sda PC12 */
@@ -94,6 +96,12 @@
             compatible = "ns2009";
             reg = <0x48>;
             status = "okay";
+        };
+
+        bh1750@5c {
+            compatible = "rohm,bh1750";
+            reg = <0x5c>;
+            status = "disabled";
         };
     };
 
@@ -369,7 +377,7 @@
         status = "disabled";
 
         reg = <0x1>;
-        spi-max-frequency = <50000000>;
+        spi-max-frequency = <25000000>;
         fps = <60>;
         rotate = <0>;
         buswidth = <8>;
