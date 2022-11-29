@@ -1371,5 +1371,6 @@ config  TOUCHSCREEN_NS2009
 	tristate  "ns2009 touchscreen driver"
 	default m
 	depends on I2C
+    depends on I2C_GPIO
 
 endif

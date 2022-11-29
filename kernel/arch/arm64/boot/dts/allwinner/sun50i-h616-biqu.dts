@@ -74,28 +74,26 @@
 		clock-frequency  = <12000000>;          //对应模块上晶振的频率，我的是12MHz的
 	};
 
-    i2c_gpio: i2c-gpio-0 {
+    i2c_gpio: i2c-gpio {
         #address-cells = <1>;
         #size-cells = <0>;
-        // status = "disabled";
-        status = "okay";
-        
         compatible = "i2c-gpio";
-        pinctrl-0 = <&i2c_gpio_pins>;
-        
-        reg = <0x0>;
 
-        gpios = <&pio 2 12 GPIO_ACTIVE_HIGH>, /* sda PC12 */
-                <&pio 2 10 GPIO_ACTIVE_HIGH>; /* scl PC10 */
+        status = "disabled";
 
+        gpios = <&pio 2 12 GPIO_ACTIVE_HIGH>, /* sda */
+                <&pio 2 10 GPIO_ACTIVE_HIGH>; /* scl */
+
+        // 通常，sda-open-drain不需要打开，但如果该gpio为开漏模式，则一定要打开才可以正常读取数据.
         // i2c-gpio,sda-open-drain;
         // i2c-gpio,scl-open-drain;
+        
         i2c-gpio,delay-us = <5>; /* 100 kHz */
         
         ns2009@48 {
             compatible = "ns2009";
             reg = <0x48>;
-            status = "okay";
+            status = "disabled";
         };
 
         bh1750@5c {
@@ -377,7 +375,7 @@
         status = "disabled";
 
         reg = <0x1>;
-        spi-max-frequency = <25000000>;
+        spi-max-frequency = <50000000>;
         fps = <60>;
         rotate = <0>;
         buswidth = <8>;

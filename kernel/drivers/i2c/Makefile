@@ -19,5 +19,6 @@ obj-$(CONFIG_I2C_SLAVE_EEPROM)	+= i2c-slave-eeprom.o
 obj-$(CONFIG_I2C_SLAVE_TESTUNIT)	+= i2c-slave-testunit.o
 
 obj-$(CONFIG_I2C_GPIO)		+= i2c-gpio.o
+obj-$(CONFIG_I2C_GPIO_BASE)		+= i2c-gpio-base.o
 
 ccflags-$(CONFIG_I2C_DEBUG_CORE) := -DDEBUG

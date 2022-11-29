@@ -23,6 +23,10 @@
 #include <linux/iio/sysfs.h>
 #include <linux/module.h>
 
+#include <linux/i2c-gpio-base.h>
+
+#define BH1750_ADDR 0x23
+
 #define BH1750_POWER_DOWN 0x00
 #define BH1750_ONE_TIME_H_RES_MODE 0x20 /* auto-mode for BH1721 */
 #define BH1750_CHANGE_INT_TIME_H_BIT 0x40
@@ -189,8 +193,7 @@ static int bh1750_write_raw(struct iio_dev *indio_dev,
     }
 }
 
-static ssize_t bh1750_show_int_time_available(struct device *dev,
-                                              struct device_attribute *attr, char *buf)
+static ssize_t bh1750_show_int_time_available(struct device *dev, struct device_attribute *attr, char *buf)
 {
     int i;
     size_t len = 0;
@@ -198,8 +201,7 @@ static ssize_t bh1750_show_int_time_available(struct device *dev,
     const struct bh1750_chip_info *chip_info = data->chip_info;
 
     for (i = chip_info->mtreg_min; i <= chip_info->mtreg_max; i += chip_info->inc)
-        len += scnprintf(buf + len, PAGE_SIZE - len, "0.%06d ",
-                         chip_info->mtreg_to_usec * i);
+        len += scnprintf(buf + len, PAGE_SIZE - len, "0.%06d ", chip_info->mtreg_to_usec * i);
 
     buf[len - 1] = '\n';
 
@@ -234,6 +236,24 @@ static int bh1750_probe(struct i2c_client *client, const struct i2c_device_id *i
     int ret, usec;
     struct bh1750_data *data;
     struct iio_dev *indio_dev;
+
+    printk("===> bh1750 probe!\n");
+
+    gpio_i2c_init();
+
+    printk("===> bh1750 probe---gpio_i2c_init !\n");
+
+    if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C |
+                                                      I2C_FUNC_SMBUS_READ_I2C_BLOCK |
+                                                      I2C_FUNC_SMBUS_WRITE_I2C_BLOCK))
+    {
+        printk("==> bh1750: I2C functionality check failed\n");
+        return -ENXIO;
+    }
+    else
+    {
+        printk("==> bh1750: I2C functionality check success!\n");
+    }
 
     if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C | I2C_FUNC_SMBUS_WRITE_BYTE))
         return -EOPNOTSUPP;
@@ -279,8 +299,7 @@ static int bh1750_remove(struct i2c_client *client)
 static int __maybe_unused bh1750_suspend(struct device *dev)
 {
     int ret;
-    struct bh1750_data *data =
-        iio_priv(i2c_get_clientdata(to_i2c_client(dev)));
+    struct bh1750_data *data = iio_priv(i2c_get_clientdata(to_i2c_client(dev)));
 
     /*
      * This is mainly for BH1721 which doesn't enter power down

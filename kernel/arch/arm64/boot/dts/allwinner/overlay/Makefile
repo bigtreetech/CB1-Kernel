@@ -4,10 +4,11 @@
 # https://docs.armbian.com/User-Guide_Armbian_overlays/
 
 dtbo-$(CONFIG_ARCH_SUNXI) += \
+	sun50i-h616-spi-spidev.dtbo \
 	sun50i-h616-tft35_spi.dtbo \
 	sun50i-h616-tft35_spi25.dtbo \
 	sun50i-h616-mcp2515.dtbo \
-	sun50i-h616-spi-spidev.dtbo
+	sun50i-h616-auto_brightness.dtbo
 
 scr-$(CONFIG_ARCH_SUNXI) += \
 	sun50i-h616-fixup.scr

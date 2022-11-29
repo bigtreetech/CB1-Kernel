@@ -25,13 +25,16 @@
 #include <linux/gpio.h>
 #include <linux/sunxi-gpio.h>
 #include <linux/delay.h>
-#include "gpio_i2c.h"
+
+#include <linux/i2c-gpio-base.h>
 
 /* polling interval in ms */
 #define POLL_INTERVAL 10
 
 /* this driver uses 12-bit readout */
 #define MAX_12BIT 0xfff
+
+#define NS2009_ADDR 0x48
 
 #define NS2009_TS_NAME "ns2009"
 
@@ -64,7 +67,7 @@ static int ns2009_ts_read_data(struct ns2009_data *data, u8 cmd, u16 *val)
 {
     u8 raw_data[2] = {0};
 
-    i2c_read_multi_reg(cmd, raw_data, 2);
+    gpio_i2c_read_multi_reg(NS2009_ADDR, cmd, raw_data, 2);
     *val = (raw_data[0] << 4) | (raw_data[1] >> 4);
 
     return 0;
@@ -172,8 +175,7 @@ static int ns2009_ts_request_polled_input_dev(struct ns2009_data *data)
     return 0;
 }
 
-static int ns2009_ts_probe(struct i2c_client *client,
-                           const struct i2c_device_id *id)
+static int ns2009_ts_probe(struct i2c_client *client, const struct i2c_device_id *id)
 {
     struct ns2009_data *data;
     struct device *dev = &client->dev;
@@ -191,14 +193,20 @@ static int ns2009_ts_probe(struct i2c_client *client,
 
     data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
     if (!data)
+    {
+        dev_err(dev, "I2C devm kzalloc failed\n");
         return -ENOMEM;
+    }
 
     i2c_set_clientdata(client, data);
     data->client = client;
 
     error = ns2009_ts_request_polled_input_dev(data);
     if (error)
+    {
+        dev_err(dev, "I2C ns2009_ts_request_polled_input_dev failed\n");
         return error;
+    }
 
     return 0;
 };
