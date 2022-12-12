@@ -90,13 +90,13 @@
         
         i2c-gpio,delay-us = <5>; /* 100 kHz */
         
-        ns2009@48 {
+        tft_tp: ns2009@48 {
             compatible = "ns2009";
             reg = <0x48>;
             status = "disabled";
         };
 
-        bh1750@5c {
+        light: bh1750@5c {
             compatible = "rohm,bh1750";
             reg = <0x5c>;
             status = "disabled";
@@ -119,7 +119,7 @@
 		regulator-max-microvolt = <5000000>;
 		vin-supply = <&reg_vcc5v>;
 		enable-active-high;
-		gpio = <&pio 2 16 GPIO_ACTIVE_HIGH>;    /* PC16 */
+		// gpio = <&pio 2 16 GPIO_ACTIVE_HIGH>;    /* PC16 */
 		status = "okay";
 	};
 
@@ -253,6 +253,15 @@
 	status = "okay";
 };
 
+&mmc2 {
+    vmmc-supply = <&reg_dldo1>;
+
+    no-1-8-v;
+	bus-width = <8>;
+    non-removable;
+	status = "okay";
+};
+
 &ohci0 {
 	status = "okay";
 };
@@ -361,7 +370,7 @@
         status = "disabled";
         
         reg = <0x0>;
-        spi-max-frequency = <5000000>;
+        spi-max-frequency = <1000000>;
 
         interrupt-parent = <&pio>;
         interrupts = <2 9 IRQ_TYPE_EDGE_FALLING>;   /* PC9 */

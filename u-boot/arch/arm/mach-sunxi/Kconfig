@@ -194,170 +194,11 @@ config MACH_SUNXI_H3_H5
 config SUNXI_DRAM_MAX_SIZE
 	hex
 	default 0x100000000 if MACH_SUN50I_H616
-	default 0xC0000000 if MACH_SUN50I || MACH_SUN50I_H5 || MACH_SUN50I_H6
 	default 0x80000000
 
 choice
 	prompt "Sunxi SoC Variant"
 	optional
-
-config MACH_SUN4I
-	bool "sun4i (Allwinner A10)"
-	select CPU_V7A
-	select ARM_CORTEX_CPU_IS_UP
-	select PHY_SUN4I_USB
-	select DRAM_SUN4I
-	select SUNXI_GEN_SUN4I
-	select SUPPORT_SPL
-
-config MACH_SUN5I
-	bool "sun5i (Allwinner A13)"
-	select CPU_V7A
-	select ARM_CORTEX_CPU_IS_UP
-	select DRAM_SUN4I
-	select PHY_SUN4I_USB
-	select SUNXI_GEN_SUN4I
-	select SUPPORT_SPL
-	imply CONS_INDEX_2 if !DM_SERIAL
-
-config MACH_SUN6I
-	bool "sun6i (Allwinner A31)"
-	select CPU_V7A
-	select CPU_V7_HAS_NONSEC
-	select CPU_V7_HAS_VIRT
-	select ARCH_SUPPORT_PSCI
-	select DRAM_SUN6I
-	select PHY_SUN4I_USB
-	select SUN6I_P2WI
-	select SUN6I_PRCM
-	select SUNXI_GEN_SUN6I
-	select SUPPORT_SPL
-	select ARMV7_BOOT_SEC_DEFAULT if OLD_SUNXI_KERNEL_COMPAT
-
-config MACH_SUN7I
-	bool "sun7i (Allwinner A20)"
-	select CPU_V7A
-	select CPU_V7_HAS_NONSEC
-	select CPU_V7_HAS_VIRT
-	select ARCH_SUPPORT_PSCI
-	select DRAM_SUN4I
-	select PHY_SUN4I_USB
-	select SUNXI_GEN_SUN4I
-	select SUPPORT_SPL
-	select ARMV7_BOOT_SEC_DEFAULT if OLD_SUNXI_KERNEL_COMPAT
-
-config MACH_SUN8I_A23
-	bool "sun8i (Allwinner A23)"
-	select CPU_V7A
-	select CPU_V7_HAS_NONSEC
-	select CPU_V7_HAS_VIRT
-	select ARCH_SUPPORT_PSCI
-	select DRAM_SUN8I_A23
-	select PHY_SUN4I_USB
-	select SUNXI_GEN_SUN6I
-	select SUPPORT_SPL
-	select ARMV7_BOOT_SEC_DEFAULT if OLD_SUNXI_KERNEL_COMPAT
-	imply CONS_INDEX_5 if !DM_SERIAL
-
-config MACH_SUN8I_A33
-	bool "sun8i (Allwinner A33)"
-	select CPU_V7A
-	select CPU_V7_HAS_NONSEC
-	select CPU_V7_HAS_VIRT
-	select ARCH_SUPPORT_PSCI
-	select DRAM_SUN8I_A33
-	select PHY_SUN4I_USB
-	select SUNXI_GEN_SUN6I
-	select SUPPORT_SPL
-	select ARMV7_BOOT_SEC_DEFAULT if OLD_SUNXI_KERNEL_COMPAT
-	imply CONS_INDEX_5 if !DM_SERIAL
-
-config MACH_SUN8I_A83T
-	bool "sun8i (Allwinner A83T)"
-	select CPU_V7A
-	select DRAM_SUN8I_A83T
-	select PHY_SUN4I_USB
-	select SUNXI_GEN_SUN6I
-	select MMC_SUNXI_HAS_NEW_MODE
-	select MMC_SUNXI_HAS_MODE_SWITCH
-	select SUPPORT_SPL
-
-config MACH_SUN8I_H3
-	bool "sun8i (Allwinner H3)"
-	select CPU_V7A
-	select CPU_V7_HAS_NONSEC
-	select CPU_V7_HAS_VIRT
-	select ARCH_SUPPORT_PSCI
-	select MACH_SUNXI_H3_H5
-	select ARMV7_BOOT_SEC_DEFAULT if OLD_SUNXI_KERNEL_COMPAT
-
-config MACH_SUN8I_R40
-	bool "sun8i (Allwinner R40)"
-	select CPU_V7A
-	select CPU_V7_HAS_NONSEC
-	select CPU_V7_HAS_VIRT
-	select ARCH_SUPPORT_PSCI
-	select SUNXI_GEN_SUN6I
-	select MMC_SUNXI_HAS_NEW_MODE
-	select SUPPORT_SPL
-	select SUNXI_DRAM_DW
-	select SUNXI_DRAM_DW_32BIT
-	select PHY_SUN4I_USB
-
-config MACH_SUN8I_V3S
-	bool "sun8i (Allwinner V3/V3s/S3/S3L)"
-	select CPU_V7A
-	select CPU_V7_HAS_NONSEC
-	select CPU_V7_HAS_VIRT
-	select ARCH_SUPPORT_PSCI
-	select SUNXI_GEN_SUN6I
-	select SUNXI_DRAM_DW
-	select SUNXI_DRAM_DW_16BIT
-	select SUPPORT_SPL
-	select ARMV7_BOOT_SEC_DEFAULT if OLD_SUNXI_KERNEL_COMPAT
-
-config MACH_SUN9I
-	bool "sun9i (Allwinner A80)"
-	select CPU_V7A
-	select DRAM_SUN9I
-	select SUN6I_PRCM
-	select SUNXI_GEN_SUN6I
-	select SUN8I_RSB
-	select SUPPORT_SPL
-
-config MACH_SUN50I
-	bool "sun50i (Allwinner A64)"
-	select ARM64
-	select SPI
-	select DM_I2C
-	select DM_SPI if SPI
-	select DM_SPI_FLASH
-	select PHY_SUN4I_USB
-	select SUN6I_PRCM
-	select SUNXI_DE2
-	select SUNXI_GEN_SUN6I
-	select MMC_SUNXI_HAS_NEW_MODE
-	select SUPPORT_SPL
-	select SUNXI_DRAM_DW
-	select SUNXI_DRAM_DW_32BIT
-	select FIT
-	select SPL_LOAD_FIT
-	select SUNXI_A64_TIMER_ERRATUM
-
-config MACH_SUN50I_H5
-	bool "sun50i (Allwinner H5)"
-	select ARM64
-	select MACH_SUNXI_H3_H5
-	select MMC_SUNXI_HAS_NEW_MODE
-	select FIT
-	select SPL_LOAD_FIT
-
-config MACH_SUN50I_H6
-	bool "sun50i (Allwinner H6)"
-	select ARM64
-	select PHY_SUN4I_USB
-	select DRAM_SUN50I_H6
-	select SUN50I_GEN_H6
 
 config MACH_SUN50I_H616
 	bool "sun50i (Allwinner H616)"
@@ -467,11 +308,6 @@ config DRAM_TYPE
 
 config DRAM_CLK
 	int "sunxi dram clock speed"
-	default 792 if MACH_SUN9I
-	default 648 if MACH_SUN8I_R40
-	default 312 if MACH_SUN6I || MACH_SUN8I
-	default 360 if MACH_SUN4I || MACH_SUN5I || MACH_SUN7I || \
-		       MACH_SUN8I_V3S
 	default 648 if MACH_SUN50I || MACH_SUN50I_H5
 	default 744 if MACH_SUN50I_H6
 	default 720 if MACH_SUN50I_H616
@@ -504,9 +340,6 @@ config DRAM_ZQ
 
 config DRAM_ODT_EN
 	bool "sunxi dram odt enable"
-	default y if MACH_SUN8I_A23
-	default y if MACH_SUNXI_H3_H5
-	default y if MACH_SUN8I_R40
 	default y if MACH_SUN50I
 	default y if MACH_SUN50I_H6
 	default y if MACH_SUN50I_H616
@@ -593,23 +426,11 @@ config DRAM_ODT_CORRECTION
 endif
 
 config SYS_CLK_FREQ
-	default 1008000000 if MACH_SUN4I
-	default 1008000000 if MACH_SUN5I
-	default 1008000000 if MACH_SUN6I
-	default 912000000 if MACH_SUN7I
 	default 816000000 if MACH_SUN50I || MACH_SUN50I_H5
-	default 1008000000 if MACH_SUN8I
-	default 1008000000 if MACH_SUN9I
 	default 888000000 if MACH_SUN50I_H6
 	default 1008000000 if MACH_SUN50I_H616
 
 config SYS_CONFIG_NAME
-	default "sun4i" if MACH_SUN4I
-	default "sun5i" if MACH_SUN5I
-	default "sun6i" if MACH_SUN6I
-	default "sun7i" if MACH_SUN7I
-	default "sun8i" if MACH_SUN8I
-	default "sun9i" if MACH_SUN9I
 	default "sun50i" if MACH_SUN50I
 	default "sun50i" if MACH_SUN50I_H6
 	default "sun50i" if MACH_SUN50I_H616
@@ -990,7 +811,6 @@ config VIDEO_DE2
 	Say y here if you want to build DE2 video driver which is present on
 	newer SoCs. Currently only HDMI output is supported.
 
-
 choice
 	prompt "LCD panel support"
 	depends on VIDEO_SUNXI
@@ -1053,12 +873,6 @@ config GMAC_TX_DELAY
 	Set the GMAC Transmit Clock Delay Chain value.
 
 config SPL_STACK_R_ADDR
-	default 0x4fe00000 if MACH_SUN4I
-	default 0x4fe00000 if MACH_SUN5I
-	default 0x4fe00000 if MACH_SUN6I
-	default 0x4fe00000 if MACH_SUN7I
-	default 0x4fe00000 if MACH_SUN8I
-	default 0x2fe00000 if MACH_SUN9I
 	default 0x4fe00000 if MACH_SUN50I
 	default 0x4fe00000 if SUN50I_GEN_H6
 

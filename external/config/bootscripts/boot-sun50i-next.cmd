@@ -24,6 +24,7 @@ fi
 if test "${console}" = "detail"; then setenv consoleargs "console=tty0 console=ttyS0,115200"; fi
 if test "${console}" = "display"; then setenv consoleargs "console=ttyS0,115200 console=tty1"; fi
 if test "${console}" = "serial"; then setenv consoleargs "console=tty1"; fi
+if test "${console}" = "cancel_lcd"; then setenv consoleargs "console=ttyS0,115200"; fi
 
 if test "${bootlogo}" = "true"; then setenv consoleargs "bootsplash.bootfile=bootsplash.armbian ${consoleargs}"; fi
 

@@ -52,6 +52,8 @@ fit-dtb.blob*
 !.mailmap
 !.config*
 
+* for sunxi board
+
 #
 # Generated files
 #

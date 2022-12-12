@@ -30,4 +30,11 @@
             spi-max-frequency = <25000000>;
 		};
 	};
+
+    fragment@4 {
+		target = <&tft_tp>;
+		__overlay__ {
+            status = "okay";
+		};
+	};
 };

@@ -171,7 +171,7 @@
 				pins = "PF0", "PF1", "PF2", "PF3",
 				       "PF4", "PF5";
 				function = "mmc0";
-				drive-strength = <30>;
+				drive-strength = <40>;
 				bias-pull-up;
 			};
 
@@ -179,7 +179,7 @@
 				pins = "PG0", "PG1", "PG2", "PG3",
 				       "PG4", "PG5";
 				function = "mmc1";
-				drive-strength = <30>;
+				drive-strength = <40>;
 				bias-pull-up;
 			};
 
@@ -188,7 +188,7 @@
 				       "PC8", "PC9", "PC10", "PC11",
 				       "PC13", "PC14", "PC15", "PC16";
 				function = "mmc2";
-				drive-strength = <30>;
+				drive-strength = <40>;
 				bias-pull-up;
 			};
 
@@ -245,6 +245,7 @@
 			interrupts = <GIC_SPI 35 IRQ_TYPE_LEVEL_HIGH>;
 			pinctrl-names = "default";
 			pinctrl-0 = <&mmc0_pins>;
+            max-frequency = <120000000>;
 			status = "disabled";
 			cap-sd-highspeed;
 			cap-mmc-highspeed;
@@ -287,6 +288,7 @@
 			interrupts = <GIC_SPI 37 IRQ_TYPE_LEVEL_HIGH>;
 			pinctrl-names = "default";
 			pinctrl-0 = <&mmc2_pins>;
+            max-frequency = <20000000>;
 			status = "disabled";
 			cap-sd-highspeed;
 			cap-mmc-highspeed;

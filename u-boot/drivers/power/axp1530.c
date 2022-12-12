@@ -8,7 +8,6 @@
  */
 
 #include <common.h>
-
 // #include <asm/arch/pmic_bus_1530.h>
 
 #include <errno.h>
@@ -59,7 +58,6 @@ __attribute__((section(".data"))) axp_contrl_info pmu_axp1530_ctrl_tbl[] = {
      AXP1530_OUTPUT_POWER_ON_OFF_CTL, 3},
     {"dldo1", 500, 3500, AXP1530_DLDO1OUT_VOL, 0x1f, 100, 0, 0,
      AXP1530_OUTPUT_POWER_ON_OFF_CTL, 4},
-
 };
 
 static axp_contrl_info *get_ctrl_info_from_tbl(char *name)
@@ -114,7 +112,6 @@ int axp_init(void)
 // static int pmu_axp1530_probe(void)
 {
     u8 pmu_chip_id;
-    // printf("axp_init begin!\n");
     if (pmic_bus_init())
     {
         printf("%s pmic_bus_init fail\n", __func__);
@@ -130,12 +127,13 @@ int axp_init(void)
     {
         /*pmu type AXP1530*/
         // pmu_axp1530_necessary_reg_enable();
-        printf("==== PMU: AXP1530 ====\n");
+
+        debug("---- PMU: AXP1530 ----\n");
         return 0;
     }
     else
     {
-        printf("==== PMU: none ====\n");
+        debug("==== PMU: none ====\n");
     }
     return -1;
 }
@@ -177,8 +175,7 @@ int pmu_axp1530_set_voltage(char *name, uint set_vol, uint onoff)
         {
             set_vol = p_item->max_vol;
         }
-        if (pmic_bus_read(p_item->cfg_reg_addr,
-                          &reg_value))
+        if (pmic_bus_read(p_item->cfg_reg_addr, &reg_value))
         {
             return -1;
         }
@@ -186,34 +183,26 @@ int pmu_axp1530_set_voltage(char *name, uint set_vol, uint onoff)
         reg_value &= ~p_item->cfg_reg_mask;
         if (p_item->split2_val && (set_vol > p_item->split2_val))
         {
-            base_step = (p_item->split2_val - p_item->split1_val) /
-                        p_item->step1_val;
+            base_step = (p_item->split2_val - p_item->split1_val) / p_item->step1_val;
 
-            base_step += (p_item->split1_val - p_item->min_vol) /
-                         p_item->step0_val;
+            base_step += (p_item->split1_val - p_item->min_vol) / p_item->step0_val;
             reg_value |= (base_step +
                           (set_vol - p_item->split2_val / p_item->step2_val * p_item->step2_val) /
                               p_item->step2_val);
         }
-        else if (p_item->split1_val &&
-                 (set_vol > p_item->split1_val))
+        else if (p_item->split1_val && (set_vol > p_item->split1_val))
         {
             if (p_item->split1_val < p_item->min_vol)
             {
-                axp_err("bad split val(%d) for %s\n",
-                        p_item->split1_val, name);
+                axp_err("bad split val(%d) for %s\n", p_item->split1_val, name);
             }
 
-            base_step = (p_item->split1_val - p_item->min_vol) /
-                        p_item->step0_val;
-            reg_value |= (base_step +
-                          (set_vol - p_item->split1_val) /
-                              p_item->step1_val);
+            base_step = (p_item->split1_val - p_item->min_vol) / p_item->step0_val;
+            reg_value |= (base_step + (set_vol - p_item->split1_val) / p_item->step1_val);
         }
         else
         {
-            reg_value |=
-                (set_vol - p_item->min_vol) / p_item->step0_val;
+            reg_value |= (set_vol - p_item->min_vol) / p_item->step0_val;
         }
         if (pmic_bus_write(p_item->cfg_reg_addr, reg_value))
         {
@@ -276,21 +265,17 @@ int pmu_axp1530_get_voltage(char *name)
     if (p_item->split2_val)
     {
         u32 base_step2;
-        base_step = (p_item->split1_val - p_item->min_vol) /
-                    p_item->step0_val;
+        base_step = (p_item->split1_val - p_item->min_vol) / p_item->step0_val;
 
-        base_step2 = base_step + (p_item->split2_val - p_item->split1_val) /
-                                     p_item->step1_val;
+        base_step2 = base_step + (p_item->split2_val - p_item->split1_val) / p_item->step1_val;
 
         if (reg_value >= base_step2)
         {
-            vol = ALIGN(p_item->split2_val, p_item->step2_val) +
-                  p_item->step2_val * (reg_value - base_step2);
+            vol = ALIGN(p_item->split2_val, p_item->step2_val) + p_item->step2_val * (reg_value - base_step2);
         }
         else if (reg_value >= base_step)
         {
-            vol = p_item->split1_val +
-                  p_item->step1_val * (reg_value - base_step);
+            vol = p_item->split1_val + p_item->step1_val * (reg_value - base_step);
         }
         else
         {
@@ -299,12 +284,10 @@ int pmu_axp1530_get_voltage(char *name)
     }
     else if (p_item->split1_val)
     {
-        base_step = (p_item->split1_val - p_item->min_vol) /
-                    p_item->step0_val;
+        base_step = (p_item->split1_val - p_item->min_vol) / p_item->step0_val;
         if (reg_value > base_step)
         {
-            vol = p_item->split1_val +
-                  p_item->step1_val * (reg_value - base_step);
+            vol = p_item->split1_val + p_item->step1_val * (reg_value - base_step);
         }
         else
         {

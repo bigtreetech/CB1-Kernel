@@ -29,4 +29,11 @@
             status = "okay";
 		};
 	};
+
+    fragment@4 {
+		target = <&tft_tp>;
+		__overlay__ {
+            status = "okay";
+		};
+	};
 };
