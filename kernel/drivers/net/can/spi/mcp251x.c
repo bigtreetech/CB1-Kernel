@@ -189,8 +189,10 @@
 #define RXMEID8(n) ((n)*4 + 0x22)
 #define RXMEID0(n) ((n)*4 + 0x23)
 
-#define GET_BYTE(val, byte) (((val) >> ((byte)*8)) & 0xff)
-#define SET_BYTE(val, byte) (((val)&0xff) << ((byte)*8))
+#define GET_BYTE(val, byte) \
+    (((val) >> ((byte)*8)) & 0xff)
+#define SET_BYTE(val, byte) \
+    (((val)&0xff) << ((byte)*8))
 
 /* Buffer size required for the largest SPI transfer (i.e., reading a
  * frame)
@@ -412,8 +414,8 @@ static u8 mcp251x_read_stat(struct spi_device *spi)
 }
 
 #define mcp251x_read_stat_poll_timeout(addr, val, cond, delay_us, timeout_us) \
-    readx_poll_timeout(mcp251x_read_stat, addr, val, cond, delay_us,          \
-                       timeout_us)
+    readx_poll_timeout(mcp251x_read_stat, addr, val, cond,                    \
+                       delay_us, timeout_us)
 
 #ifdef CONFIG_GPIOLIB
 enum
@@ -427,7 +429,8 @@ enum
 
 #define MCP251X_GPIO_INPUT_MASK \
     GENMASK(MCP251X_GPIO_TX2RTS, MCP251X_GPIO_TX0RTS)
-#define MCP251X_GPIO_OUTPUT_MASK GENMASK(MCP251X_GPIO_RX1BF, MCP251X_GPIO_RX0BF)
+#define MCP251X_GPIO_OUTPUT_MASK \
+    GENMASK(MCP251X_GPIO_RX1BF, MCP251X_GPIO_RX0BF)
 
 static const char *const mcp251x_gpio_names[] = {
     [MCP251X_GPIO_TX0RTS] = "TX0RTS", /* inputs */
@@ -462,7 +465,8 @@ static int mcp251x_gpio_request(struct gpio_chip *chip, unsigned int offset)
     return 0;
 }
 
-static void mcp251x_gpio_free(struct gpio_chip *chip, unsigned int offset)
+static void mcp251x_gpio_free(struct gpio_chip *chip,
+                              unsigned int offset)
 {
     struct mcp251x_priv *priv = gpiochip_get_data(chip);
     u8 val;
@@ -480,8 +484,7 @@ static void mcp251x_gpio_free(struct gpio_chip *chip, unsigned int offset)
     priv->reg_bfpctrl &= ~val;
 }
 
-static int mcp251x_gpio_get_direction(struct gpio_chip *chip,
-                                      unsigned int offset)
+static int mcp251x_gpio_get_direction(struct gpio_chip *chip, unsigned int offset)
 {
     if (mcp251x_gpio_is_input(offset))
         return GPIOF_DIR_IN;
@@ -538,8 +541,7 @@ static int mcp251x_gpio_get_multiple(struct gpio_chip *chip,
     return 0;
 }
 
-static void mcp251x_gpio_set(struct gpio_chip *chip, unsigned int offset,
-                             int value)
+static void mcp251x_gpio_set(struct gpio_chip *chip, unsigned int offset, int value)
 {
     struct mcp251x_priv *priv = gpiochip_get_data(chip);
     u8 mask, val;
@@ -555,9 +557,8 @@ static void mcp251x_gpio_set(struct gpio_chip *chip, unsigned int offset,
     priv->reg_bfpctrl |= val;
 }
 
-static void mcp251x_gpio_set_multiple(struct gpio_chip *chip,
-                                      unsigned long *maskp,
-                                      unsigned long *bitsp)
+static void
+mcp251x_gpio_set_multiple(struct gpio_chip *chip, unsigned long *maskp, unsigned long *bitsp)
 {
     struct mcp251x_priv *priv = gpiochip_get_data(chip);
     u8 mask, val;
@@ -625,8 +626,7 @@ static inline int mcp251x_gpio_setup(struct mcp251x_priv *priv)
 }
 #endif
 
-static void mcp251x_hw_tx_frame(struct spi_device *spi, u8 *buf, int len,
-                                int tx_buf_idx)
+static void mcp251x_hw_tx_frame(struct spi_device *spi, u8 *buf, int len, int tx_buf_idx)
 {
     struct mcp251x_priv *priv = spi_get_drvdata(spi);
 
@@ -695,11 +695,8 @@ static void mcp251x_hw_rx_frame(struct spi_device *spi, u8 *buf, int buf_idx)
         priv->spi_tx_buf[RXBCTRL_OFF] = INSTRUCTION_READ_RXB(buf_idx);
         if (spi->controller->flags & SPI_CONTROLLER_HALF_DUPLEX)
         {
-            spi_write_then_read(spi, priv->spi_tx_buf, 1,
-                                priv->spi_rx_buf,
-                                SPI_TRANSFER_BUF_LEN);
-            memcpy(buf + 1, priv->spi_rx_buf,
-                   SPI_TRANSFER_BUF_LEN - 1);
+            spi_write_then_read(spi, priv->spi_tx_buf, 1, priv->spi_rx_buf, SPI_TRANSFER_BUF_LEN);
+            memcpy(buf + 1, priv->spi_rx_buf, SPI_TRANSFER_BUF_LEN - 1);
         }
         else
         {
@@ -745,8 +742,9 @@ static void mcp251x_hw_rx(struct spi_device *spi, int buf_idx)
     else
     {
         /* Standard ID format */
-        frame->can_id = (buf[RXBSIDH_OFF] << RXBSIDH_SHIFT) |
-                        (buf[RXBSIDL_OFF] >> RXBSIDL_SHIFT);
+        frame->can_id =
+            (buf[RXBSIDH_OFF] << RXBSIDH_SHIFT) |
+            (buf[RXBSIDL_OFF] >> RXBSIDL_SHIFT);
         if (buf[RXBSIDL_OFF] & RXBSIDL_SRR)
             frame->can_id |= CAN_RTR_FLAG;
     }
@@ -784,10 +782,8 @@ static int mcp251x_hw_wake(struct spi_device *spi)
     mcp251x_write_reg(spi, CANCTRL, CANCTRL_REQOP_CONF);
 
     /* Wait for the device to enter config mode */
-    ret = mcp251x_read_stat_poll_timeout(spi, value,
-                                         value == CANCTRL_REQOP_CONF,
-                                         MCP251X_OST_DELAY_MS * 1000,
-                                         USEC_PER_SEC);
+    ret = mcp251x_read_stat_poll_timeout(spi, value, value == CANCTRL_REQOP_CONF,
+                                         MCP251X_OST_DELAY_MS * 1000, USEC_PER_SEC);
     if (ret)
     {
         dev_err(&spi->dev, "MCP251x didn't enter in config mode\n");
@@ -801,8 +797,7 @@ static int mcp251x_hw_wake(struct spi_device *spi)
     return 0;
 }
 
-static netdev_tx_t mcp251x_hard_start_xmit(struct sk_buff *skb,
-                                           struct net_device *net)
+static netdev_tx_t mcp251x_hard_start_xmit(struct sk_buff *skb, struct net_device *net)
 {
     struct mcp251x_priv *priv = netdev_priv(net);
     struct spi_device *spi = priv->spi;
@@ -854,8 +849,7 @@ static int mcp251x_set_normal_mode(struct spi_device *spi)
     /* Enable interrupts */
     mcp251x_write_reg(spi, CANINTE,
                       CANINTE_ERRIE | CANINTE_TX2IE | CANINTE_TX1IE |
-                          CANINTE_TX0IE | CANINTE_RX1IE |
-                          CANINTE_RX0IE);
+                          CANINTE_TX0IE | CANINTE_RX1IE | CANINTE_RX0IE);
 
     if (priv->can.ctrlmode & CAN_CTRLMODE_LOOPBACK)
     {
@@ -873,13 +867,10 @@ static int mcp251x_set_normal_mode(struct spi_device *spi)
         mcp251x_write_reg(spi, CANCTRL, CANCTRL_REQOP_NORMAL);
 
         /* Wait for the device to enter normal mode */
-        ret = mcp251x_read_stat_poll_timeout(
-            spi, value, value == 0, MCP251X_OST_DELAY_MS * 1000,
-            USEC_PER_SEC);
+        ret = mcp251x_read_stat_poll_timeout(spi, value, value == 0, MCP251X_OST_DELAY_MS * 1000, USEC_PER_SEC);
         if (ret)
         {
-            dev_err(&spi->dev,
-                    "MCP251x didn't enter in normal mode\n");
+            dev_err(&spi->dev, "MCP251x didn't enter in normal mode\n");
             return ret;
         }
     }
@@ -893,16 +884,12 @@ static int mcp251x_do_set_bittiming(struct net_device *net)
     struct can_bittiming *bt = &priv->can.bittiming;
     struct spi_device *spi = priv->spi;
 
-    mcp251x_write_reg(spi, CNF1,
-                      ((bt->sjw - 1) << CNF1_SJW_SHIFT) | (bt->brp - 1));
-    mcp251x_write_reg(spi, CNF2,
-                      CNF2_BTLMODE |
-                          (priv->can.ctrlmode & CAN_CTRLMODE_3_SAMPLES ? CNF2_SAM : 0) |
-                          ((bt->phase_seg1 - 1) << CNF2_PS1_SHIFT) |
-                          (bt->prop_seg - 1));
+    mcp251x_write_reg(spi, CNF1, ((bt->sjw - 1) << CNF1_SJW_SHIFT) | (bt->brp - 1));
+    mcp251x_write_reg(spi, CNF2, CNF2_BTLMODE | (priv->can.ctrlmode & CAN_CTRLMODE_3_SAMPLES ? CNF2_SAM : 0) | ((bt->phase_seg1 - 1) << CNF2_PS1_SHIFT) | (bt->prop_seg - 1));
     mcp251x_write_bits(spi, CNF3, CNF3_PHSEG2_MASK, (bt->phase_seg2 - 1));
     dev_dbg(&spi->dev, "CNF: 0x%02x 0x%02x 0x%02x\n",
-            mcp251x_read_reg(spi, CNF1), mcp251x_read_reg(spi, CNF2),
+            mcp251x_read_reg(spi, CNF1),
+            mcp251x_read_reg(spi, CNF2),
             mcp251x_read_reg(spi, CNF3));
 
     return 0;
@@ -914,7 +901,8 @@ static int mcp251x_setup(struct net_device *net, struct spi_device *spi)
 
     mcp251x_write_reg(spi, RXBCTRL(0),
                       RXBCTRL_BUKT | RXBCTRL_RXM0 | RXBCTRL_RXM1);
-    mcp251x_write_reg(spi, RXBCTRL(1), RXBCTRL_RXM0 | RXBCTRL_RXM1);
+    mcp251x_write_reg(spi, RXBCTRL(1),
+                      RXBCTRL_RXM0 | RXBCTRL_RXM1);
     return 0;
 }
 
@@ -936,13 +924,10 @@ static int mcp251x_hw_reset(struct spi_device *spi)
     mdelay(MCP251X_OST_DELAY_MS);
 
     /* Wait for reset to finish */
-    ret = mcp251x_read_stat_poll_timeout(spi, value,
-                                         value == CANCTRL_REQOP_CONF,
-                                         MCP251X_OST_DELAY_MS * 1000,
-                                         USEC_PER_SEC);
+    ret = mcp251x_read_stat_poll_timeout(spi, value, value == CANCTRL_REQOP_CONF,
+                                         MCP251X_OST_DELAY_MS * 1000, USEC_PER_SEC);
     if (ret)
-        dev_err(&spi->dev,
-                "MCP251x didn't enter in conf mode after reset\n");
+        dev_err(&spi->dev, "MCP251x didn't enter in conf mode after reset\n");
     return ret;
 }
 
@@ -1028,8 +1013,7 @@ static void mcp251x_error_skb(struct net_device *net, int can_id, int data1)
 
 static void mcp251x_tx_work_handler(struct work_struct *ws)
 {
-    struct mcp251x_priv *priv =
-        container_of(ws, struct mcp251x_priv, tx_work);
+    struct mcp251x_priv *priv = container_of(ws, struct mcp251x_priv, tx_work);
     struct spi_device *spi = priv->spi;
     struct net_device *net = priv->net;
     struct can_frame *frame;
@@ -1058,8 +1042,7 @@ static void mcp251x_tx_work_handler(struct work_struct *ws)
 
 static void mcp251x_restart_work_handler(struct work_struct *ws)
 {
-    struct mcp251x_priv *priv =
-        container_of(ws, struct mcp251x_priv, restart_work);
+    struct mcp251x_priv *priv = container_of(ws, struct mcp251x_priv, restart_work);
     struct spi_device *spi = priv->spi;
     struct net_device *net = priv->net;
 
@@ -1130,8 +1113,7 @@ static irqreturn_t mcp251x_can_ist(int irq, void *dev_id)
              * (The MCP2515/25625 does this automatically.)
              */
             if (mcp251x_is_2510(spi))
-                mcp251x_write_bits(spi, CANINTF, CANINTF_RX0IF,
-                                   0x00);
+                mcp251x_write_bits(spi, CANINTF, CANINTF_RX0IF, 0x00);
 
             /* check if buffer 1 is already known to be full, no need to re-read */
             if (!(intf & CANINTF_RX1IF))
@@ -1139,8 +1121,7 @@ static irqreturn_t mcp251x_can_ist(int irq, void *dev_id)
                 u8 intf1, eflag1;
 
                 /* intf needs to be read again to avoid a race condition */
-                mcp251x_read_2regs(spi, CANINTF, &intf1,
-                                   &eflag1);
+                mcp251x_read_2regs(spi, CANINTF, &intf1, &eflag1);
 
                 /* combine flags from both operations for error handling */
                 intf |= intf1;
@@ -1300,8 +1281,7 @@ static int mcp251x_open(struct net_device *net)
         flags = IRQF_TRIGGER_FALLING;
 
     ret = request_threaded_irq(spi->irq, NULL, mcp251x_can_ist,
-                               flags | IRQF_ONESHOT, dev_name(&spi->dev),
-                               priv);
+                               flags | IRQF_ONESHOT, dev_name(&spi->dev), priv);
     if (ret)
     {
         dev_err(&spi->dev, "failed to acquire irq %d\n", spi->irq);
@@ -1411,9 +1391,7 @@ static int mcp251x_can_probe(struct spi_device *spi)
     priv->can.bittiming_const = &mcp251x_bittiming_const;
     priv->can.do_set_mode = mcp251x_do_set_mode;
     priv->can.clock.freq = freq / 2;
-    priv->can.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES |
-                                   CAN_CTRLMODE_LOOPBACK |
-                                   CAN_CTRLMODE_LISTENONLY;
+    priv->can.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES | CAN_CTRLMODE_LOOPBACK | CAN_CTRLMODE_LISTENONLY;
     if (match)
         priv->model = (enum mcp251x_model)(uintptr_t)match;
     else
@@ -1446,8 +1424,7 @@ static int mcp251x_can_probe(struct spi_device *spi)
     if (ret)
         goto out_clk;
 
-    priv->wq =
-        alloc_workqueue("mcp251x_wq", WQ_FREEZABLE | WQ_MEM_RECLAIM, 0);
+    priv->wq = alloc_workqueue("mcp251x_wq", WQ_FREEZABLE | WQ_MEM_RECLAIM, 0);
     if (!priv->wq)
     {
         ret = -ENOMEM;
@@ -1459,16 +1436,14 @@ static int mcp251x_can_probe(struct spi_device *spi)
     priv->spi = spi;
     mutex_init(&priv->mcp_lock);
 
-    priv->spi_tx_buf =
-        devm_kzalloc(&spi->dev, SPI_TRANSFER_BUF_LEN, GFP_KERNEL);
+    priv->spi_tx_buf = devm_kzalloc(&spi->dev, SPI_TRANSFER_BUF_LEN, GFP_KERNEL);
     if (!priv->spi_tx_buf)
     {
         ret = -ENOMEM;
         goto error_probe;
     }
 
-    priv->spi_rx_buf =
-        devm_kzalloc(&spi->dev, SPI_TRANSFER_BUF_LEN, GFP_KERNEL);
+    priv->spi_rx_buf = devm_kzalloc(&spi->dev, SPI_TRANSFER_BUF_LEN, GFP_KERNEL);
     if (!priv->spi_rx_buf)
     {
         ret = -ENOMEM;
@@ -1482,9 +1457,7 @@ static int mcp251x_can_probe(struct spi_device *spi)
     if (ret)
     {
         if (ret == -ENODEV)
-            dev_err(&spi->dev,
-                    "Cannot initialize MCP%x. Wrong wiring?\n",
-                    priv->model);
+            dev_err(&spi->dev, "Cannot initialize MCP%x. Wrong wiring?\n", priv->model);
         goto error_probe;
     }
 
@@ -1590,8 +1563,7 @@ static int __maybe_unused mcp251x_can_resume(struct device *dev)
     return 0;
 }
 
-static SIMPLE_DEV_PM_OPS(mcp251x_can_pm_ops, mcp251x_can_suspend,
-                         mcp251x_can_resume);
+static SIMPLE_DEV_PM_OPS(mcp251x_can_pm_ops, mcp251x_can_suspend, mcp251x_can_resume);
 
 static struct spi_driver mcp251x_can_driver = {
     .driver = {

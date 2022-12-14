@@ -12,15 +12,20 @@
 On Ubuntu22.04
 
 ``` zsh
-sudo apt-get install ccache debian-archive-keyring debootstrap device-tree-compiler dwarves gcc-arm-linux-gnueabihf jq libbison-dev libc6-dev-armhf-cross libelf-dev libfl-dev liblz4-tool libpython2.7-dev libusb-1.0-0-dev pigz pixz pv swig pkg-config python3-distutils qemu-user-static u-boot-tools distcc uuid-dev lib32ncurses-dev lib32stdc++6 apt-cacher-ng aptly aria2 libfdt-dev libssl-dev
+sudo apt-get install ccache debian-archive-keyring debootstrap device-tree-compiler dwarves 
+sudo apt-get install gcc-arm-linux-gnueabihf jq libbison-dev libc6-dev-armhf-cross 
+sudo apt-get install libelf-dev libfl-dev liblz4-tool libpython2.7-dev libusb-1.0-0-dev 
+sudo apt-get install pigz pixz pv swig pkg-config python3-distutils qemu-user-static u-boot-tools 
+sudo apt-get install distcc uuid-dev lib32ncurses-dev lib32stdc++6 apt-cacher-ng 
+sudo apt-get install aptly aria2 libfdt-dev libssl-dev
 ```
 
 ## Versions Included
 
-Part   | Version
--------|--------
-kernel | 5.16.17
-uboot  | 2021.10
+| Part   | Version |
+| ------ | ------- |
+| kernel | 5.16.17 |
+| uboot  | 2021.10 |
 
 > uboot config: Allwinner-H616/u-boot/configs/h616_defconfig
 
@@ -31,3 +36,10 @@ In the project's root directory, run:
 ``` bash
 sudo ./build.sh
 ```
+
+## Reference
+
+- Allwinner usb boot: https://linux-sunxi.org/FEL/USBBoot
+
+- [Allwinner Online Development Forum](https://bbs.aw-ol.com/topic/2054/mq-quad-h616-%E4%B8%BB%E7%BA%BF%E5%86%85%E6%A0%B8%E7%BC%96%E8%AF%91%E8%B0%83%E8%AF%95%E8%AE%B0%E5%BD%95-u-boot-kernel-buildroot/17)
+

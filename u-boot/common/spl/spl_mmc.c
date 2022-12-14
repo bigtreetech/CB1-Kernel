@@ -222,10 +222,8 @@ static int mmc_load_image_raw_os(struct spl_image_info *spl_image, struct mmc *m
 #if defined(CONFIG_SYS_MMCSD_RAW_MODE_ARGS_SECTOR)
     unsigned long count;
 
-    count = blk_dread(mmc_get_blk_desc(mmc),
-                      CONFIG_SYS_MMCSD_RAW_MODE_ARGS_SECTOR,
-                      CONFIG_SYS_MMCSD_RAW_MODE_ARGS_SECTORS,
-                      (void *)CONFIG_SYS_SPL_ARGS_ADDR);
+    count = blk_dread(mmc_get_blk_desc(mmc), CONFIG_SYS_MMCSD_RAW_MODE_ARGS_SECTOR,
+                      CONFIG_SYS_MMCSD_RAW_MODE_ARGS_SECTORS, (void *)CONFIG_SYS_SPL_ARGS_ADDR);
     if (count != CONFIG_SYS_MMCSD_RAW_MODE_ARGS_SECTORS)
     {
 #ifdef CONFIG_SPL_LIBCOMMON_SUPPORT
@@ -250,7 +248,6 @@ static int mmc_load_image_raw_os(struct spl_image_info *spl_image, struct mmc *m
 #else
 int spl_start_uboot(void)
 {
-    debug("--> spl_start_uboot: inside!\n");
     return 1;
 }
 static int mmc_load_image_raw_os(struct spl_image_info *spl_image, struct mmc *mmc)
@@ -324,7 +321,6 @@ int __weak spl_mmc_boot_partition(const u32 boot_device)
 
 unsigned long __weak spl_mmc_get_uboot_raw_sector(struct mmc *mmc, unsigned long raw_sect)
 {
-    debug("===> spl: 3-raw_sect: %d\n", raw_sect);
     return raw_sect;
 }
 
@@ -413,7 +409,6 @@ int spl_mmc_load(struct spl_image_info *spl_image,
         raw_sect = spl_mmc_get_uboot_raw_sector(mmc, raw_sect);
 
 #ifdef CONFIG_SYS_MMCSD_RAW_MODE_U_BOOT_USE_PARTITION
-        debug("--> mmc_load_image_raw_partition\n");
         err = mmc_load_image_raw_partition(spl_image, mmc, raw_part, raw_sect);
         if (!err)
             return err;

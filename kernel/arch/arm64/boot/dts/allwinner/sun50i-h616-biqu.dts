@@ -68,6 +68,20 @@
 		};
 	};
 
+    ws2812 {
+		pinctrl-1 =<&ws2812_pin>;
+		compatible = "rgb-ws2812";
+		pinctrl-names = "default";
+		status = "okay";
+
+		ws2812_pin@0 {
+            gpios = <&pio 8 15 GPIO_ACTIVE_HIGH>;
+            label = "ws2812";
+            linux,default-trigger = "heartbeat";
+            linux,default-trigger-delay-ms = <0>;
+		};
+    };
+
     mcp2515_clock: mcp2515_clock {
 		compatible = "fixed-clock";
 		#clock-cells = <0>;
@@ -338,18 +352,6 @@
 				regulator-always-on;
 			};
 		};
-	};
-};
-
-&spi0  {
-	status = "disabled";
-
-	flash@0 {
-		#address-cells = <1>;
-		#size-cells = <1>;
-		compatible = "jedec,spi-nor";
-		reg = <0>;
-		spi-max-frequency = <40000000>;
 	};
 };
 
