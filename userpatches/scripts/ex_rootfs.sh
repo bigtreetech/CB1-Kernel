@@ -98,10 +98,38 @@ sudo timedatectl set-timezone \${TimeZone}
 #     sed -i "s/self.blanking_time = abs(int(time))*$/self.blanking_time = 0/" /home/$username/KlipperScreen/screen.py
 # fi
 
-cd /sys/class/gpio
-echo 229 > export
-cd /sys/class/gpio/gpio229
-echo out > direction
+#######################################################
+if [[ -d "/home/${username}/KlipperScreen" ]]
+then
+    SRC_FILE=/home/${username}/KlipperScreen/scripts/BTT-PAD7/click_effect.sh
+
+    [[ -e "\${SRC_FILE}" ]] && sudo rm \${SRC_FILE} -fr
+
+    touch \${SRC_FILE} && chmod +x \${SRC_FILE}
+    echo "#!/bin/bash" >> \${SRC_FILE}
+
+    if [[ \${TOUCH_VIBRATION} == "ON" ]] && [[ \${TOUCH_SOUND} == "ON" ]]; then
+        RUN_FILE="motor_sound"
+    elif [[ \${TOUCH_VIBRATION} == "ON" ]] && [[ \${TOUCH_SOUND} == "OFF" ]]; then
+        RUN_FILE="motor"
+    elif [[ \${TOUCH_VIBRATION} == "OFF" ]] && [[ \${TOUCH_SOUND} == "ON" ]]; then
+        RUN_FILE="sound"
+    fi
+
+    if [[ \${RUN_FILE} != "sound" ]]; then
+        sudo chmod 666 /sys/class/gpio/export
+        echo 79 > /sys/class/gpio/export
+        cd /sys/class/gpio/gpio79
+        sudo chmod 666 direction value
+        echo out > /sys/class/gpio/gpio79/direction
+    fi
+
+    [[ -z "\${RUN_FILE}" ]] || echo "/home/${username}/KlipperScreen/scripts/BTT-PAD7/\${RUN_FILE}.sh &" >> \${SRC_FILE}
+fi
+
+#######################################################
+echo 229 > /sys/class/gpio/export
+echo out > /sys/class/gpio/gpio229/direction
 
 while [ 1 ]
 do
@@ -121,9 +149,9 @@ do
     fi
 
 #######################################################
-    echo 1 > value
+    echo 1 > /sys/class/gpio/gpio229/value
     sleep 0.5
-    echo 0 > value
+    echo 0 > /sys/class/gpio/gpio229/value
     sleep 0.5
 done
 

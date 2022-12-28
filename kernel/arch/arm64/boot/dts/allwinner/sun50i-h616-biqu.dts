@@ -69,13 +69,13 @@
 	};
 
     ws2812 {
-		pinctrl-1 =<&ws2812_pin>;
 		compatible = "rgb-ws2812";
 		pinctrl-names = "default";
 		status = "okay";
 
 		ws2812_pin@0 {
-            gpios = <&pio 8 15 GPIO_ACTIVE_HIGH>;
+            // gpios = <&pio 7 5 GPIO_ACTIVE_LOW>;
+            gpios = <&pio 2 14 GPIO_ACTIVE_LOW>;
             label = "ws2812";
             linux,default-trigger = "heartbeat";
             linux,default-trigger-delay-ms = <0>;
@@ -85,7 +85,7 @@
     mcp2515_clock: mcp2515_clock {
 		compatible = "fixed-clock";
 		#clock-cells = <0>;
-		clock-frequency  = <12000000>;          //对应模块上晶振的频率，我的是12MHz的
+		clock-frequency  = <12000000>;          //对应模块上晶振的频率
 	};
 
     i2c_gpio: i2c-gpio {
@@ -178,6 +178,10 @@
 &hdmi {
 	hvcc-supply = <&reg_aldo1>;
     status = "okay";
+};
+
+&hdmi_audio {
+	status = "okay";
 };
 
 &hdmi_out {
@@ -273,7 +277,8 @@
     no-1-8-v;
 	bus-width = <8>;
     non-removable;
-	status = "okay";
+	// status = "okay";
+    status = "disabled";
 };
 
 &ohci0 {

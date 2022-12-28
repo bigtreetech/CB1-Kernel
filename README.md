@@ -1,13 +1,13 @@
 # Debian Build for AllWinner H616
 
-
 ## Tested Hardwares
 
 * [Yuzuki Chameleon](https://github.com/YuzukiHD/YuzukiChameleon)
   - XR829 wireless module driver is not added yet. We are working on this.
-- [BigTreeTech CB1](https://github.com/bigtreetech/CB1)
+  
+* [BigTreeTech CB1](https://github.com/bigtreetech/CB1)
 
-## build prerequisites
+## Build Prerequisites
 
 On Ubuntu22.04
 
@@ -22,20 +22,26 @@ sudo apt-get install aptly aria2 libfdt-dev libssl-dev
 
 ## Versions Included
 
-| Part   | Version |
-| ------ | ------- |
-| kernel | 5.16.17 |
-| uboot  | 2021.10 |
+|  Part  | Version  |
+| :----: | :------: |
+| uboot  | v2021.10 |
+| kernel | v5.16.17 |
 
-> uboot config: Allwinner-H616/u-boot/configs/h616_defconfig
-
-## Build
+## Project Build
 
 In the project's root directory, run:
 
 ``` bash
 sudo ./build.sh
 ```
+
+- uboot config file
+    
+    Allwinner-H616/u-boot/configs/h616_defconfig
+
+- Compile information output directory
+
+    output/debug/
 
 ## Reference
 

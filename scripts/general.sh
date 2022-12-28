@@ -537,7 +537,6 @@ prepare_host()
 	export LC_ALL="en_US.UTF-8"
 
 	# packages list for host
-	# NOTE: please sync any changes here with the Dockerfile and Vagrantfile
 	local hostdeps="acl aptly aria2 bc binfmt-support bison btrfs-progs       \
 	build-essential  ca-certificates ccache cpio cryptsetup curl              \
 	debian-archive-keyring debian-keyring debootstrap device-tree-compiler    \

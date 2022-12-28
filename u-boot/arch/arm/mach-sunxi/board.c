@@ -30,6 +30,7 @@
 #include <asm/arch/prcm.h>
 
 #include <linux/compiler.h>
+#include <linux/delay.h>
 
 struct fel_stash
 {
@@ -217,19 +218,15 @@ unsigned long spl_mmc_get_uboot_raw_sector(struct mmc *mmc, unsigned long raw_se
     unsigned long spl_size = sunxi_get_spl_size();
     unsigned long sector;
 
-    debug("===> board.c : 3-raw_sect: %d\n", raw_sect);
-
     sector = max(raw_sect, spl_size / 512);
 
     switch (sunxi_get_boot_source())
     {
     case SUNXI_BOOTED_FROM_MMC0_HIGH:
     case SUNXI_BOOTED_FROM_MMC2_HIGH:
-        debug("===> board.c >1 sector: %d\n", sector);
         sector += (128 - 8) * 2;
         break;
     }
-    debug("===> board.c >2 sector: %d\n", sector);
 
     return sector;
 }

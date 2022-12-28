@@ -8,3 +8,4 @@ wire-objs		:= w1.o w1_int.o w1_family.o w1_netlink.o w1_io.o
 
 obj-y			+= masters/ slaves/
 
+obj-$(CONFIG_W1_SLAVE_WS2812)	+= ws2812.o

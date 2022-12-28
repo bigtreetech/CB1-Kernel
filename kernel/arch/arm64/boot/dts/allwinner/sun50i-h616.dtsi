@@ -461,10 +461,6 @@
 				pins = "PH2", "PH3";
 				function = "uart5";
 			};
-
-            ws2812_pin: ws2812-pin {
-				pins = "PI15";
-			};
 		};
 
 		gic: interrupt-controller@3021000 {
