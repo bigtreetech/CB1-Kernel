@@ -77,7 +77,8 @@
 	phy-supply = <&reg_dldo1>;
 	allwinner,rx-delay-ps = <3100>;
 	allwinner,tx-delay-ps = <700>;
-	status = "okay";
+	// status = "okay";
+    status = "disabled";
 };
 
 &mdio0 {

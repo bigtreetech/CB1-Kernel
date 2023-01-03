@@ -277,8 +277,8 @@
     no-1-8-v;
 	bus-width = <8>;
     non-removable;
-	status = "okay";
-    // status = "disabled";
+	// status = "okay";
+    status = "disabled";
 };
 
 &ohci0 {

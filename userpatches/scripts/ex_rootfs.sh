@@ -13,6 +13,8 @@ do
     ((c++))
 done
 
+[[ $c -gt 3 ]] && exit 0
+
 ROOT_DEV=/dev/${filelist[0]}
 
 BOOT_NUM=1
@@ -70,6 +72,7 @@ if ls *.gcode > /dev/null 2>&1;then
 fi
 sync
 
+cd $shell_path
 ./reconnect_wifi.sh
 
 EOF
@@ -85,6 +88,9 @@ cat >> pwr_status.sh << EOF
 #!/bin/bash
 
 source /boot/system.cfg
+
+# Automatic brightness adjustment
+[[ \${AUTO_BRIGHTNESS} == "ON" ]] && /etc/scripts/auto_brightness &
 
 sudo timedatectl set-timezone \${TimeZone}
 # [[ -e "/etc/localtime" ]] && sudo rm /etc/localtime -fr
@@ -126,6 +132,9 @@ then
 
     [[ -z "\${RUN_FILE}" ]] || echo "/home/${username}/KlipperScreen/scripts/BTT-PAD7/\${RUN_FILE}.sh &" >> \${SRC_FILE}
 fi
+
+# Toggle status light color
+sudo /etc/scripts/set_rgb 0xff 0xff00
 
 #######################################################
 echo 229 > /sys/class/gpio/export

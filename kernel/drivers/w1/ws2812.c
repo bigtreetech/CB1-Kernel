@@ -47,6 +47,8 @@ unsigned int val = 0;
 #define T1H_TIME 540
 #define T1L_TIME 540
 
+#define use_emmc 1
+
 //=====================================
 #define GPIO_BASE 0x0300B000
 #define GPIO_SIZE 0x00000050
@@ -54,8 +56,9 @@ unsigned int val = 0;
 #define GPIOC_CFG1_OFFSET 0x4C
 #define GPIOC_CFG2_OFFSET 0x50
 #define GPIOC_DAT_OFFSET 0x58
-#define GPIOH_CFG0_OFFSET 0xFC
-#define GPIOH_DAT_OFFSET 0x10C
+
+#define GPIOI_CFG1_OFFSET 0x124
+#define GPIOI_DAT_OFFSET 0x130
 
 #define REG_WRITE(addr, value) iowrite32(value, gpio_regs + addr)
 #define REG_READ(addr) ioread32(gpio_regs + addr)
@@ -63,21 +66,49 @@ unsigned int val = 0;
 
 DEFINE_SPINLOCK(lock);
 
+#if use_emmc // GPIO PI15
+
+static volatile unsigned int *GPIOI_Congure; // 直接用指针形式，用此定义
+static volatile unsigned int *GPIOI_Data;    // 直接用指针形式，用此定义
+
+#else
+
 static volatile unsigned int *GPIOC_Congure; // 直接用指针形式，用此定义
 static volatile unsigned int *GPIOC_Data;    // 直接用指针形式，用此定义
+
+#endif
 
 // 复位 ws2812
 static void ws2812_rst(void)
 {
-    val = readl(GPIOC_Data);
+#if use_emmc
 
+    val = readl(GPIOI_Data);
+    val &= 0x7FFF;
+    writel(val, GPIOI_Data); // pin_val=0
+#else
+
+    val = readl(GPIOC_Data);
     val &= 0xBFFF;
     writel(val, GPIOC_Data); // pin_val=0
-    udelay(400);             // 拉低至少300us
+#endif
+
+    udelay(400); // 拉低至少300us
 }
 
 static void ws2812_sendbit_0(void)
 {
+#if use_emmc
+
+    val = readl(GPIOI_Data);
+
+    val |= 0x8000;
+    writel(val, GPIOI_Data); // pin_val=1
+    ndelay(T0H_TIME);        // 300ns
+    val &= 0x7FFF;
+    writel(val, GPIOI_Data); // pin_val=0
+#else
+
     val = readl(GPIOC_Data);
 
     val |= 0x4000;
@@ -85,11 +116,24 @@ static void ws2812_sendbit_0(void)
     ndelay(T0H_TIME);        // 300ns
     val &= 0xBFFF;
     writel(val, GPIOC_Data); // pin_val=0
-    ndelay(T0L_TIME);        // 800ns
+#endif
+
+    ndelay(T0L_TIME); // 800ns
 }
 
 static void ws2812_sendbit_1(void)
 {
+#if use_emmc
+
+    val = readl(GPIOI_Data);
+
+    val |= 0x8000;
+    writel(val, GPIOI_Data); // pin_val=1
+    ndelay(T1H_TIME);        // 800ns
+    val &= 0x7FFF;
+    writel(val, GPIOI_Data); // pin_val=0
+#else
+
     val = readl(GPIOC_Data);
 
     val |= 0x4000;
@@ -97,7 +141,9 @@ static void ws2812_sendbit_1(void)
     ndelay(T1H_TIME);        // 800ns
     val &= 0xBFFF;
     writel(val, GPIOC_Data); // pin_val=0
-    ndelay(T1L_TIME);        // 800ns
+#endif
+
+    ndelay(T1L_TIME); // 800ns
 }
 
 static void ws2812_Write_Byte(uint8_t byte)
@@ -206,6 +252,22 @@ static int ws2812_probe(struct platform_device *pdev)
     }
     else
     {
+#if use_emmc // GPIO PI15
+
+        GPIOI_Congure = ioremap(GPIO_BASE + GPIOI_CFG1_OFFSET, 4);
+        GPIOI_Data = ioremap(GPIO_BASE + GPIOI_DAT_OFFSET, 4);
+
+        val = readl(GPIOI_Congure);
+        val &= 0x9FFFFFFF;
+        val |= 0x10000000;
+        writel(val, GPIOI_Congure); // output
+
+        val = readl(GPIOI_Data);
+        val &= 0x7FFF;
+        writel(val, GPIOI_Data); // pin_val=0
+
+#else // GPIO PC14
+
         GPIOC_Congure = ioremap(GPIO_BASE + GPIOC_CFG1_OFFSET, 4);
         GPIOC_Data = ioremap(GPIO_BASE + GPIOC_DAT_OFFSET, 4);
 
@@ -217,6 +279,8 @@ static int ws2812_probe(struct platform_device *pdev)
         val = readl(GPIOC_Data);
         val &= 0xBFFF;
         writel(val, GPIOC_Data); // pin_val=0
+
+#endif
     }
 
     if (gpio_request(ws2812_pin, "ws2812-gpio"))
