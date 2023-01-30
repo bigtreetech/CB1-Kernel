@@ -27,6 +27,7 @@
 		target = <&tft_35>;
 		__overlay__ {
             status = "okay";
+            spi-max-frequency = <12500000>;
 		};
 	};
 

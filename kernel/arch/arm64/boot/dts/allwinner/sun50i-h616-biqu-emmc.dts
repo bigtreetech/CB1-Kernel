@@ -360,6 +360,14 @@
 	};
 };
 
+&pio {
+    can0_pin_irq: can0_pin_irq {
+        pins = "PI3";
+        function = "irq";
+        bias-pull-up;
+    };
+};
+
 &spi1 {
     #address-cells = <1>;
     #size-cells = <0>;
@@ -377,10 +385,11 @@
         status = "disabled";
         
         reg = <0x0>;
-        spi-max-frequency = <1000000>;
-
+        spi-max-frequency = <12500000>;
+        pinctrl-names = "default";
+        pinctrl-0 = <&can0_pin_irq>;
         interrupt-parent = <&pio>;
-        interrupts = <8 3 IRQ_TYPE_EDGE_FALLING>;   /* PI3 */
+        interrupts = <8 3 0x08>;   /* PI3 IRQ_TYPE_LEVEL_LOW*/
         
         vdd-supply = <&reg_vcc33_wifi>;
         xceiver-supply = <&reg_vcc33_wifi>;
@@ -391,7 +400,7 @@
         status = "disabled";
 
         reg = <0x1>;
-        spi-max-frequency = <50000000>;
+        spi-max-frequency = <25000000>;
         fps = <60>;
         rotate = <0>;
         buswidth = <8>;
@@ -407,8 +416,8 @@
 &uart0 {
 	pinctrl-names = "default";
 	pinctrl-0 = <&uart0_ph_pins>;
-	status = "disabled";
-    // status = "okay";
+	// status = "disabled";
+    status = "okay";
 };
 
 &usbotg {
