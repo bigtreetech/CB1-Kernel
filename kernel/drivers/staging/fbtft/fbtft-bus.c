@@ -4,7 +4,7 @@
 #include <linux/gpio/consumer.h>
 #include <linux/spi/spi.h>
 #include "fbtft.h"
-#include <linux/gpio.h>
+
 /*****************************************************************************
  *
  *   void (*write_reg)(struct fbtft_par *par, int len, ...);
@@ -59,7 +59,7 @@
                 *buf++ = modifier((data_type)va_arg(args,                   \
                                                     unsigned int));         \
             fbtft_write_buf_dc(par, par->buf,                               \
-                               len *(sizeof(data_type) + offset), 1);       \
+                               len * (sizeof(data_type) + offset), 1);      \
         }                                                                   \
     out:                                                                    \
         va_end(args);                                                       \
@@ -143,9 +143,7 @@ int fbtft_write_vmem16_bus8(struct fbtft_par *par, size_t offset, size_t len)
     remain = len / 2;
     vmem16 = (u16 *)(par->info->screen_buffer + offset);
 
-    // if (par->gpio.dc)
-    // gpiod_set_value(par->gpio.dc, 1);
-    __gpio_set_value(GPIO_LCD_DC, 1);
+    gpiod_set_value(par->gpio.dc, 1);
 
     /* non buffered write */
     if (!par->txbuf.buf)

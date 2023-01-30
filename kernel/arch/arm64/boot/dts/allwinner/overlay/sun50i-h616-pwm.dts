@@ -2,6 +2,8 @@
 /plugin/;
 
 / {
+	compatible = "allwinner,sun50i-h616";
+
 	fragment@0 {
 		target = <&pwm>;
 		__overlay__ {

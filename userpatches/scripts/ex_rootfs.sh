@@ -13,8 +13,6 @@ do
     ((c++))
 done
 
-[[ $c -gt 3 ]] && exit 0
-
 ROOT_DEV=/dev/${filelist[0]}
 
 BOOT_NUM=1
@@ -36,7 +34,7 @@ y
 w
 EOF
 
-sudo resize2fs /dev/${filelist[2]}          # 扩展分区;
+sudo resize2fs /dev/${filelist[$c-1]}          # 扩展分区;
 unset filelist
 
 #-----------------
@@ -59,6 +57,7 @@ cat >> init.sh << EOF
 
 cd $shell_path
 ./pwr_status.sh &
+./system_cfg.sh &
 
 [[ -e "ex_rootfs.sh" ]] && sudo rm ./ex_rootfs.sh -fr
 
@@ -87,77 +86,11 @@ chmod +x pwr_status.sh
 cat >> pwr_status.sh << EOF
 #!/bin/bash
 
-source /boot/system.cfg
-
-# Automatic brightness adjustment
-[[ \${AUTO_BRIGHTNESS} == "ON" ]] && /etc/scripts/auto_brightness &
-
-sudo timedatectl set-timezone \${TimeZone}
-# [[ -e "/etc/localtime" ]] && sudo rm /etc/localtime -fr
-# sudo ln -s /usr/share/zoneinfo/\${TimeZone} /etc/localtime
-
-#######################################################
-# if [[ \`lsusb\` == *"BTT-HDMI"* ]]
-# then
-#     sed -i "s/self.blanking_time = 0*$/self.blanking_time = abs(int(time))/" /home/$username/KlipperScreen/screen.py
-# else
-#     sed -i "s/self.blanking_time = abs(int(time))*$/self.blanking_time = 0/" /home/$username/KlipperScreen/screen.py
-# fi
-
-#######################################################
-if [[ -d "/home/${username}/KlipperScreen" ]]
-then
-    SRC_FILE=/home/${username}/KlipperScreen/scripts/BTT-PAD7/click_effect.sh
-
-    [[ -e "\${SRC_FILE}" ]] && sudo rm \${SRC_FILE} -fr
-
-    touch \${SRC_FILE} && chmod +x \${SRC_FILE}
-    echo "#!/bin/bash" >> \${SRC_FILE}
-
-    if [[ \${TOUCH_VIBRATION} == "ON" ]] && [[ \${TOUCH_SOUND} == "ON" ]]; then
-        RUN_FILE="motor_sound"
-    elif [[ \${TOUCH_VIBRATION} == "ON" ]] && [[ \${TOUCH_SOUND} == "OFF" ]]; then
-        RUN_FILE="motor"
-    elif [[ \${TOUCH_VIBRATION} == "OFF" ]] && [[ \${TOUCH_SOUND} == "ON" ]]; then
-        RUN_FILE="sound"
-    fi
-
-    if [[ \${RUN_FILE} != "sound" ]]; then
-        sudo chmod 666 /sys/class/gpio/export
-        echo 79 > /sys/class/gpio/export
-        cd /sys/class/gpio/gpio79
-        sudo chmod 666 direction value
-        echo out > /sys/class/gpio/gpio79/direction
-    fi
-
-    [[ -z "\${RUN_FILE}" ]] || echo "/home/${username}/KlipperScreen/scripts/BTT-PAD7/\${RUN_FILE}.sh &" >> \${SRC_FILE}
-fi
-
-# Toggle status light color
-sudo /etc/scripts/set_rgb 0xff 0xff00
-
-#######################################################
 echo 229 > /sys/class/gpio/export
 echo out > /sys/class/gpio/gpio229/direction
 
 while [ 1 ]
 do
-#######################################################
-    string=\`DISPLAY=:0 xinput --list | grep \${HDMI_Vendor}\`
-    string=\${string#*id=}
-    input_id=\${string%[*}
-
-    [[ \${dis_angle} != "normal" ]] && DISPLAY=:0 xrandr --output HDMI-1 --rotate \${dis_angle}
-
-    if [[ \${dis_angle} == "left" ]]; then
-        DISPLAY=:0 xinput --set-prop \${input_id} 'Coordinate Transformation Matrix' 0 -1 1 1 0 0 0 0 1
-    elif [[ \${dis_angle} == "right" ]]; then
-        DISPLAY=:0 xinput --set-prop \${input_id} 'Coordinate Transformation Matrix' 0 1 0 -1 0 1 0 0 1
-    elif [[ \${dis_angle} == "inverted" ]]; then
-        DISPLAY=:0 xinput --set-prop \${input_id} 'Coordinate Transformation Matrix' -1 0 1 0 -1 1 0 0 1
-    fi
-
-#######################################################
     echo 1 > /sys/class/gpio/gpio229/value
     sleep 0.5
     echo 0 > /sys/class/gpio/gpio229/value
@@ -165,6 +98,151 @@ do
 done
 
 EOF
+
+#######################################################
+#------------------- system_cfg.sh -------------------#
+#######################################################
+[[ -e "system_cfg.sh" ]] && rm system_cfg.sh -fr
+touch system_cfg.sh
+chmod +x system_cfg.sh
+
+cat >> system_cfg.sh << EOF
+#!/bin/bash
+
+SYSTEM_CFG_PATH="/boot/system.cfg"
+source \${SYSTEM_CFG_PATH}
+
+grep -e "^hostname" \${SYSTEM_CFG_PATH} > /dev/null
+STATUS=\$?
+if [ \${STATUS} -eq 0 ]; then
+    cur_name=$(nmcli general hostname)
+    if [[ \${cur_name} != \${hostname} ]]; then
+        sudo nmcli general hostname \${hostname}
+        sudo systemctl restart systemd-hostnamed
+        sudo systemctl restart avahi-daemon.service
+    fi
+fi
+
+grep -e "^TimeZone" \${SYSTEM_CFG_PATH} > /dev/null
+STATUS=\$?
+if [ \${STATUS} -eq 0 ]; then
+    sudo timedatectl set-timezone \${TimeZone}
+fi
+
+#######################################################
+grep -e "^ks_angle" \${SYSTEM_CFG_PATH} > /dev/null
+STATUS=\$?
+if [ \${STATUS} -eq 0 ]; then
+    if [[ \${ks_angle} == "normal" ]]; then
+        i=0
+    elif [[ \${ks_angle} == "left" ]]; then
+        i=1
+    elif [[ \${ks_angle} == "inverted" ]]; then
+        i=2
+    elif [[ \${ks_angle} == "right" ]]; then
+        i=3
+    else
+        i=0
+    fi
+
+    ks_restart=0
+
+    DISPLAY_CONFIG_OPTION="Option \"Rotate\" "
+    DISPLAY_DIR_OPTIONS=(
+        "\"normal\""
+        "\"left\""
+        "\"inverted\""
+        "\"right\""
+    )
+    DISPLAY_CONFIG_PATH="/usr/share/X11/xorg.conf.d"
+    DISPLAY_CONFIG="/usr/share/X11/xorg.conf.d/90-monitor.conf"
+    DISPLAY_MONITOR="Identifier \"HDMI-1\""
+    DISPLAY_DIR_LINE="\${DISPLAY_DIR_OPTIONS[\$i]}"
+    if [ -e "\${DISPLAY_CONFIG}" ]; then
+        grep -e "^\    \${DISPLAY_CONFIG_OPTION}\${DISPLAY_DIR_LINE}" \${DISPLAY_CONFIG} > /dev/null
+        STATUS=\$?
+        if [ \$STATUS -eq 1 ]; then
+            sudo sed -i "/\${DISPLAY_CONFIG_OPTION}/d" \${DISPLAY_CONFIG}
+            sudo sed -i "/\${DISPLAY_MONITOR}/a\    \${DISPLAY_CONFIG_OPTION}\${DISPLAY_DIR_LINE}" \${DISPLAY_CONFIG}
+            ks_restart=1
+        fi
+    else
+        if [ -d "\${DISPLAY_CONFIG_PATH}" ]; then
+            sudo touch \${DISPLAY_CONFIG}
+            sudo bash -c "echo 'Section \"Monitor\"' > \${DISPLAY_CONFIG} "
+            sudo bash -c "echo '    Identifier \"HDMI-1\"' >> \${DISPLAY_CONFIG} "
+            sudo bash -c "echo 'EndSection' >> \${DISPLAY_CONFIG} "
+            sudo sed -i "/\${DISPLAY_MONITOR}/a\    \${DISPLAY_CONFIG_OPTION}\${DISPLAY_DIR_LINE}" \${DISPLAY_CONFIG}
+            ks_restart=1
+        fi
+    fi
+
+    CONFIG_OPTION="Option \"CalibrationMatrix\" "
+    CALIB_OPTIONS=(
+        "\"1 0 0 0 1 0 0 0 1\""
+        "\"0 -1 1 1 0 0 0 0 1\""
+        "\"-1 0 1 0 -1 1 0 0 1\""
+        "\"0 1 0 -1 0 1 0 0 1\""
+    )
+    CONFIG="/usr/share/X11/xorg.conf.d/40-libinput.conf"
+    INPUT_CLASS="Identifier \"libinput touchscreen catchall\""
+    CONFIG_LINE="\${CALIB_OPTIONS[\$i]}"
+    if [ -e "\${CONFIG}" ]; then
+        grep -e "^\        \${CONFIG_OPTION}\${CONFIG_LINE}" \${CONFIG} > /dev/null
+        STATUS=\$?
+        if [ \$STATUS -eq 1 ]; then
+            sudo sed -i "/\${CONFIG_OPTION}/d" \${CONFIG}
+            sudo sed -i "/\${INPUT_CLASS}/a\        \${CONFIG_OPTION}\${CONFIG_LINE}" \${CONFIG}
+            ks_restart=1
+        fi
+    fi
+
+    if [ \${ks_restart} -eq 1 ];then
+        sudo service KlipperScreen restart
+    fi
+fi
+
+#######################################################
+if [[ \${BTT_PAD7} == "ON" ]]; then
+    # Toggle status light color
+    sudo /etc/scripts/set_rgb 0x000001 0x000001
+
+    # Automatic brightness adjustment
+    [[ \${AUTO_BRIGHTNESS} == "ON" ]] && /etc/scripts/auto_brightness &
+
+    if [[ -d "/home/${username}/KlipperScreen/scripts/BTT-PAD7" ]]; then
+        SRC_FILE=/home/${username}/KlipperScreen/scripts/BTT-PAD7/click_effect.sh
+
+        [[ -e "\${SRC_FILE}" ]] && sudo rm \${SRC_FILE} -fr
+
+        touch \${SRC_FILE} && chmod +x \${SRC_FILE}
+        echo "#!/bin/bash" >> \${SRC_FILE}
+
+        if [[ \${TOUCH_VIBRATION} == "ON" ]] && [[ \${TOUCH_SOUND} == "ON" ]]; then
+            RUN_FILE="motor_sound"
+        elif [[ \${TOUCH_VIBRATION} == "ON" ]] && [[ \${TOUCH_SOUND} == "OFF" ]]; then
+            RUN_FILE="motor"
+        elif [[ \${TOUCH_VIBRATION} == "OFF" ]] && [[ \${TOUCH_SOUND} == "ON" ]]; then
+            RUN_FILE="sound"
+        fi
+
+        if [[ \${RUN_FILE} != "sound" ]]; then
+            sudo chmod 666 /sys/class/gpio/export
+            echo 79 > /sys/class/gpio/export
+            cd /sys/class/gpio/gpio79
+            sudo chmod 666 direction value
+            echo out > /sys/class/gpio/gpio79/direction
+        fi
+
+        [[ -z "\${RUN_FILE}" ]] || echo "/home/${username}/KlipperScreen/scripts/BTT-PAD7/\${RUN_FILE}.sh &" >> \${SRC_FILE}
+    fi
+fi
+
+#######################################################
+
+EOF
+
+# ================================================ #
 
 # ================================================ #
 
@@ -175,48 +253,3 @@ EOF
 sudo sed -i 's/ex_rootfs.sh/init.sh \&/' /etc/rc.local
 
 sudo reboot
-
-#######################################################
-#------------------- disp_chose.sh -------------------#
-#######################################################
-function disp_chose() {
-
-[[ -e "disp_chose.sh" ]] && rm disp_chose.sh -fr
-touch disp_chose.sh
-chmod +x disp_chose.sh
-
-cat >> disp_chose.sh << EOF
-#!/bin/bash
-
-tft_dtb=/boot/h616_tft.deb
-hdmi_dtb=/boot/h616_hdmi.deb
-
-CFG_FILE="/boot/system.cfg"
-
-if [ \`grep -c "DISP_OUT=\"TFT\"" \$CFG_FILE\` -ne '0' ];then
-    if [[ \`dmesg\` =~ "BQ-TFT" ]]
-    then
-        echo "TFT is installed"
-    else
-        sudo apt purge -y linux-dtb-current-sun50iw9
-        echo "change to TFT"
-        sudo dpkg -i \$tft_dtb
-        reboot
-    fi
-fi
-
-if [ \`grep -c "DISP_OUT=\"HDMI\"" \$CFG_FILE\` -ne '0' ];then
-    if [[ \`dmesg\` =~ "BQ-HDMI" ]]
-    then
-        echo "HDMI is installed"
-    else
-        sudo apt purge -y linux-dtb-current-sun50iw9
-        echo "change to HDMI"
-        sudo dpkg -i \$hdmi_dtb
-        reboot
-    fi
-fi
-
-EOF
-
-}

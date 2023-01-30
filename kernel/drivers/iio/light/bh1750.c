@@ -23,8 +23,6 @@
 #include <linux/iio/sysfs.h>
 #include <linux/module.h>
 
-#include <linux/i2c-gpio-base.h>
-
 #define BH1750_ADDR 0x23
 
 #define BH1750_POWER_DOWN 0x00
@@ -238,10 +236,6 @@ static int bh1750_probe(struct i2c_client *client, const struct i2c_device_id *i
     struct iio_dev *indio_dev;
 
     printk("===> bh1750 probe!\n");
-
-    gpio_i2c_init();
-
-    printk("===> bh1750 probe---gpio_i2c_init !\n");
 
     if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C |
                                                       I2C_FUNC_SMBUS_READ_I2C_BLOCK |

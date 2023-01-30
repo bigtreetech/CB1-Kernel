@@ -11,7 +11,7 @@ IS_AP_MODE="no"
 sta_mount=0
 
 function Env_init() {
-    source $cfg_file     # 加载配置文件
+    source $cfg_file
 
     exec 1> /dev/null
     # without check_interval set, we risk a 0 sleep = busy loop
@@ -145,59 +145,38 @@ function startWifi() {
     fi
 }
 
-Env_init
-sleep 20
+source $cfg_file
+grep -e "^WIFI_SSID" ${cfg_file} > /dev/null
+STATUS=$?
+if [ ${STATUS} -eq 0 ]; then
+    Env_init
+    sleep 20
 
-while [ 1 ]; do
+    while [ 1 ]; do
 
-    if [[ $WIFI_AP == "false" ]]; then
-        if [[ $(is_network) == no ]]; then      # 没有网络连接
-            echo -e $(date)" ==== No network connection..." >> $log_file
-            startWifi
-            sleep 6    # 更改间隔时间，因为有些服务启动较慢，试验后，改的间隔长一点有用
-        # else
-        #     sleep 6
-        #     [[ $(is_network $eth) == yes ]] && nmcli device disconnect $wlan && echo "==== Ethernet Connected, wlan disconnect! ====" >> $log_file
-        fi
-    elif [[ $WIFI_AP == "true" ]]; then
-        if [[ $(is_network $eth) == yes ]]; then
-            sta_mount=6
-            [[ $(is_network $wlan) == yes ]] && IS_AP_MODE="no"
-            echo -e $(date)" ==== $eth network connection..." >> $log_file
-            startWifi
-        elif [[ $(is_network $wlan) == no ]]; then
-            [[ $sta_mount -eq 6 ]] && sta_mount=0
-            echo -e $(date)" ==== No $wlan network connection..." >> $log_file
-            startWifi
-        fi
-    fi
-
-    if [[ ${IP_MODE} == "auto" ]]; then
-        if [[ ${IP_STATIC_DEVICE} == "eth" ]]; then
-            if [[ -e "/etc/NetworkManager/system-connections/Wired connection 1.nmconnection" ]]; then
-                sudo rm /etc/NetworkManager/system-connections/Wired\ connection\ 1.nmconnection -fr
-                sudo nmcli con up "Wired connection 1"
+        if [[ $WIFI_AP == "false" ]]; then
+            if [[ $(is_network) == no ]]; then      # 没有网络连接
+                echo -e $(date)" ==== No network connection..." >> $log_file
+                startWifi
+                sleep 6    # 更改间隔时间，因为有些服务启动较慢，试验后，改的间隔长一点有用
+            # else
+            #     sleep 6
+            #     [[ $(is_network $eth) == yes ]] && nmcli device disconnect $wlan && echo "==== Ethernet Connected, wlan disconnect! ====" >> $log_file
             fi
-        elif [[ ${IP_STATIC_DEVICE} == "wifi" ]]; then
-            if [ `sudo grep -c "manual" /etc/NetworkManager/system-connections/${WIFI_SSID}.nmconnection` -eq '1' ]; then
-                sudo nmcli con mod ${WIFI_SSID} ipv4.addresses "" ipv4.gateway "" ipv4.dns "" ipv4.method "auto"
-                sudo nmcli con up ${WIFI_SSID}
+        elif [[ $WIFI_AP == "true" ]]; then
+            if [[ $(is_network $eth) == yes ]]; then
+                sta_mount=6
+                [[ $(is_network $wlan) == yes ]] && IS_AP_MODE="no"
+                echo -e $(date)" ==== $eth network connection..." >> $log_file
+                startWifi
+            elif [[ $(is_network $wlan) == no ]]; then
+                [[ $sta_mount -eq 6 ]] && sta_mount=0
+                echo -e $(date)" ==== No $wlan network connection..." >> $log_file
+                startWifi
             fi
         fi
-    elif [[ ${IP_MODE} == "static" ]]; then
-        if [[ ${IP_STATIC_DEVICE} == "eth" ]]; then
-            if [[ ! -e "/etc/NetworkManager/system-connections/Wired connection 1.nmconnection" ]]; then
-                sudo nmcli con mod "Wired connection 1" ipv4.addresses ${IP_ADDR} ipv4.gateway ${IP_GATEWAY} ipv4.dns ${IP_DNS} ipv4.method "manual"
-                sudo nmcli con up "Wired connection 1"
-            fi
-        elif [[ ${IP_STATIC_DEVICE} == "wifi" ]]; then
-            if [ `sudo grep -c "manual" /etc/NetworkManager/system-connections/${WIFI_SSID}.nmconnection` -eq '0' ]; then
-                sudo nmcli con mod ${WIFI_SSID} ipv4.addresses ${IP_ADDR} ipv4.gateway ${IP_GATEWAY} ipv4.dns ${IP_DNS} ipv4.method "manual"
-                sudo nmcli con up ${WIFI_SSID}
-            fi
-        fi
-    fi
 
-    sync
-    sleep $check_interval
-done
+        sync
+        sleep $check_interval
+    done
+fi

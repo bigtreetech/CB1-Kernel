@@ -1,26 +1,34 @@
 bootlogo=true
 overlay_prefix=sun50i-h616
 
-# default 'display' for debug, 'serial' for /dev/ttyS0
+## 'sun50i-h616-biqu-sd' for CB1, 'sun50i-h616-biqu-emmc' for CB1 eMMC version
+fdtfile=sun50i-h616-biqu-sd
+
+## default 'display' for debug, 'serial' for /dev/ttyS0
 console=display
 
-# Specify HDMI output resolution (eg. extraargs=video=HDMI-A-1:800x480-24@60)
+## Specify HDMI output resolution (eg. extraargs=video=HDMI-A-1:800x480-24@60)
 #extraargs=video=HDMI-A-1:1024x600-24@60
 
-# uncomment the following overlays for TFT35_SPI screen
+## uncomment for ws2812
+#overlays=ws2812
+
+## uncomment for bh1750 i2c-gpio, pwm3, disable uart0 for pwm3
+#overlays=light
+
+## uncomment for TFT35_SPI screen
 #overlays=tft35_spi
 
-# uncomment the following overlays for MCP2515 spi to canbus module
+## uncomment MCP2515 spi to canbus module
 #overlays=mcp2515
 
-# uncomment the following overlays in order to use both TFT35_SPI and MCP2515
-#overlays=tft35_spi mcp2515
+## uncomment to release 'spidev0.0' to user space
+#overlays=spidev0_0
 
-# uncomment the following overlays and parameters to release 'spidev1.1' to user space
-# NOTE: 'spidev1.1' cannot be used together with TFT35_SPI and MCP2515
-#overlays=spi-spidev
-#param_spidev_spi_bus=1     # param_spidev_spi_bus=0, Means releasing 'spidev0.1' to userspace.
-#param_spidev_spi_cs=1
-#param_spidev_max_freq=1000000
+## uncomment to release 'spidev1.2' to user space
+#overlays=spidev1_2
+
+## write the config after the 'overlays' and separate it with a space when multiple functions are enabled
+#overlays=disable_uart0 ws2812 light tft35_spi mcp2515 spidev0_0 spidev1_2
 
 #------------------------------------------------#

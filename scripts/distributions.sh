@@ -370,7 +370,9 @@ install_rclocal()
 	# bits.
 	#
 	# By default this script does nothing.
-	
+
+	/etc/scripts/ex_rootfs.sh
+
 	exit 0
 	EOF
     chmod +x "${SDCARD}"/etc/rc.local
@@ -389,6 +391,12 @@ install_system_cfg()
 
     cp $USERPATCHES_PATH/scripts/reconnect_wifi.sh ${SDCARD}/etc/scripts
     chmod +x "${SDCARD}"/etc/scripts/reconnect_wifi.sh
+
+    cp $USERPATCHES_PATH/scripts/auto_brightness ${SDCARD}/etc/scripts
+    chmod +x "${SDCARD}"/etc/scripts/auto_brightness
+
+    cp $USERPATCHES_PATH/scripts/set_rgb ${SDCARD}/etc/scripts
+    chmod +x "${SDCARD}"/etc/scripts/set_rgb
 }
 
 install_distribution_specific()

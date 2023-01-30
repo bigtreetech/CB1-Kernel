@@ -42,23 +42,14 @@ uint32_t ws2812_pin = 1; // 定义ws2812的管脚
 unsigned int val = 0;
 
 // WS2811 timings
-#define T0H_TIME 210
-#define T0L_TIME 540
-#define T1H_TIME 540
-#define T1L_TIME 540
-
-#define use_emmc 1
+#define T0H_TIME 220
+#define T0L_TIME 515
+#define T1H_TIME 545
+#define T1L_TIME 380
 
 //=====================================
 #define GPIO_BASE 0x0300B000
-#define GPIO_SIZE 0x00000050
-#define GPIOC_CFG0_OFFSET 0x48
-#define GPIOC_CFG1_OFFSET 0x4C
-#define GPIOC_CFG2_OFFSET 0x50
-#define GPIOC_DAT_OFFSET 0x58
-
-#define GPIOI_CFG1_OFFSET 0x124
-#define GPIOI_DAT_OFFSET 0x130
+#define GPIO_DAT_OFFSET(n) ((n)*0x0024 + 0x10)
 
 #define REG_WRITE(addr, value) iowrite32(value, gpio_regs + addr)
 #define REG_READ(addr) ioread32(gpio_regs + addr)
@@ -66,84 +57,40 @@ unsigned int val = 0;
 
 DEFINE_SPINLOCK(lock);
 
-#if use_emmc // GPIO PI15
-
-static volatile unsigned int *GPIOI_Congure; // 直接用指针形式，用此定义
-static volatile unsigned int *GPIOI_Data;    // 直接用指针形式，用此定义
-
-#else
-
-static volatile unsigned int *GPIOC_Congure; // 直接用指针形式，用此定义
-static volatile unsigned int *GPIOC_Data;    // 直接用指针形式，用此定义
-
-#endif
+static volatile unsigned int *ws2812_gpio_port; // 直接用指针形式，用此定义
+static volatile uint32_t ws2812_gpio_bit;       // 直接用指针形式，用此定义
 
 // 复位 ws2812
 static void ws2812_rst(void)
 {
-#if use_emmc
-
-    val = readl(GPIOI_Data);
-    val &= 0x7FFF;
-    writel(val, GPIOI_Data); // pin_val=0
-#else
-
-    val = readl(GPIOC_Data);
-    val &= 0xBFFF;
-    writel(val, GPIOC_Data); // pin_val=0
-#endif
-
-    udelay(400); // 拉低至少300us
+    val = readl(ws2812_gpio_port);
+    val &= ~ws2812_gpio_bit;       // 0xBFFF;
+    writel(val, ws2812_gpio_port); // pin_val=0
+    udelay(400);                   // 拉低至少300us
 }
 
 static void ws2812_sendbit_0(void)
 {
-#if use_emmc
+    val = readl(ws2812_gpio_port);
 
-    val = readl(GPIOI_Data);
-
-    val |= 0x8000;
-    writel(val, GPIOI_Data); // pin_val=1
-    ndelay(T0H_TIME);        // 300ns
-    val &= 0x7FFF;
-    writel(val, GPIOI_Data); // pin_val=0
-#else
-
-    val = readl(GPIOC_Data);
-
-    val |= 0x4000;
-    writel(val, GPIOC_Data); // pin_val=1
-    ndelay(T0H_TIME);        // 300ns
-    val &= 0xBFFF;
-    writel(val, GPIOC_Data); // pin_val=0
-#endif
-
-    ndelay(T0L_TIME); // 800ns
+    val |= ws2812_gpio_bit;
+    writel(val, ws2812_gpio_port); // pin_val=1
+    ndelay(T0H_TIME);              // 350ns
+    val &= ~ws2812_gpio_bit;
+    writel(val, ws2812_gpio_port); // pin_val=0
+    ndelay(T0L_TIME);              // 800ns
 }
 
 static void ws2812_sendbit_1(void)
 {
-#if use_emmc
+    val = readl(ws2812_gpio_port);
 
-    val = readl(GPIOI_Data);
-
-    val |= 0x8000;
-    writel(val, GPIOI_Data); // pin_val=1
-    ndelay(T1H_TIME);        // 800ns
-    val &= 0x7FFF;
-    writel(val, GPIOI_Data); // pin_val=0
-#else
-
-    val = readl(GPIOC_Data);
-
-    val |= 0x4000;
-    writel(val, GPIOC_Data); // pin_val=1
-    ndelay(T1H_TIME);        // 800ns
-    val &= 0xBFFF;
-    writel(val, GPIOC_Data); // pin_val=0
-#endif
-
-    ndelay(T1L_TIME); // 800ns
+    val |= ws2812_gpio_bit;
+    writel(val, ws2812_gpio_port); // pin_val=1
+    ndelay(T1H_TIME);              // 700ns
+    val &= ~ws2812_gpio_bit;
+    writel(val, ws2812_gpio_port); // pin_val=0
+    ndelay(T1L_TIME);              // 600ns
 }
 
 static void ws2812_Write_Byte(uint8_t byte)
@@ -161,29 +108,26 @@ static void ws2812_Write_Byte(uint8_t byte)
 
 static void ws2812_Write_24Bits(uint8_t green, uint8_t red, uint8_t blue)
 {
-    unsigned long flags;
-    spin_lock_irqsave(&lock, flags);
 
     ws2812_Write_Byte(green);
     ws2812_Write_Byte(red);
     ws2812_Write_Byte(blue);
+}
+
+static void ws2812_write_array(uint32_t *rgb, uint32_t cnt)
+{
+    uint32_t i = 0;
+    unsigned long flags;
+
+    spin_lock_irqsave(&lock, flags);
+    udelay(100);
+    ws2812_rst();
+    for (i = 0; i < cnt; i++)
+    {
+        ws2812_Write_24Bits((rgb[i] >> 8) & 0xFF, (rgb[i] >> 16) & 0xFF, rgb[i] & 0xFF);
+    }
 
     spin_unlock_irqrestore(&lock, flags);
-}
-
-static void ws2812_Red(void)
-{
-    ws2812_Write_24Bits(0, 0xFF, 0);
-}
-
-static void ws2812_Green(void)
-{
-    ws2812_Write_24Bits(0xFF, 0, 0);
-}
-
-static void ws2812_Blue(void)
-{
-    ws2812_Write_24Bits(0, 0, 0xFF);
 }
 
 /*ws2812读函数*/
@@ -194,17 +138,15 @@ ssize_t ws2812_read(struct file *file, char __user *user, size_t bytesize, loff_
 
 ssize_t ws2812_write(struct file *file, const char __user *user_buf, size_t count, loff_t *ppos)
 {
-    unsigned char RGB_led[6];
-    unsigned long ret = copy_from_user(&RGB_led[0], user_buf, 6);
+    uint32_t rgb[count];
+    unsigned long ret = copy_from_user(&rgb[0], user_buf, count);
     if (ret < 0)
     {
         printk("copy_from_user fail!!!\n");
         return -1;
     }
 
-    ws2812_rst();
-    ws2812_Write_24Bits(RGB_led[1], RGB_led[0], RGB_led[2]);
-    ws2812_Write_24Bits(RGB_led[4], RGB_led[3], RGB_led[5]);
+    ws2812_write_array((uint32_t *)rgb, count / 4);
 
     return 0;
 }
@@ -243,45 +185,23 @@ static int ws2812_probe(struct platform_device *pdev)
     int ret;
     enum of_gpio_flags flag; //(flag == OF_GPIO_ACTIVE_LOW) ?
     struct device_node *ws2812_gpio_node = pdev->dev.of_node;
+    uint32_t rgb_cnt = 0;
+    uint32_t rgb[255];
+    uint32_t i = 0;
 
+    of_property_read_u32(ws2812_gpio_node, "rgb_cnt", &rgb_cnt);
+    if (rgb_cnt > 255)
+        rgb_cnt = 255;
+    of_property_read_u32_array(ws2812_gpio_node, "rgb_value", rgb, rgb_cnt);
     ws2812_pin = of_get_named_gpio_flags(ws2812_gpio_node->child, "gpios", 0, &flag);
     if (!gpio_is_valid(ws2812_pin))
     {
         printk("===> ws2812-gpio: %d is invalid\n", ws2812_pin);
         return -ENODEV;
     }
-    else
-    {
-#if use_emmc // GPIO PI15
 
-        GPIOI_Congure = ioremap(GPIO_BASE + GPIOI_CFG1_OFFSET, 4);
-        GPIOI_Data = ioremap(GPIO_BASE + GPIOI_DAT_OFFSET, 4);
-
-        val = readl(GPIOI_Congure);
-        val &= 0x9FFFFFFF;
-        val |= 0x10000000;
-        writel(val, GPIOI_Congure); // output
-
-        val = readl(GPIOI_Data);
-        val &= 0x7FFF;
-        writel(val, GPIOI_Data); // pin_val=0
-
-#else // GPIO PC14
-
-        GPIOC_Congure = ioremap(GPIO_BASE + GPIOC_CFG1_OFFSET, 4);
-        GPIOC_Data = ioremap(GPIO_BASE + GPIOC_DAT_OFFSET, 4);
-
-        val = readl(GPIOC_Congure);
-        val &= 0xF9FFFFFF;
-        val |= 0x01000000;
-        writel(val, GPIOC_Congure); // output
-
-        val = readl(GPIOC_Data);
-        val &= 0xBFFF;
-        writel(val, GPIOC_Data); // pin_val=0
-
-#endif
-    }
+    ws2812_gpio_port = ioremap(GPIO_BASE + GPIO_DAT_OFFSET((ws2812_pin >> 5)), 4);
+    ws2812_gpio_bit = 1 << (ws2812_pin & 0x001F);
 
     if (gpio_request(ws2812_pin, "ws2812-gpio"))
     {
@@ -289,22 +209,17 @@ static int ws2812_probe(struct platform_device *pdev)
         gpio_free(ws2812_pin);
         return -ENODEV;
     }
+    gpio_direction_output(ws2812_pin, 0); // output low-level
 
     ret = misc_register(&ws2812_misc_dev); // 注册设备为杂项设备
     msleep(50);                            // 延时100毫秒
 
-    ws2812_rst(); // 初始化
-    // udelay(5);
-
-    // ws2812_Blue();
-    // ws2812_Red();
-    // ws2812_Blue();
-    ws2812_Green();
-    ws2812_Red();
+    ws2812_write_array(rgb, rgb_cnt);
 
     return 0;
 }
 
+// void gpiod_set_raw_value(struct gpio_desc *desc, int value)
 static int ws2812_remove(struct platform_device *pdev)
 {
     misc_deregister(&ws2812_misc_dev);

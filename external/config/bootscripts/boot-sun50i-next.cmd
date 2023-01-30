@@ -36,7 +36,7 @@ setenv bootargs "root=${rootdev} rootwait rootfstype=${rootfstype} ${consoleargs
 
 if test "${docker_optimizations}" = "on"; then setenv bootargs "${bootargs} cgroup_enable=memory swapaccount=1"; fi
 
-load ${devtype} ${devnum} ${fdt_addr_r} ${prefix}dtb/${fdtfile}
+load ${devtype} ${devnum} ${fdt_addr_r} ${prefix}dtb/allwinner/${fdtfile}.dtb
 fdt addr ${fdt_addr_r}
 fdt resize 65536
 for overlay_file in ${overlays}; do
@@ -53,7 +53,7 @@ for overlay_file in ${user_overlays}; do
 done
 if test "${overlay_error}" = "true"; then
 	echo "Error applying DT overlays, restoring original DT"
-	load ${devtype} ${devnum} ${fdt_addr_r} ${prefix}dtb/${fdtfile}
+	load ${devtype} ${devnum} ${fdt_addr_r} ${prefix}dtb/allwinner/${fdtfile}.dtb
 else
 	if load ${devtype} ${devnum} ${load_addr} ${prefix}dtb/allwinner/overlay/${overlay_prefix}-fixup.scr; then
 		echo "Applying kernel provided DT fixup script (${overlay_prefix}-fixup.scr)"

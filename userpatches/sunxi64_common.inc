@@ -1,6 +1,6 @@
 ARCH=arm64
 ATF_TARGET_MAP="PLAT=$ATF_PLAT DEBUG=1 bl31;;build/$ATF_PLAT/debug/bl31.bin"
-BOOTDELAY=1
+BOOTDELAY=-2
 BOOTPATCHDIR='u-boot-sunxi'
 UBOOT_TARGET_MAP=';;u-boot-sunxi-with-spl.bin'
 BOOTSCRIPT='boot-sun50i-next.cmd:boot.cmd'

@@ -68,18 +68,20 @@
 		};
 	};
 
-    ws2812 {
-		compatible = "rgb-ws2812";
-		pinctrl-names = "default";
-		status = "okay";
+    ws2812: ws2812 {
+        compatible = "rgb-ws2812";
+        pinctrl-names = "default";
+        status = "disabled";
+        rgb_cnt = <2>;
+        rgb_value = <0x010000 0x010000>;
 
-		ws2812_pin@0 {
-            // gpios = <&pio 7 5 GPIO_ACTIVE_LOW>;
+        ws2812_pin@0 {
             gpios = <&pio 8 15 GPIO_ACTIVE_LOW>;
             label = "ws2812";
             linux,default-trigger = "heartbeat";
             linux,default-trigger-delay-ms = <0>;
-		};
+            status = "okay";
+        };
     };
 
     mcp2515_clock: mcp2515_clock {
@@ -93,7 +95,7 @@
         #size-cells = <0>;
         compatible = "i2c-gpio";
 
-        status = "okay";
+        status = "disabled";
 
         gpios = <&pio 8 6 GPIO_ACTIVE_HIGH>, /* sda  PI6 */
                 <&pio 8 4 GPIO_ACTIVE_HIGH>; /* scl  PI4 */
@@ -277,8 +279,7 @@
     no-1-8-v;
 	bus-width = <8>;
     non-removable;
-	// status = "okay";
-    status = "disabled";
+	status = "okay";
 };
 
 &ohci0 {
@@ -374,8 +375,8 @@
     pinctrl-names = "default";
 
     pinctrl-0 = <&spi1_pins>;
-    cs-gpios = <&pio 8 5 GPIO_ACTIVE_HIGH>,    /* PI5 */ 
-                <&pio 8 14 GPIO_ACTIVE_HIGH>;    /* PI14 */
+    cs-gpios = <&pio 8 5 GPIO_ACTIVE_HIGH>,    /* PI5 */
+               <&pio 8 14 GPIO_ACTIVE_HIGH>;   /* PI14 */
 
     status = "disabled";
     
@@ -383,7 +384,7 @@
         compatible = "microchip,mcp2515";
         clocks = <&mcp2515_clock>;
         status = "disabled";
-        
+
         reg = <0x0>;
         spi-max-frequency = <12500000>;
         pinctrl-names = "default";
@@ -401,6 +402,7 @@
 
         reg = <0x1>;
         spi-max-frequency = <25000000>;
+		dc-gpios = <&pio 8 15 GPIO_ACTIVE_HIGH>; /* PI15 */
         fps = <60>;
         rotate = <0>;
         buswidth = <8>;
@@ -416,8 +418,7 @@
 &uart0 {
 	pinctrl-names = "default";
 	pinctrl-0 = <&uart0_ph_pins>;
-	// status = "disabled";
-    status = "okay";
+	status = "okay";
 };
 
 &usbotg {
@@ -439,7 +440,7 @@
 &ir {
 	pinctrl-names = "default";
 	pinctrl-0 = <&ir_rx_pin>;
-	status = "okay";
+	status = "disabled";
 };
 
 &codec {

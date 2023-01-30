@@ -26,10 +26,8 @@
 #include <linux/sunxi-gpio.h>
 #include <linux/delay.h>
 
-#include <linux/i2c-gpio-base.h>
-
 /* polling interval in ms */
-#define POLL_INTERVAL 10
+#define POLL_INTERVAL 15
 
 /* this driver uses 12-bit readout */
 #define MAX_12BIT 0xfff
@@ -54,7 +52,8 @@
  * is sometimes not accurately 0.
  * This value is based on experiements.
  */
-#define NS2009_PEN_UP_Z1_ERR 80
+#define NS2009_PEN_MIN_Z1_ERR 80
+#define NS2009_PEN_MAX_Z1_ERR 2000
 
 struct ns2009_data
 {
@@ -65,9 +64,13 @@ struct ns2009_data
 
 static int ns2009_ts_read_data(struct ns2009_data *data, u8 cmd, u16 *val)
 {
+    int ret = 0;
     u8 raw_data[2] = {0};
 
-    gpio_i2c_read_multi_reg(NS2009_ADDR, cmd, raw_data, 2);
+    ret = i2c_smbus_read_i2c_block_data(data->client, cmd, 2, raw_data);
+    if (ret < 0)
+        return ret;
+
     *val = (raw_data[0] << 4) | (raw_data[1] >> 4);
 
     return 0;
@@ -89,7 +92,7 @@ static int ns2009_ts_report(struct ns2009_data *data)
     if (ret)
         return ret;
 
-    if (z1 >= NS2009_PEN_UP_Z1_ERR)
+    if (z1 >= NS2009_PEN_MIN_Z1_ERR && z1 <= NS2009_PEN_MAX_Z1_ERR)
     {
         ret = ns2009_ts_read_data(data, NS2009_READ_X_LOW_POWER_12BIT, &x);
         if (ret)
@@ -181,7 +184,7 @@ static int ns2009_ts_probe(struct i2c_client *client, const struct i2c_device_id
     struct device *dev = &client->dev;
     int error;
 
-    gpio_i2c_init();
+    client->flags |= I2C_M_IGNORE_NAK; // fix ns2009 sda always lower
 
     if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C |
                                                       I2C_FUNC_SMBUS_READ_I2C_BLOCK |
