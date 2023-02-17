@@ -285,8 +285,8 @@ install_common()
 		echo "nameserver $NAMESERVER" > "${SDCARD}"/etc/resolvconf/resolv.conf.d/head
 	fi
 
-	# permit root login via SSH for the first boot
-	sed -i 's/#\?PermitRootLogin .*/PermitRootLogin yes/' "${SDCARD}"/etc/ssh/sshd_config
+	# disable permit root login via SSH for the first boot
+	sed -i 's/#\?PermitRootLogin .*/PermitRootLogin no/' "${SDCARD}"/etc/ssh/sshd_config
 
 	# enable PubkeyAuthentication
 	sed -i 's/#\?PubkeyAuthentication .*/PubkeyAuthentication yes/' "${SDCARD}"/etc/ssh/sshd_config
