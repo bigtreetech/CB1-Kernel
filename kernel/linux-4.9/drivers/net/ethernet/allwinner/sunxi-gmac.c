@@ -37,9 +37,6 @@
 #include <linux/sunxi-sid.h>
 #include <linux/sunxi-gpio.h>
 #include "sunxi-gmac.h"
-#include <linux/timer.h>
-//#include <linux/phylink.h>
-#include <linux/reset.h>
 
 #define DMA_DESC_RX	256
 #define DMA_DESC_TX	256
@@ -62,7 +59,7 @@
 
 #define circ_inc(n, s) (((n) + 1) % (s))
 
-#define GETH_MAC_ADDRESS "01:02:03:04:05:06"
+#define GETH_MAC_ADDRESS "00:00:00:00:00:00"
 static char *mac_str = GETH_MAC_ADDRESS;
 module_param(mac_str, charp, S_IRUGO | S_IWUSR);
 MODULE_PARM_DESC(mac_str, "MAC Address String.(xx:xx:xx:xx:xx:xx)");
@@ -111,7 +108,7 @@ MODULE_PARM_DESC(rx_delay, "Adjust receive clock delay, value: 0~31");
 
 /* whether using ephy_clk */
 static int g_use_ephy_clk;
-static int g_phy_addr=0;
+static int g_phy_addr;
 
 struct geth_priv {
 	struct dma_desc *dma_tx;
@@ -119,7 +116,6 @@ struct geth_priv {
 	unsigned int tx_clean;
 	unsigned int tx_dirty;
 	dma_addr_t dma_tx_phy;
-    struct reset_control *ephy_rst;
 
 	unsigned long buf_sz;
 
@@ -328,6 +324,170 @@ static ssize_t gphy_test_store(struct device *dev,
 
 static DEVICE_ATTR(gphy_test, 0664, gphy_test_show, gphy_test_store);
 
+static struct mii_reg_dump mii_reg;
+
+static ssize_t mii_read_show(struct device *dev,
+		struct device_attribute *attr, char *buf)
+{
+	struct net_device *ndev;
+	struct geth_priv *priv;
+
+	if (!dev) {
+		pr_err("Argment is invalid\n");
+		return 0;
+	}
+
+	ndev = dev_get_drvdata(dev);
+	if (!ndev) {
+		pr_err("Net device is null\n");
+		return 0;
+	}
+
+	priv = netdev_priv(ndev);
+	if (!priv) {
+		pr_err("geth_priv is null\n");
+		return 0;
+	}
+
+	if (!netif_running(ndev)) {
+		pr_warn("eth is down!\n");
+		return 0;
+	}
+
+	mii_reg.value = sunxi_mdio_read(priv->base, mii_reg.addr, mii_reg.reg);
+	return sprintf(buf, "ADDR[0x%02x]:REG[0x%02x] = 0x%04x\n",
+		       mii_reg.addr, mii_reg.reg, mii_reg.value);
+}
+
+static ssize_t mii_read_store(struct device *dev,
+		struct device_attribute *attr, const char *buf, size_t count)
+{
+	struct net_device *ndev;
+	struct geth_priv *priv;
+	int ret = 0;
+	u16 reg, addr;
+	char *ptr;
+
+	ptr = (char *)buf;
+
+	if (!dev) {
+		pr_err("Argment is invalid\n");
+		return count;
+	}
+
+	ndev = dev_get_drvdata(dev);
+	if (!ndev) {
+		pr_err("Net device is null\n");
+		return count;
+	}
+
+	priv = netdev_priv(ndev);
+	if (!priv) {
+		pr_err("geth_priv is null\n");
+		return count;
+	}
+
+	if (!netif_running(ndev)) {
+		pr_warn("eth is down!\n");
+		return count;
+	}
+
+	ret = sunxi_parse_read_str(ptr, &addr, &reg);
+	if (ret)
+		return ret;
+
+	mii_reg.addr = addr;
+	mii_reg.reg = reg;
+
+	return count;
+}
+
+static DEVICE_ATTR(mii_read, 0664, mii_read_show, mii_read_store);
+
+static ssize_t mii_write_show(struct device *dev,
+		struct device_attribute *attr, char *buf)
+{
+	struct net_device *ndev;
+	struct geth_priv *priv;
+	u16 bef_val, aft_val;
+
+	if (!dev) {
+		pr_err("Argment is invalid\n");
+		return 0;
+	}
+
+	ndev = dev_get_drvdata(dev);
+	if (!ndev) {
+		pr_err("Net device is null\n");
+		return 0;
+	}
+
+	priv = netdev_priv(ndev);
+	if (!priv) {
+		pr_err("geth_priv is null\n");
+		return 0;
+	}
+
+	if (!netif_running(ndev)) {
+		pr_warn("eth is down!\n");
+		return 0;
+	}
+
+	bef_val = sunxi_mdio_read(priv->base, mii_reg.addr, mii_reg.reg);
+	sunxi_mdio_write(priv->base, mii_reg.addr, mii_reg.reg, mii_reg.value);
+	aft_val = sunxi_mdio_read(priv->base, mii_reg.addr, mii_reg.reg);
+	return sprintf(buf, "before ADDR[0x%02x]:REG[0x%02x] = 0x%04x\n"
+			    "after  ADDR[0x%02x]:REG[0x%02x] = 0x%04x\n",
+			    mii_reg.addr, mii_reg.reg, bef_val,
+			    mii_reg.addr, mii_reg.reg, aft_val);
+}
+
+static ssize_t mii_write_store(struct device *dev,
+		struct device_attribute *attr, const char *buf, size_t count)
+{
+	struct net_device *ndev;
+	struct geth_priv *priv;
+	int ret = 0;
+	u16 reg, addr, val;
+	char *ptr;
+
+	ptr = (char *)buf;
+
+	if (!dev) {
+		pr_err("Argment is invalid\n");
+		return count;
+	}
+
+	ndev = dev_get_drvdata(dev);
+	if (!ndev) {
+		pr_err("Net device is null\n");
+		return count;
+	}
+
+	priv = netdev_priv(ndev);
+	if (!priv) {
+		pr_err("geth_priv is null\n");
+		return count;
+	}
+
+	if (!netif_running(ndev)) {
+		pr_warn("eth is down!\n");
+		return count;
+	}
+
+	ret = sunxi_parse_write_str(ptr, &addr, &reg, &val);
+	if (ret)
+		return ret;
+
+	mii_reg.reg = reg;
+	mii_reg.addr = addr;
+	mii_reg.value = val;
+
+	return count;
+}
+
+static DEVICE_ATTR(mii_write, 0664, mii_write_show, mii_write_store);
+
 static int geth_power_on(struct geth_priv *priv)
 {
 	int value;
@@ -435,13 +595,9 @@ static void geth_adjust_link(struct net_device *ndev)
 			new_state = 1;
 			priv->link = phydev->link;
 		}
-		
-		priv->speed = 100;
 
 		if (new_state)
 			sunxi_set_link_mode(priv->base, priv->duplex, priv->speed);
-        
-        printk("==> link mode: duplex = %d , speed = %d\n",priv->duplex,priv->speed);
 
 #ifdef LOOPBACK_DEBUG
 		phydev->state = PHY_FORCING;
@@ -450,8 +606,8 @@ static void geth_adjust_link(struct net_device *ndev)
 	} else if (priv->link != phydev->link) {
 		new_state = 1;
 		priv->link = 0;
-		priv->speed = 100;
-		priv->duplex = 1;
+		priv->speed = 0;
+		priv->duplex = -1;
 	}
 
 	if (new_state)
@@ -460,159 +616,34 @@ static void geth_adjust_link(struct net_device *ndev)
 	spin_unlock_irqrestore(&priv->lock, flags);
 }
 
-static void ac300_ephy_enable(struct phy_device *ac300)
-{
-   // printk("==> ac300_ephy_enable\n");
-	/* release reset */
-	phy_write(ac300, 0x00, 0x1f83);
-	/* clk gating */
-	phy_write(ac300, 0x00, 0x1fb7);
-
-	phy_write(ac300, 0x05, 0xa81f);
-	phy_write(ac300, 0x06, 0x800);
-}
-
-static void disable_intelligent_ieee(struct phy_device *phydev)
-{
-	unsigned int value;
-
-	phy_write(phydev, 0x1f, 0x0100);	/* switch to page 1 */
-	value = phy_read(phydev, 0x17);		/* read address 0 0x17 register */
-	value &= ~(1 << 3);			/* reg 0x17 bit 3, set 0 to disable IEEE */
-	phy_write(phydev, 0x17, value);
-	phy_write(phydev, 0x1f, 0x0000);	/* switch to page 0 */
-}
-
-static void disable_802_3az_ieee(struct phy_device *phydev)
-{
-	unsigned int value;
-
-	phy_write(phydev, 0xd, 0x7);
-	phy_write(phydev, 0xe, 0x3c);
-	phy_write(phydev, 0xd, 0x1 << 14 | 0x7);
-	value = phy_read(phydev, 0xe);
-	value &= ~(0x1 << 1);
-	phy_write(phydev, 0xd, 0x7);
-	phy_write(phydev, 0xe, 0x3c);
-	phy_write(phydev, 0xd, 0x1 << 14 | 0x7);
-	phy_write(phydev, 0xe, value);
-
-	phy_write(phydev, 0x1f, 0x0200);	/* switch to page 2 */
-	phy_write(phydev, 0x18, 0x0000);
-}
-
-static int ephy_config_init(struct phy_device *phydev)
-{
-  //  printk("==> ephy_config_init\n");
-
-	/* Iint ephy */
-	phy_write(phydev, 0x1f, 0x0100);	/* Switch to Page 1 */
-	phy_write(phydev, 0x12, 0x4824);	/* Disable APS */
-
-	phy_write(phydev, 0x1f, 0x0200);	/* Switch to Page 2 */
-	phy_write(phydev, 0x18, 0x0000);	/* PHYAFE TRX optimization */
-
-	phy_write(phydev, 0x1f, 0x0600);	/* Switch to Page 6 */
-	phy_write(phydev, 0x14, 0x708b);	/* PHYAFE TX optimization */
-	phy_write(phydev, 0x13, 0xF000);	/* PHYAFE RX optimization */
-	phy_write(phydev, 0x15, 0x1530);
-
-	phy_write(phydev, 0x1f, 0x0800);	/* Switch to Page 6 */
-	phy_write(phydev, 0x18, 0x00bc);	/* PHYAFE TRX optimization */
-#if 0
-	/* Disable Auto Power Saving mode */
-	phy_write(phydev, 0x1f, 0x0100);	/* Switch to Page 1 */
-	value = phy_read(phydev, 0x17);
-	value &= ~BIT(13);
-	phy_write(phydev, 0x17, value);
-#endif
-	disable_intelligent_ieee(phydev);	/* Disable Intelligent IEEE */
-	disable_802_3az_ieee(phydev);		/* Disable 802.3az IEEE */
-	phy_write(phydev, 0x1f, 0x0000);	/* Switch to Page 0 */
-    
-	//phy_write(ac300_ephy.ac300, 0x06, 0x0800); //RMII
-
-	return 0;
-}
-
 static int geth_phy_init(struct net_device *ndev)
 {
 	int value;
 	struct mii_bus *new_bus;
 	struct geth_priv *priv = netdev_priv(ndev);
 	struct phy_device *phydev = ndev->phydev;
-    int tries=3;
 
-   // printk("==> geth_phy_init\n");
-#if 0   
-    writel(0x08a90000, &ndev->base_addr + 0x00);
-    writel(0x3c57e4d0, &ndev->base_addr + 0x04); 
-    writel(0x3c4824f0, &ndev->base_addr + 0x08); 
-    writel(0x3c482510, &ndev->base_addr + 0x0c); 
-    writel(0x3c482530, &ndev->base_addr + 0x10); 
-    writel(0x3c482550, &ndev->base_addr + 0x14); 
-    writel(0x00004833, &ndev->base_addr + 0x18);
-    writel(0x00000001, &ndev->base_addr + 0x1c); 
-    writel(0x084ef880, &ndev->base_addr + 0x3c);
-    writel(0x0000000e, &ndev->base_addr + 0x40);
-    writel(0x3c4826f0, &ndev->base_addr + 0x48);
-    writel(0x00000001, &ndev->base_addr + 0x4c);
-    writel(0x3bb55200, &ndev->base_addr + 0x50);
-  /*   
-    writel(0x00000000, &ndev->base_addr + 0x58);
-    writel(0x00000001, &ndev->base_addr + 0x5c);
-    writel(0x00000000, &ndev->base_addr + 0x60);
-    writel(0x000003e8, &ndev->base_addr + 0x6c);
-    writel(0x00000003, &ndev->base_addr + 0x74);
-    writel(0x3c482878, &ndev->base_addr + 0x78);
-    writel(0x08948980, &ndev->base_addr + 0x7c);
-    writel(0x3c46a490, &ndev->base_addr + 0x80);
-    writel(0x3d820d40, &ndev->base_addr + 0x84); 
-    writel(0x3bb598f8, &ndev->base_addr + 0x88); 
-    writel(0x00000001, &ndev->base_addr + 0x8c); 
-    writel(0x3c482918, &ndev->base_addr + 0x90); 
-    writel(0x00000000, &ndev->base_addr + 0x94);
-    writel(0x3c4829b8, &ndev->base_addr + 0xa0); 
-    writel(0x00000000, &ndev->base_addr + 0xa4);
-    writel(0x00000000, &ndev->base_addr + 0xa8);
-    writel(0x3c482a10, &ndev->base_addr + 0xac); 
-    */
-    writel(0x00000001, &ndev->base_addr + 0xb0);
-    writel(0x00000000, &ndev->base_addr + 0xb4);
-    writel(0x00000000, &ndev->base_addr + 0xb8);
-    writel(0x00000000, &ndev->base_addr + 0xbc);
-    writel(0x7f048000, &ndev->base_addr + 0xdc);
-    writel(0x00000000, &ndev->base_addr + 0xc0);
-    writel(0x00000000, &ndev->base_addr + 0xc4);
-    writel(0x00000000, &ndev->base_addr + 0xd0);
-   /*
-   // writel(0x3c7a9e80, &ndev->base_addr + 0xe0);
-    writel(0x3c46a490, &ndev->base_addr + 0xe4);
-    writel(0x00000040, &ndev->base_addr + 0xe8);
-    writel(0x00000000, &ndev->base_addr + 0xec);
-    writel(0x00000000, &ndev->base_addr + 0xf0);
-    writel(0x0890d210, &ndev->base_addr + 0xf8);
-  */
+	/* Fixup the phy interface type */
+	if (priv->phy_ext == INT_PHY) {
+		priv->phy_interface = PHY_INTERFACE_MODE_MII;
+	} else {
+		/* If config gpio to reset the phy device, we should reset it */
+		if (gpio_is_valid(priv->phyrst)) {
+			gpio_direction_output(priv->phyrst,
+					priv->rst_active_low);
+			msleep(50);
+			gpio_direction_output(priv->phyrst,
+					!priv->rst_active_low);
+			msleep(50);
+		}
+	}
 
-    printk("==> EMAC1 reg list:\n");
-
-    int i;
-    for(i=0;i<=0xd0;i+=4) 
-    {
-       value = readl(&ndev->base_addr + i) ;
-       printk("==> reg %02x = %08x \n",i,value );
-     //  if(i%20 == 0 ) printk("\n");        
-    }
-    printk("\n"); 
-#endif    
-    
-    
 	new_bus = mdiobus_alloc();
 	if (!new_bus) {
-		printk("==> mdiobus_alloc failed\n");
+		netdev_err(ndev, "Failed to alloc new mdio bus\n");
 		return -ENOMEM;
 	}
-    
+
 	new_bus->name = dev_name(priv->dev);
 	new_bus->read = &geth_mdio_read;
 	new_bus->write = &geth_mdio_write;
@@ -621,39 +652,41 @@ static int geth_phy_init(struct net_device *ndev)
 
 	new_bus->parent = priv->dev;
 	new_bus->priv = ndev;
-    
 
-	if (mdiobus_register(new_bus)) 
-   // if( __mdiobus_register(new_bus, THIS_MODULE) )
-    {
-		printk("==> %s: Cannot register as MDIO bus\n", new_bus->name);
+	if (mdiobus_register(new_bus)) {
+		pr_err("%s: Cannot register as MDIO bus\n", new_bus->name);
 		goto reg_fail;
 	}
-	
-	//printk("==> ephy new_bus->name = %s \n",new_bus->name);
 
 	priv->mii = new_bus;
-#if 0   
-	printk("===> %s: read EPHY id\n",__func__);
-    mdiobus_read(new_bus,0,2);
-    mdiobus_read(new_bus,0,3);
-    
-    printk("===> %s: read AC300 id\n",__func__);    
-    mdiobus_read(new_bus,16,2);
-    mdiobus_read(new_bus,16,3);
-#endif
 
-    phydev = mdiobus_get_phy(new_bus, 16);
-    ac300_ephy_enable(phydev);
-    
-    phydev = mdiobus_get_phy(new_bus, 0);
+	{
+		int addr;
+		for (addr = 0; addr < PHY_MAX_ADDR; addr++) {
+			struct phy_device *phydev_tmp = mdiobus_get_phy(new_bus, addr);
+
+			if (IS_ERR_OR_NULL(phydev_tmp) || phydev_tmp->phy_id == 0xffff) {
+				if (!IS_ERR_OR_NULL(phydev_tmp))
+					phy_device_remove(phydev_tmp);
+				phydev_tmp = mdiobus_scan(new_bus, addr);
+			}
+
+			if (IS_ERR_OR_NULL(phydev_tmp) || phydev_tmp->phy_id == 0xffff ||
+				phydev_tmp->phy_id == 0x00 || phydev_tmp->phy_id == AC300_ID)
+				continue;
+
+			if (phydev_tmp->phy_id == EPHY_ID || phydev_tmp->phy_id == IP101G_ID) {
+				phydev = phydev_tmp;
+				g_phy_addr = addr;
+				break;
+			}
+		}
+	}
 
 	if (!phydev) {
-		netdev_err(ndev, "No PHY found!\n");       
+		netdev_err(ndev, "No PHY found!\n");
 		goto err;
 	}
-	
-//	return 0;
 
 	phy_write(phydev, MII_BMCR, BMCR_RESET);
 	while (BMCR_RESET & phy_read(phydev, MII_BMCR))
@@ -663,40 +696,40 @@ static int geth_phy_init(struct net_device *ndev)
 	phy_write(phydev, MII_BMCR, (value & ~BMCR_PDOWN));
 
 	phydev->irq = PHY_POLL;
-    
+
 	value = phy_connect_direct(ndev, phydev, &geth_adjust_link, priv->phy_interface);
-	if (value) 
-    {
+	if (value) {
 		netdev_err(ndev, "Could not attach to PHY\n");
 		goto err;
-	} 
-	else 
-    {
+	} else {
 		netdev_info(ndev, "%s: Type(%d) PHY ID %08x at %d IRQ %s (%s)\n",
 			    ndev->name, phydev->interface, phydev->phy_id,
 			    phydev->mdio.addr, "poll", dev_name(&phydev->mdio.dev));
 	}
-	
-#if 0
-#if 0	
-	phydev->supported &= PHY_GBIT_FEATURES; //kandy 000002cf
+
+	phydev->supported &= PHY_GBIT_FEATURES;
 	phydev->advertising = phydev->supported;
-#else
-    u32 supported=0, advertising=0;
-    
-    ethtool_convert_link_mode_to_legacy_u32(&supported,phydev->supported);   
-    
- 	advertising = supported = *PHY_GBIT_FEATURES; //kandy 000002cf PHY_GBIT_FEATURES
-    
-    printk("==> supported = %08x\n",supported);
-    
-	ethtool_convert_legacy_u32_to_link_mode(phydev->supported, supported);    
-    ethtool_convert_legacy_u32_to_link_mode(phydev->advertising, advertising); 
-#endif
-#endif    
-	sunxi_set_link_mode(priv->base, 1, 100); 
-    
-    
+
+
+	if (priv->phy_ext == INT_PHY) {
+		/* EPHY Initial */
+		phy_write(phydev, 0x1f, 0x0100); /* switch to page 1 */
+		phy_write(phydev, 0x12, 0x4824); /* Disable APS */
+		phy_write(phydev, 0x1f, 0x0200); /* switchto page 2 */
+		phy_write(phydev, 0x18, 0x0000); /* PHYAFE TRX optimization */
+		phy_write(phydev, 0x1f, 0x0600); /* switchto page 6 */
+		phy_write(phydev, 0x14, 0x708F); /* PHYAFE TX optimization */
+		phy_write(phydev, 0x19, 0x0000);
+		phy_write(phydev, 0x13, 0xf000); /* PHYAFE RX optimization */
+		phy_write(phydev, 0x15, 0x1530);
+		phy_write(phydev, 0x1f, 0x0800); /* switch to page 8 */
+		phy_write(phydev, 0x18, 0x00bc); /* PHYAFE TRX optimization */
+		phy_write(phydev, 0x1f, 0x0100); /* switchto page 1 */
+		/* reg 0x17 bit3,set 0 to disable iEEE */
+		phy_write(phydev, 0x17, phy_read(phydev, 0x17) & (~(1<<3)));
+		phy_write(phydev, 0x1f, 0x0000); /* switch to page 0 */
+	}
+
 	return 0;
 
 err:
@@ -727,6 +760,10 @@ static int geth_phy_release(struct net_device *ndev)
 		phy_disconnect(phydev);
 		ndev->phydev = NULL;
 	}
+
+#if defined(CONFIG_SUNXI_EPHY)
+	gmac_ephy_shutdown(); /* Turn off the clock of PHY for low power consumption  */
+#endif
 
 	if (priv->mii) {
 		mdiobus_unregister(priv->mii);
@@ -923,7 +960,10 @@ static void geth_resume_work(struct work_struct *work)
 
 	if (priv->phy_ext == EXT_PHY)
 		geth_select_gpio_state(priv->pinctrl, PINCTRL_STATE_DEFAULT);
-#if 0
+
+	geth_open(ndev);
+
+#if defined(CONFIG_SUNXI_EPHY)
 	if (!ephy_is_enable()) {
 		pr_info("[geth_resume] ephy is not enable, waiting...\n");
 		msleep(2000);
@@ -933,7 +973,6 @@ static void geth_resume_work(struct work_struct *work)
 		}
 	}
 #endif
-	geth_open(ndev);
 
 	spin_lock(&priv->lock);
 	netif_device_attach(ndev);
@@ -1047,8 +1086,8 @@ static void geth_check_addr(struct net_device *ndev, unsigned char *mac)
 			geth_chip_hwaddr(ndev->dev_addr);
 
 		if (!is_valid_ether_addr(ndev->dev_addr)) {
-			eth_random_addr(ndev->dev_addr); //kandy
-			pr_warn("\n----------------------%s: Use random mac address---------\n\n", ndev->name);
+			random_ether_addr(ndev->dev_addr);
+			pr_warn("%s: Use random mac address\n", ndev->name);
 		}
 	}
 }
@@ -1099,10 +1138,6 @@ static void geth_clk_enable(struct geth_priv *priv)
 	clk_value |= ((tx_delay & 0x07) << 10);
 	clk_value &= ~(0x1F << 5);
 	clk_value |= ((rx_delay & 0x1F) << 5);
-    
-   // clk_value = 0x53fe1;
-    
-   // printk("===> phy clk = %08x\n",clk_value);
 
 	writel(clk_value, priv->base_phy);
 }
@@ -1146,8 +1181,6 @@ static irqreturn_t geth_interrupt(int irq, void *dev_id)
 	struct net_device *ndev = (struct net_device *)dev_id;
 	struct geth_priv *priv = netdev_priv(ndev);
 	int status;
-    
-   // printk("==> eth INT\n");
 
 	if (unlikely(!ndev)) {
 		pr_err("%s: invalid ndev pointer\n", __func__);
@@ -1172,8 +1205,6 @@ static int geth_open(struct net_device *ndev)
 {
 	struct geth_priv *priv = netdev_priv(ndev);
 	int ret = 0;
-    
-  //  printk("==> %s: enter \n",__func__);
 
 	ret = geth_dma_desc_init(ndev);
 	if (ret) {
@@ -1226,10 +1257,7 @@ static int geth_open(struct net_device *ndev)
 	memset(&priv->xstats, 0, sizeof(struct geth_extra_stats));
 
 	if (ndev->phydev)
-    {
-       // printk("==> phy_start\n");
 		phy_start(ndev->phydev);
-    }
 
 	sunxi_start_rx(priv->base, (unsigned long)((struct dma_desc *)
 		       priv->dma_rx_phy + priv->rx_dirty));
@@ -1243,8 +1271,6 @@ static int geth_open(struct net_device *ndev)
 
 	napi_enable(&priv->napi);
 	netif_start_queue(ndev);
-    
-   // printk("==> %s: OK \n",__func__);
 
 	return 0;
 
@@ -1621,6 +1647,13 @@ static void geth_set_rx_mode(struct net_device *ndev)
 	spin_unlock(&priv->lock);
 }
 
+static void geth_tx_timeout(struct net_device *ndev)
+{
+	struct geth_priv *priv = netdev_priv(ndev);
+
+	geth_tx_err(priv);
+}
+
 static int geth_ioctl(struct net_device *ndev, struct ifreq *rq, int cmd)
 {
 	if (!netif_running(ndev))
@@ -1679,12 +1712,17 @@ int geth_set_features(struct net_device *ndev, netdev_features_t features)
 	return 0;
 }
 
-static void geth_tx_timeout(struct net_device *ndev, unsigned int txqueue)
+#ifdef CONFIG_NET_POLL_CONTROLLER
+/* Polling receive - used by NETCONSOLE and other diagnostic tools
+ * to allow network I/O with interrupts disabled.
+ */
+static void geth_poll_controller(struct net_device *dev)
 {
-	struct geth_priv *priv = netdev_priv(ndev);
-
-	geth_tx_err(priv);
+	disable_irq(dev->irq);
+	geth_interrupt(dev->irq, dev);
+	enable_irq(dev->irq);
 }
+#endif
 
 static const struct net_device_ops geth_netdev_ops = {
 	.ndo_init = NULL,
@@ -1694,10 +1732,12 @@ static const struct net_device_ops geth_netdev_ops = {
 	.ndo_change_mtu = geth_change_mtu,
 	.ndo_fix_features = geth_fix_features,
 	.ndo_set_rx_mode = geth_set_rx_mode,
-	//.ndo_tx_timeout = geth_tx_timeout,
+	.ndo_tx_timeout = geth_tx_timeout,
 	.ndo_do_ioctl = geth_ioctl,
 	.ndo_set_config = geth_config,
-
+#ifdef CONFIG_NET_POLL_CONTROLLER
+	.ndo_poll_controller = geth_poll_controller,
+#endif
 	.ndo_set_mac_address = geth_set_mac_address,
 	.ndo_set_features = geth_set_features,
 };
@@ -1721,7 +1761,7 @@ static int geth_get_sset_count(struct net_device *netdev, int sset)
 		return -EOPNOTSUPP;
 	}
 }
-#if 0
+
 static int geth_ethtool_getsettings(struct net_device *ndev,
 				    struct ethtool_cmd *cmd)
 {
@@ -1762,7 +1802,6 @@ static int geth_ethtool_setsettings(struct net_device *ndev,
 
 	return rc;
 }
-#endif
 
 static void geth_ethtool_getdrvinfo(struct net_device *ndev,
 				    struct ethtool_drvinfo *info)
@@ -1777,10 +1816,8 @@ static void geth_ethtool_getdrvinfo(struct net_device *ndev,
 
 static const struct ethtool_ops geth_ethtool_ops = {
 	.begin = geth_check_if_running,
-	//.get_settings = geth_ethtool_getsettings,
-	//.set_settings = geth_ethtool_setsettings,
-	.get_link_ksettings = phy_ethtool_get_link_ksettings,
-	.set_link_ksettings = phy_ethtool_set_link_ksettings,    
+	.get_settings = geth_ethtool_getsettings,
+	.set_settings = geth_ethtool_setsettings,
 	.get_link = ethtool_op_get_link,
 	.get_pauseparam = NULL,
 	.set_pauseparam = NULL,
@@ -1805,8 +1842,6 @@ static int geth_hw_init(struct platform_device *pdev)
 	const char *gmac_power;
 	char power[20];
 	int i;
-    
-    
 
 #ifdef CONFIG_SUNXI_EXT_PHY
 	priv->phy_ext = EXT_PHY;
@@ -1851,30 +1886,39 @@ static int geth_hw_init(struct platform_device *pdev)
 
 	ret = request_irq(ndev->irq, geth_interrupt, IRQF_SHARED, dev_name(&pdev->dev), ndev);
 	if (unlikely(ret < 0)) {
-		pr_err("==> Could not request irq %d, error: %d\n", ndev->irq, ret);
+		pr_err("Could not request irq %d, error: %d\n", ndev->irq, ret);
 		goto irq_err;
 	}
-	
-	//enable_irq(ndev->irq);
-	
-	//printk("==> geth_hw_init: ndev->irq = %d\n",ndev->irq );
 
 	/* config clock */
-	priv->geth_clk = of_clk_get_by_name(np, "bus-emac1");
+	priv->geth_clk = of_clk_get_by_name(np, "gmac");
 	if (unlikely(!priv->geth_clk || IS_ERR(priv->geth_clk))) {
-		pr_err("==> Get gmac clock failed!\n");
+		pr_err("Get gmac clock failed!\n");
 		ret = -EINVAL;
 		goto clk_err;
 	}
 
 	if (INT_PHY == priv->phy_ext) {
-		priv->ephy_clk = of_clk_get_by_name(np, "emac-25m");
+		priv->ephy_clk = of_clk_get_by_name(np, "ephy");
 		if (unlikely(IS_ERR_OR_NULL(priv->ephy_clk))) {
 			pr_err("Get ephy clock failed!\n");
 			ret = -EINVAL;
 			goto clk_err;
 		}
 	}
+#if defined(CONFIG_ARCH_SUN8IW12) || defined(CONFIG_ARCH_SUN50IW9)
+	else {
+		if (!of_property_read_u32(np, "use_ephy25m", &g_use_ephy_clk)
+				&& g_use_ephy_clk) {
+			priv->ephy_clk = of_clk_get_by_name(np, "ephy");
+			if (unlikely(IS_ERR_OR_NULL(priv->ephy_clk))) {
+				pr_err("Get ephy clk failed!\n");
+				ret = -EINVAL;
+				goto clk_err;
+			}
+		}
+	}
+#endif
 
 	/* config power regulator */
 	if (EXT_PHY == priv->phy_ext) {
@@ -1894,18 +1938,21 @@ static int geth_hw_init(struct platform_device *pdev)
 			}
 		}
 	}
-	
-	priv->phy_interface = 6;//PHY_INTERFACE_MODE_RGMII;
-	
+	/* config other parameters */
+	priv->phy_interface = of_get_phy_mode(np);
+	if (priv->phy_interface != PHY_INTERFACE_MODE_MII &&
+	    priv->phy_interface != PHY_INTERFACE_MODE_RGMII &&
+	    priv->phy_interface != PHY_INTERFACE_MODE_RMII) {
+		pr_err("Not support phy type!\n");
+		priv->phy_interface = PHY_INTERFACE_MODE_MII;
+	}
+
 	if (!of_property_read_u32(np, "tx-delay", &value))
 		tx_delay = value;
 
 	if (!of_property_read_u32(np, "rx-delay", &value))
 		rx_delay = value;
-    
-  //  printk("==> tx_delay = %d , rx_delay = %d\n",tx_delay,rx_delay);
-    
-#if 1
+
 	/* config pinctrl */
 	if (EXT_PHY == priv->phy_ext) {
 		priv->phyrst = of_get_named_gpio_flags(np, "phy-rst", 0, (enum of_gpio_flags *)&cfg);
@@ -1927,23 +1974,7 @@ static int geth_hw_init(struct platform_device *pdev)
 			goto pin_err;
 		}
 	}
-#endif
 
-	priv->ephy_rst = devm_reset_control_get_optional(&pdev->dev,"stmmaceth");
-	reset_control_assert(priv->ephy_rst);
-	reset_control_deassert(priv->ephy_rst);
-    
-    //msleep(500);
-    
-#if 0     
-    ac300_ephy_enable(ndev->phydev);
-    printk("--------------- init ephy\n");
-    msleep(200);
-    ephy_config_init(ndev->phydev);
-#endif
-    
-//	printk("==> devname = %s ,priv->phy_interface = %d\n",dev_name(&pdev->dev),priv->phy_interface ); 
-    
 	return 0;
 
 pin_err:
@@ -2068,6 +2099,8 @@ static int geth_probe(struct platform_device *pdev)
 	geth_create_attrs(ndev);
 #endif
 	device_create_file(&pdev->dev, &dev_attr_gphy_test);
+	device_create_file(&pdev->dev, &dev_attr_mii_read);
+	device_create_file(&pdev->dev, &dev_attr_mii_write);
 
 	device_enable_async_suspend(&pdev->dev);
 
@@ -2092,6 +2125,8 @@ static int geth_remove(struct platform_device *pdev)
 	struct geth_priv *priv = netdev_priv(ndev);
 
 	device_remove_file(&pdev->dev, &dev_attr_gphy_test);
+	device_remove_file(&pdev->dev, &dev_attr_mii_read);
+	device_remove_file(&pdev->dev, &dev_attr_mii_write);
 
 	netif_napi_del(&priv->napi);
 	unregister_netdev(ndev);
@@ -2118,75 +2153,7 @@ static struct platform_driver geth_driver = {
 		   .of_match_table = geth_of_match,
 	},
 };
-
-#if 1
-#define GPIO_SYS_LED 229 //H5
-
-struct timer_list mytimer;
-
-static int led_counter=0;
-
-static void timer_func(unsigned long _musb)
-{
-    // printk("timer run\n");
-     led_counter = !led_counter;
-     if(led_counter)
-        gpio_set_value(GPIO_SYS_LED,0);
-     else
-        gpio_set_value(GPIO_SYS_LED,1); 
-     
-     mod_timer(&mytimer,jiffies + msecs_to_jiffies(500) );
-}
-static timer_init(void)
-{
-    setup_timer(&mytimer, timer_func, (unsigned long)NULL);
-    mytimer.expires = jiffies + msecs_to_jiffies(500);
-    add_timer(&mytimer);
-}
-#endif
-
-#include <linux/pwm.h>
-static struct pwm_device *pwm;
-
-static int __init phy_init(void)
-{
-    int ret=0;
-    
-  //  printk("===> sunxi-gmac init \n"); 
-    
-#if 1 
-	pwm = pwm_request(5, NULL);
-	if (!IS_ERR_OR_NULL(pwm)) 
-    {
-		pwm_config(pwm, 205, 410);
-       // pwm_config(pwm, 20, 40);
-		pwm_enable(pwm);
-       // printk("==> ac300 pwm5 clk enable OK\n");  
-    }
-    else
-    {
-        printk("==> ac300 pwm5 clk enable failed\n");  
-    }
-    
-#endif
-
-#if 1
-    gpio_request(GPIO_SYS_LED,"SysLed");
-    if(ret)
-       printk("==> request sys led failed\n");    
-    
-    gpio_direction_output(GPIO_SYS_LED,0);
-    timer_init();
-#endif
-	return platform_driver_register(&geth_driver);
-}
-module_init(phy_init);
-
-static void __exit phy_exit(void)
-{
-	platform_driver_unregister(&geth_driver);
-}
-module_exit(phy_exit);
+module_platform_driver(geth_driver);
 
 #ifndef MODULE
 static int __init set_mac_addr(char *str)

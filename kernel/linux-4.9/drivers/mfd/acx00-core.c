@@ -13,7 +13,7 @@
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/slab.h>
-#include <linux/i2c.h> 
+#include <linux/i2c.h>
 #include <linux/err.h>
 #include <linux/delay.h>
 #include <linux/mfd/core.h>
@@ -281,6 +281,7 @@ static int acx00_i2c_probe(struct i2c_client *i2c,
 	int ret = 0;
 	int value;
 
+    pr_err("acx00_i2c_probe\n");
 	pr_err("%s,l:%d\n", __func__, __LINE__);
 	acx00 = devm_kzalloc(&i2c->dev, sizeof(struct acx00), GFP_KERNEL);
 	if (acx00 == NULL)
@@ -307,13 +308,12 @@ static int acx00_i2c_probe(struct i2c_client *i2c,
 	if (!pwm) {
 		pr_err("[ac200] pwm is NULL! Just initialize it.\n");
 		ret = sys_script_get_item(key_name, "tv_pwm_ch", &value, 1);
-        printk("==> get pwm ch = %d\n",value);
 		if (ret == 1) {
 			pwm = pwm_request(value, NULL);
 			if (!IS_ERR_OR_NULL(pwm)) {
 				pwm_config(pwm, 205, 410);
 				pwm_enable(pwm);
-				pr_err("====>[ac200] pwm enable\n");
+				pr_err("acx00_i2c_probe [ac200] pwm enable\n");
 
 				acx00->pwm_ac200 = pwm;
 				pr_err("[ac200] pwm is initialized\n");
@@ -436,6 +436,7 @@ static int acx00_detect(struct i2c_client *client, struct i2c_board_info *info)
 {
 	struct i2c_adapter *adapter = client->adapter;
 
+    pr_err("acx00_detect\n");
 	pr_info("%s, l:%d, twi_id:%d, adapter->nr:%d\n", __func__, __LINE__,
 		twi_id, adapter->nr);
 	if (twi_id == adapter->nr) {
@@ -554,6 +555,9 @@ static int __init acx00_i2c_init(void)
 			normal_i2c[0] = (ret == 1) ? value : normal_i2c[0];
 			acx00_i2c_driver.detect = acx00_detect;
 			ret = i2c_add_driver(&acx00_i2c_driver);
+            pr_err(
+                "acx00_i2c_driver ret: %d\n",
+                ret);
 			if (ret != 0)
 				pr_err(
 				    "Failed to register acx00 I2C driver: %d\n",
@@ -584,12 +588,11 @@ static int __init acx00_i2c_init(void)
 			if (ret == 1) {
 				pwm = pwm_request(value, NULL);
 				if (!IS_ERR_OR_NULL(pwm)) {
-                    printk("===============> pwm ch = %d\n",value);
 					pwm_config(pwm, 205, 410);
 					pwm_enable(pwm);
-					pr_err("[ac200] pwm enable\n");
+					pr_err("acx00_i2c_init [ac200] pwm enable\n");
 				} else {
-					pr_err("[ac200] can't get pwm device\n");
+					pr_err("acx00_i2c_init [ac200] can't get pwm device\n");
 				}
 			} else {
 				pr_err("[ac200] Get tv_pwm_ch failed\n");

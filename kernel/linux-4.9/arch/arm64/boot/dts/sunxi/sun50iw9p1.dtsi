@@ -19,11 +19,14 @@
 	aliases: aliases {
 		serial0 = &uart0;
 		twi0 = &twi0;
+        twi1 = &twi1;
+        twi2 = &twi2;
+        twi3 = &twi3;
 		spi0 = &spi0;
 		spi1 = &spi1;
 		ir0  = &s_cir0;
 		pcie = &pcie;
-		scr0 = &scr0;		
+		scr0 = &scr0;
 		//gmac1 = &gmac0;
         gmac0 = &gmac1;
 
@@ -36,8 +39,8 @@
 		//lcd1 = &lcd1;
 		hdmi = &hdmi;
 		pwm = &pwm;
-		//tv0 = &tv0;
-		//ac200 = &ac200;
+		tv0 = &tv0;
+		ac200 = &ac200;
 		boot_disp = &boot_disp;
 	};
 
@@ -1494,7 +1497,12 @@
 		};
 
 		ac200: ac200 {
-			compatible = "allwinner,sunxi-ac200";
+			compatible = "allwinner,sunxi-ac200";			
+			tv_used = <1>;
+			tv_twi_used = <1>;
+			tv_twi_id = <3>;
+			tv_twi_addr = <16>;
+			tv_pwm_ch = <5>;
 			status = "okay";
 		};
 
@@ -2009,7 +2017,7 @@
 			interrupts = <GIC_SPI 15 IRQ_TYPE_LEVEL_HIGH>;
 			interrupt-names = "gmacirq";
 			clocks = <&clk_gmac1>, <&clk_ephy_25m>;
-			clock-names = "bus-emac1","emac-25m";
+			clock-names = "gmac","ephy";
 			device_type = "gmac1";
 			pinctrl-0 = <&gmac1_pins_a>;
 			pinctrl-1 = <&gmac1_pins_b>;

@@ -44,6 +44,7 @@
 #define EPHY_ID			0x00441400
 #define AC300_ID		0xc0000000
 #define EPHY_ID_RTL8211F	0x001CC916
+#define IP101G_ID		0x02430c54
 
 typedef union {
 	struct {
@@ -210,6 +211,12 @@ struct geth_extra_stats {
 	unsigned long normal_irq_n;
 };
 
+struct mii_reg_dump {
+	u32 addr;
+	u16 reg;
+	u16 value;
+};
+
 int sunxi_mdio_read(void *,  int, int);
 int sunxi_mdio_write(void *, int, int, unsigned short);
 int sunxi_mdio_reset(void *);
@@ -247,8 +254,12 @@ int desc_rx_frame_len(struct dma_desc *desc);
 int sunxi_mac_reset(void *iobase, void (*mdelay)(int), int n);
 int sunxi_geth_register(void *iobase, int version, unsigned int div);
 
+int sunxi_parse_read_str(char *str, u16 *addr, u16 *reg);
+int sunxi_parse_write_str(char *str, u16 *addr, u16 *reg, u16 *val);
+
 #if defined(CONFIG_SUNXI_EPHY)
 extern int ephy_is_enable(void);
+extern int gmac_ephy_shutdown(void);
 #endif
 
 #if defined(CONFIG_ARCH_SUN8IW3) \

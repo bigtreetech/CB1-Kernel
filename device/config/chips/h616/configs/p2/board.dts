@@ -98,6 +98,7 @@
 		};
 
 		ac200: ac200 {
+			compatible = "allwinner,sunxi-ac200";			
 			tv_used = <1>;
 			tv_twi_used = <1>;
 			tv_twi_id = <3>;
@@ -438,12 +439,12 @@
             #address-cells = <1>;
             #size-cells = <0>;
             
-            status = "okay";
+            status = "disabled";
 	
             ns2009@48 {
                 compatible = "ns2009";
                 reg = <0x48>;
-                status = "okay";
+                status = "disabled";
             };
         };
 
@@ -472,14 +473,14 @@
 			clock-frequency = <200000>;
 			pinctrl-0 = <&twi3_pins_a>;
 			pinctrl-1 = <&twi3_pins_b>;
-			status = "disabled";
+			status = "okay";
 		};
 
 		twi4: twi@0x05003000{
 			clock-frequency = <200000>;
 			pinctrl-0 = <&twi4_pins_a>;
 			pinctrl-1 = <&twi4_pins_b>;
-			status = "disabled";
+			status = "okay";
 		};
 
 		twi5: twi@0x07081400{
@@ -1013,7 +1014,7 @@
 
 &twi5 {
 	no_suspend = <1>;
-	status = "okay";
+	status = "disabled";
 
 	pmu0: pmu{
 		compatible = "x-powers,axp1530";
