@@ -138,8 +138,11 @@ ssize_t ws2812_read(struct file *file, char __user *user, size_t bytesize, loff_
 
 ssize_t ws2812_write(struct file *file, const char __user *user_buf, size_t count, loff_t *ppos)
 {
-    uint32_t rgb[count];
-    unsigned long ret = copy_from_user(&rgb[0], user_buf, count);
+    uint32_t rgb[255];
+    unsigned long ret = 0;
+
+    if (count > 255 * 4) count = 255 * 4;
+    ret = copy_from_user(&rgb[0], user_buf, count);
     if (ret < 0)
     {
         printk("copy_from_user fail!!!\n");
@@ -187,7 +190,6 @@ static int ws2812_probe(struct platform_device *pdev)
     struct device_node *ws2812_gpio_node = pdev->dev.of_node;
     uint32_t rgb_cnt = 0;
     uint32_t rgb[255];
-    uint32_t i = 0;
 
     of_property_read_u32(ws2812_gpio_node, "rgb_cnt", &rgb_cnt);
     if (rgb_cnt > 255)
