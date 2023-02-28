@@ -56,6 +56,8 @@ struct sunxi_pwm_config
 {
     unsigned int dead_time;
     unsigned int bind_pwm;
+
+    unsigned int clk_bypass_output;
 };
 
 struct sunxi_pwm_chip
@@ -145,6 +147,14 @@ static int sunxi_pwm_get_config(struct platform_device *pdev, struct sunxi_pwm_c
     {
         /*if there is  bind pwm, but not set dead time,set bind pwm 255,dual pwm invalid!*/
         config->bind_pwm = 255;
+        ret = 0;
+    }
+
+    ret = of_property_read_u32(np, "clk_bypass_output", &config->clk_bypass_output);
+    if (ret < 0)
+    {
+        /*if use pwm as the internal clock source!*/
+        config->clk_bypass_output = 0;
         ret = 0;
     }
 
@@ -290,6 +300,7 @@ static int sunxi_pwm_config_single(struct pwm_chip *chip, struct pwm_device *pwm
     unsigned int temp;
     unsigned long long c = 0;
     unsigned long entire_cycles = 256, active_cycles = 192;
+    struct sunxi_pwm_chip *pc = to_sunxi_pwm_chip(chip);
     unsigned int reg_offset, reg_shift, reg_width;
     unsigned int reg_bypass_shift;
     unsigned int reg_clk_src_shift, reg_clk_src_width;
@@ -341,6 +352,12 @@ static int sunxi_pwm_config_single(struct pwm_chip *chip, struct pwm_device *pwm
     {
         /* if freq between 3M~100M, then select 100M as clock */
         c = 100000000;
+        /*set clk bypass_output reg to 1 when pwm is used as the internal clock source.*/
+        if (pc->config[pwm->pwm - chip->base].clk_bypass_output == 1) {
+            temp = sunxi_pwm_readl(chip, reg_offset);
+            temp = SET_BITS(reg_bypass_shift, 1, temp, 1);
+            sunxi_pwm_writel(chip, reg_offset, temp);
+        }
         /*clk_src_reg*/
         temp = sunxi_pwm_readl(chip, reg_offset);
         temp = SET_BITS(reg_clk_src_shift, reg_clk_src_width, temp, 1);
@@ -350,6 +367,12 @@ static int sunxi_pwm_config_single(struct pwm_chip *chip, struct pwm_device *pwm
     {
         /* if freq < 3M, then select 24M clock */
         c = 24000000;
+        /*set clk bypass_output reg to 1 when pwm is used as the internal clock source.*/
+        if (pc->config[pwm->pwm - chip->base].clk_bypass_output == 1) {
+            temp = sunxi_pwm_readl(chip, reg_offset);
+            temp = SET_BITS(reg_bypass_shift, 1, temp, 1);
+            sunxi_pwm_writel(chip, reg_offset, temp);
+        }
         /*clk_src_reg*/
         temp = sunxi_pwm_readl(chip, reg_offset);
         temp = SET_BITS(reg_clk_src_shift, reg_clk_src_width, temp, 0);
