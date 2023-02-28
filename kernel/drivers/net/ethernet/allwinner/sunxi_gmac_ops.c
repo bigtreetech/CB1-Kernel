@@ -685,4 +685,84 @@ int sunxi_mac_reset(void *iobase, void (*delay)(int), int n)
 
 	return !!(readl(iobase + GETH_BASIC_CTL1) & SOFT_RST);
 }
+
+/**
+ * sunxi_parse_read_str - parse the input string for write attri.
+ * @str: string to be parsed, eg: "0x00 0x01".
+ * @addr: store the reg address. eg: 0x00.
+ * @reg: store the expect value. eg: 0x01.
+ *
+ * return 0 if success, otherwise failed.
+ */
+int sunxi_parse_read_str(char *str, u16 *addr, u16 *reg)
+{
+	char *ptr = str;
+	char *tstr = NULL;
+	int ret;
+
+	/*
+	 * Skip the leading whitespace, find the true split symbol.
+	 * And it must be 'address value'.
+	 */
+	tstr = strim(str);
+	ptr = strchr(tstr, ' ');
+	if (!ptr)
+		return -EINVAL;
+
+	/*
+	 * Replaced split symbol with a %NUL-terminator temporary.
+	 * Will be fixed at end.
+	 */
+	*ptr = '\0';
+	ret = kstrtos16(tstr, 16, addr);
+	if (ret)
+		goto out;
+
+	ret = kstrtos16(skip_spaces(ptr + 1), 16, reg);
+
+out:
+	return ret;
+}
+
+/**
+ * sunxi_parse_write_str - parse the input string for compare attri.
+ * @str: string to be parsed, eg: "0x00 0x11 0x11".
+ * @addr: store the address. eg: 0x00.
+ * @reg: store the reg. eg: 0x11.
+ * @val: store the value. eg: 0x11.
+ *
+ * return 0 if success, otherwise failed.
+ */
+int sunxi_parse_write_str(char *str, u16 *addr,
+			  u16 *reg, u16 *val)
+{
+	u16 result_addr[3] = { 0 };
+	char *ptr = str;
+	char *ptr2 = NULL;
+	int i, ret = 0;
+
+	for (i = 0; i < ARRAY_SIZE(result_addr); i++) {
+		ptr = skip_spaces(ptr);
+		ptr2 = strchr(ptr, ' ');
+		if (ptr2)
+			*ptr2 = '\0';
+
+		ret = kstrtou16(ptr, 16, &result_addr[i]);
+		if (!ptr2)
+			break;
+
+		*ptr2 = ' ';
+
+		if (ret)
+			break;
+
+		ptr = ptr2 + 1;
+	}
+
+	*addr = result_addr[0];
+	*reg = result_addr[1];
+	*val = result_addr[2];
+
+	return ret;
+}
 MODULE_LICENSE("Dual BSD/GPL");

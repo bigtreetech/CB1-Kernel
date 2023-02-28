@@ -238,7 +238,7 @@
 			};
 
             ephy_calibration: ephy-calibration@2c {
-				reg = <0x2c 0x2>;
+				reg = <0x2c 0x4>;
 			};
 		};
 
@@ -333,7 +333,7 @@
 			};
 
 			i2c0_pins: i2c0-pins {
-				pins = "PI6", "PI7";
+				pins = "PI5", "PI6";
 				function = "i2c0";
 			};
 
@@ -350,6 +350,12 @@
 			i2c3_pins: i2c3-pins {
 				pins = "PH4", "PH5";
 				function = "i2c3";
+			};
+
+			twi3_pins: twi3-pins {
+				pins = "PA10", "PA11";
+				function = "twi3";
+				bias-pull-up;
 			};
 
 			i2c4_pins: i2c4-pins {

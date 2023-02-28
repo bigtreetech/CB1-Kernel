@@ -43,18 +43,18 @@
 
 #define DMA_DESC_RX 256
 #define DMA_DESC_TX 256
-#define BUDGET (dma_desc_rx / 4)
-#define TX_THRESH (dma_desc_tx / 4)
+#define BUDGET      (dma_desc_rx / 4)
+#define TX_THRESH   (dma_desc_tx / 4)
 
 #define HASH_TABLE_SIZE 64
-#define MAX_BUF_SZ (SZ_2K - 1)
+#define MAX_BUF_SZ      (SZ_2K - 1)
 
-#define POWER_CHAN_NUM 3
+#define POWER_CHAN_NUM  3
 
 #undef PKT_DEBUG
 #undef DESC_PRINT
 
-#define circ_cnt(head, tail, size) (((head) > (tail)) ? ((head) - (tail)) : ((head) - (tail)) & ((size)-1))
+#define circ_cnt(head, tail, size) (((head) > (tail)) ? ((head) - (tail)) : ((head) - (tail)) & ((size) - 1))
 
 #define circ_space(head, tail, size) circ_cnt((tail), ((head) + 1), (size))
 
@@ -111,13 +111,13 @@ MODULE_PARM_DESC(rx_delay, "Adjust receive clock delay, value: 0~31");
 static int g_use_ephy_clk;
 static int g_phy_addr;
 
-struct geth_priv
-{
+struct geth_priv {
     struct dma_desc *dma_tx;
     struct sk_buff **tx_sk;
     unsigned int tx_clean;
     unsigned int tx_dirty;
     dma_addr_t dma_tx_phy;
+
     struct reset_control *ephy_rst;
 
     unsigned long buf_sz;
@@ -181,8 +181,7 @@ static ssize_t adjust_bgs_show(struct device *dev, struct device_attribute *attr
     struct net_device *ndev = to_net_dev(dev);
     struct geth_priv *priv = netdev_priv(ndev);
 
-    if (priv->phy_ext == INT_PHY)
-    {
+    if (priv->phy_ext == INT_PHY) {
         value = readl(priv->base_phy) >> 28;
         if (sunxi_efuse_read(EFUSE_OEM_NAME, &efuse_value) != 0)
             pr_err("get PHY efuse fail!\n");
@@ -208,8 +207,7 @@ static ssize_t adjust_bgs_write(struct device *dev, struct device_attribute *att
 
     out = simple_strtoul(buf, NULL, 10);
 
-    if (priv->phy_ext == INT_PHY)
-    {
+    if (priv->phy_ext == INT_PHY) {
         clk_value &= ~(0xF << 28);
         if (sunxi_efuse_read(EFUSE_OEM_NAME, &efuse_value) != 0)
             pr_err("get PHY efuse fail!\n");
@@ -234,8 +232,7 @@ static int geth_create_attrs(struct net_device *ndev)
 {
     int j, ret;
 
-    for (j = 0; j < ARRAY_SIZE(adjust_reg); j++)
-    {
+    for (j = 0; j < ARRAY_SIZE(adjust_reg); j++) {
         ret = device_create_file(&ndev->dev, &adjust_reg[j]);
         if (ret)
             goto sysfs_failed;
@@ -256,8 +253,7 @@ static void desc_print(struct dma_desc *desc, int size)
 #ifdef DESC_PRINT
     int i;
 
-    for (i = 0; i < size; i++)
-    {
+    for (i = 0; i < size; i++) {
         u32 *x = (u32 *)(desc + i);
 
         pr_info("\t%d [0x%08lx]: %08x %08x %08x %08x\n",
@@ -274,14 +270,12 @@ static ssize_t gphy_test_show(struct device *dev,
 {
     struct net_device *ndev = dev_get_drvdata(dev);
 
-    if (!dev)
-    {
+    if (!dev) {
         pr_err("Argment is invalid\n");
         return 0;
     }
 
-    if (!ndev)
-    {
+    if (!ndev) {
         pr_err("Net device is null\n");
         return 0;
     }
@@ -303,14 +297,12 @@ static ssize_t gphy_test_store(struct device *dev,
     int ret = 0;
     u16 data = 0;
 
-    if (!dev)
-    {
+    if (!dev) {
         pr_err("Argument is invalid\n");
         return count;
     }
 
-    if (!ndev)
-    {
+    if (!ndev) {
         pr_err("Net device is null\n");
         return count;
     }
@@ -321,15 +313,12 @@ static ssize_t gphy_test_store(struct device *dev,
     if (ret)
         return ret;
 
-    if (value >= 0 && value <= 4)
-    {
+    if (value >= 0 && value <= 4) {
         data &= ~(0x7 << 13);
         data |= value << 13;
         sunxi_mdio_write(priv->base, g_phy_addr, MII_CTRL1000, data);
         pr_info("Set MII_CTRL1000(0x09) Reg: 0x%x\n", data);
-    }
-    else
-    {
+    } else {
         pr_info("unknown value (%d)\n", value);
     }
 
@@ -338,28 +327,187 @@ static ssize_t gphy_test_store(struct device *dev,
 
 static DEVICE_ATTR(gphy_test, 0664, gphy_test_show, gphy_test_store);
 
+static struct mii_reg_dump mii_reg;
+
+static ssize_t mii_read_show(struct device *dev,
+                             struct device_attribute *attr, char *buf)
+{
+    struct net_device *ndev;
+    struct geth_priv *priv;
+
+    if (!dev) {
+        pr_err("Argment is invalid\n");
+        return 0;
+    }
+
+    ndev = dev_get_drvdata(dev);
+    if (!ndev) {
+        pr_err("Net device is null\n");
+        return 0;
+    }
+
+    priv = netdev_priv(ndev);
+    if (!priv) {
+        pr_err("geth_priv is null\n");
+        return 0;
+    }
+
+    if (!netif_running(ndev)) {
+        pr_warn("eth is down!\n");
+        return 0;
+    }
+
+    mii_reg.value = sunxi_mdio_read(priv->base, mii_reg.addr, mii_reg.reg);
+    return sprintf(buf, "ADDR[0x%02x]:REG[0x%02x] = 0x%04x\n",
+               mii_reg.addr, mii_reg.reg, mii_reg.value);
+}
+
+static ssize_t mii_read_store(struct device *dev,
+                              struct device_attribute *attr, const char *buf, size_t count)
+{
+    struct net_device *ndev;
+    struct geth_priv *priv;
+    int ret = 0;
+    u16 reg, addr;
+    char *ptr;
+
+    ptr = (char *)buf;
+
+    if (!dev) {
+        pr_err("Argment is invalid\n");
+        return count;
+    }
+
+    ndev = dev_get_drvdata(dev);
+    if (!ndev) {
+        pr_err("Net device is null\n");
+        return count;
+    }
+
+    priv = netdev_priv(ndev);
+    if (!priv) {
+        pr_err("geth_priv is null\n");
+        return count;
+    }
+
+    if (!netif_running(ndev)) {
+        pr_warn("eth is down!\n");
+        return count;
+    }
+
+    ret = sunxi_parse_read_str(ptr, &addr, &reg);
+    if (ret)
+        return ret;
+
+    mii_reg.addr = addr;
+    mii_reg.reg = reg;
+
+    return count;
+}
+
+static DEVICE_ATTR(mii_read, 0664, mii_read_show, mii_read_store);
+
+static ssize_t mii_write_show(struct device *dev,
+                              struct device_attribute *attr, char *buf)
+{
+    struct net_device *ndev;
+    struct geth_priv *priv;
+    u16 bef_val, aft_val;
+
+    if (!dev) {
+        pr_err("Argment is invalid\n");
+        return 0;
+    }
+
+    ndev = dev_get_drvdata(dev);
+    if (!ndev) {
+        pr_err("Net device is null\n");
+        return 0;
+    }
+
+    priv = netdev_priv(ndev);
+    if (!priv) {
+        pr_err("geth_priv is null\n");
+        return 0;
+    }
+
+    if (!netif_running(ndev)) {
+        pr_warn("eth is down!\n");
+        return 0;
+    }
+
+    bef_val = sunxi_mdio_read(priv->base, mii_reg.addr, mii_reg.reg);
+    sunxi_mdio_write(priv->base, mii_reg.addr, mii_reg.reg, mii_reg.value);
+    aft_val = sunxi_mdio_read(priv->base, mii_reg.addr, mii_reg.reg);
+    return sprintf(buf, "before ADDR[0x%02x]:REG[0x%02x] = 0x%04x\n"
+                "after  ADDR[0x%02x]:REG[0x%02x] = 0x%04x\n",
+                mii_reg.addr, mii_reg.reg, bef_val,
+                mii_reg.addr, mii_reg.reg, aft_val);
+}
+
+static ssize_t mii_write_store(struct device *dev,
+                               struct device_attribute *attr, const char *buf, size_t count)
+{
+    struct net_device *ndev;
+    struct geth_priv *priv;
+    int ret = 0;
+    u16 reg, addr, val;
+    char *ptr;
+
+    ptr = (char *)buf;
+
+    if (!dev) {
+        pr_err("Argment is invalid\n");
+        return count;
+    }
+
+    ndev = dev_get_drvdata(dev);
+    if (!ndev) {
+        pr_err("Net device is null\n");
+        return count;
+    }
+
+    priv = netdev_priv(ndev);
+    if (!priv) {
+        pr_err("geth_priv is null\n");
+        return count;
+    }
+
+    if (!netif_running(ndev)) {
+        pr_warn("eth is down!\n");
+        return count;
+    }
+
+    ret = sunxi_parse_write_str(ptr, &addr, &reg, &val);
+    if (ret)
+        return ret;
+
+    mii_reg.reg = reg;
+    mii_reg.addr = addr;
+    mii_reg.value = val;
+
+    return count;
+}
+
+static DEVICE_ATTR(mii_write, 0664, mii_write_show, mii_write_store);
+
 static int geth_power_on(struct geth_priv *priv)
 {
     int value;
     int i;
 
     value = readl(priv->base_phy);
-    if (priv->phy_ext == INT_PHY)
-    {
+    if (priv->phy_ext == INT_PHY) {
         value |= (1 << 15);
         value &= ~(1 << 16);
         value |= (3 << 17);
-    }
-    else
-    {
+    } else {
         value &= ~(1 << 15);
 
-        for (i = 0; i < POWER_CHAN_NUM; i++)
-        {
+        for (i = 0; i < POWER_CHAN_NUM; i++) {
             if (IS_ERR_OR_NULL(priv->gmac_power[i]))
                 continue;
-            if (regulator_enable(priv->gmac_power[i]) != 0)
-            {
+            if (regulator_enable(priv->gmac_power[i]) != 0) {
                 pr_err("gmac-power%d enable error\n", i);
                 return -EINVAL;
             }
@@ -376,16 +524,12 @@ static void geth_power_off(struct geth_priv *priv)
     int value;
     int i;
 
-    if (priv->phy_ext == INT_PHY)
-    {
+    if (priv->phy_ext == INT_PHY) {
         value = readl(priv->base_phy);
         value |= (1 << 16);
         writel(value, priv->base_phy);
-    }
-    else
-    {
-        for (i = 0; i < POWER_CHAN_NUM; i++)
-        {
+    } else {
+        for (i = 0; i < POWER_CHAN_NUM; i++) {
             if (IS_ERR_OR_NULL(priv->gmac_power[i]))
                 continue;
             regulator_disable(priv->gmac_power[i]);
@@ -431,13 +575,11 @@ static void geth_adjust_link(struct net_device *ndev)
         return;
 
     spin_lock_irqsave(&priv->lock, flags);
-    if (phydev->link)
-    {
+    if (phydev->link) {
         /* Now we make sure that we can be in full duplex mode.
          * If not, we operate in half-duplex mode.
          */
-        if (phydev->duplex != priv->duplex)
-        {
+        if (phydev->duplex != priv->duplex) {
             new_state = 1;
             priv->duplex = phydev->duplex;
         }
@@ -445,19 +587,15 @@ static void geth_adjust_link(struct net_device *ndev)
         if (phydev->pause)
             sunxi_flow_ctrl(priv->base, phydev->duplex, flow_ctrl, pause);
 
-        if (phydev->speed != priv->speed)
-        {
+        if (phydev->speed != priv->speed) {
             new_state = 1;
             priv->speed = phydev->speed;
         }
 
-        if (priv->link == 0)
-        {
+        if (priv->link == 0) {
             new_state = 1;
             priv->link = phydev->link;
         }
-
-        priv->speed = 100;
 
         if (new_state)
             sunxi_set_link_mode(priv->base, priv->duplex, priv->speed);
@@ -465,9 +603,8 @@ static void geth_adjust_link(struct net_device *ndev)
 #ifdef LOOPBACK_DEBUG
         phydev->state = PHY_FORCING;
 #endif
-    }
-    else if (priv->link != phydev->link)
-    {
+
+    } else if (priv->link != phydev->link) {
         new_state = 1;
         priv->link = 0;
         priv->speed = 0;
@@ -486,18 +623,14 @@ static int geth_phy_init(struct net_device *ndev)
     struct mii_bus *new_bus;
     struct geth_priv *priv = netdev_priv(ndev);
     struct phy_device *phydev = ndev->phydev;
-    int tries = 3;
+    u32 supported = 0, advertising = 0;
 
     /* Fixup the phy interface type */
-    if (priv->phy_ext == INT_PHY)
-    {
+    if (priv->phy_ext == INT_PHY) {
         priv->phy_interface = PHY_INTERFACE_MODE_MII;
-    }
-    else
-    {
+    } else {
         /* If config gpio to reset the phy device, we should reset it */
-        if (gpio_is_valid(priv->phyrst))
-        {
+        if (gpio_is_valid(priv->phyrst)) {
             gpio_direction_output(priv->phyrst, priv->rst_active_low);
             msleep(50);
             gpio_direction_output(priv->phyrst, !priv->rst_active_low);
@@ -506,8 +639,8 @@ static int geth_phy_init(struct net_device *ndev)
     }
 
     new_bus = mdiobus_alloc();
-    if (!new_bus)
-    {
+    if (!new_bus) {
+        netdev_err(ndev, "Failed to alloc new mdio bus\n");
         return -ENOMEM;
     }
 
@@ -520,44 +653,37 @@ static int geth_phy_init(struct net_device *ndev)
     new_bus->parent = priv->dev;
     new_bus->priv = ndev;
 
-    if (mdiobus_register(new_bus))
-    {
+    if (mdiobus_register(new_bus)) {
+        pr_err("%s: Cannot register as MDIO bus\n", new_bus->name);
         goto reg_fail;
     }
 
     priv->mii = new_bus;
 
-FindPhy:
-{
-    int addr;
-    for (addr = 0; addr < PHY_MAX_ADDR; addr++)
     {
-        struct phy_device *phydev_tmp = mdiobus_get_phy(new_bus, addr);
+        int addr;
+        for (addr = 0; addr < PHY_MAX_ADDR; addr++) {
+            struct phy_device *phydev_tmp = mdiobus_get_phy(new_bus, addr);
 
-        if (IS_ERR_OR_NULL(phydev_tmp) || phydev_tmp->phy_id == 0xffff)
-        {
-            if (!IS_ERR_OR_NULL(phydev_tmp))
-            {
-                phy_device_remove(phydev_tmp);
+            if (IS_ERR_OR_NULL(phydev_tmp) || phydev_tmp->phy_id == 0xffff) {
+                if (!IS_ERR_OR_NULL(phydev_tmp))
+                    phy_device_remove(phydev_tmp);
+                phydev_tmp = mdiobus_scan(new_bus, addr);
             }
-            phydev_tmp = mdiobus_scan(new_bus, addr);
+
+            if (IS_ERR_OR_NULL(phydev_tmp) || phydev_tmp->phy_id == 0xffff ||
+                phydev_tmp->phy_id == 0x00 || phydev_tmp->phy_id == AC300_ID)
+                continue;
+
+            if (phydev_tmp->phy_id == EPHY_ID || phydev_tmp->phy_id == IP101G_ID) {
+                phydev = phydev_tmp;
+                g_phy_addr = addr;
+                break;
+            }
         }
-
-        if (IS_ERR_OR_NULL(phydev_tmp) || phydev_tmp->phy_id == 0xffff ||
-            phydev_tmp->phy_id == 0x00 || phydev_tmp->phy_id == AC300_ID)
-        {
-            continue;
-        }
-
-        phydev = phydev_tmp;
-        g_phy_addr = addr;
-
-        break;
     }
-}
 
-    if (!phydev)
-    {
+    if (!phydev) {
         netdev_err(ndev, "No PHY found!\n");
         goto err;
     }
@@ -570,7 +696,21 @@ FindPhy:
     phy_write(phydev, MII_BMCR, (value & ~BMCR_PDOWN));
 
     phydev->irq = PHY_POLL;
-    u32 supported = 0, advertising = 0;
+
+    value = phy_connect_direct(ndev, phydev, &geth_adjust_link, priv->phy_interface);
+    if (value) {
+        netdev_err(ndev, "Could not attach to PHY\n");
+        goto err;
+    } else {
+        netdev_info(ndev, "%s: Type(%d) PHY ID %08x at %d IRQ %s (%s)\n",
+                ndev->name, phydev->interface, phydev->phy_id,
+                phydev->mdio.addr, "poll", dev_name(&phydev->mdio.dev));
+    }
+
+#if 0
+    phydev->supported &= PHY_GBIT_FEATURES; //kandy 000002cf
+    phydev->advertising = phydev->supported;
+#else
 
     ethtool_convert_link_mode_to_legacy_u32(&supported, phydev->supported);
 
@@ -578,21 +718,26 @@ FindPhy:
 
     ethtool_convert_legacy_u32_to_link_mode(phydev->supported, supported);
     ethtool_convert_legacy_u32_to_link_mode(phydev->advertising, advertising);
+#endif
 
-    value = phy_connect_direct(ndev, phydev, &geth_adjust_link, priv->phy_interface);
-    if (value)
-    {
-        netdev_err(ndev, "Could not attach to PHY\n");
-        goto err;
+    if (priv->phy_ext == INT_PHY) {
+        /* EPHY Initial */
+        phy_write(phydev, 0x1f, 0x0100); /* switch to page 1 */
+        phy_write(phydev, 0x12, 0x4824); /* Disable APS */
+        phy_write(phydev, 0x1f, 0x0200); /* switchto page 2 */
+        phy_write(phydev, 0x18, 0x0000); /* PHYAFE TRX optimization */
+        phy_write(phydev, 0x1f, 0x0600); /* switchto page 6 */
+        phy_write(phydev, 0x14, 0x708F); /* PHYAFE TX optimization */
+        phy_write(phydev, 0x19, 0x0000);
+        phy_write(phydev, 0x13, 0xf000); /* PHYAFE RX optimization */
+        phy_write(phydev, 0x15, 0x1530);
+        phy_write(phydev, 0x1f, 0x0800); /* switch to page 8 */
+        phy_write(phydev, 0x18, 0x00bc); /* PHYAFE TRX optimization */
+        phy_write(phydev, 0x1f, 0x0100); /* switchto page 1 */
+        /* reg 0x17 bit3,set 0 to disable iEEE */
+        phy_write(phydev, 0x17, phy_read(phydev, 0x17) & (~(1<<3)));
+        phy_write(phydev, 0x1f, 0x0000); /* switch to page 0 */
     }
-    else
-    {
-        netdev_info(ndev, "%s: Type(%d) PHY ID %08x at %d IRQ %s (%s)\n",
-                    ndev->name, phydev->interface, phydev->phy_id,
-                    phydev->mdio.addr, "poll", dev_name(&phydev->mdio.dev));
-    }
-
-    sunxi_set_link_mode(priv->base, 1, 100);
 
     return 0;
 
@@ -618,16 +763,18 @@ static int geth_phy_release(struct net_device *ndev)
     priv->speed = 0;
     priv->duplex = -1;
 
-    if (phydev)
-    {
+    if (phydev) {
         value = phy_read(phydev, MII_BMCR);
         phy_write(phydev, MII_BMCR, (value | BMCR_PDOWN));
         phy_disconnect(phydev);
         ndev->phydev = NULL;
     }
 
-    if (priv->mii)
-    {
+#if 1 // defined(CONFIG_SUNXI_EPHY)
+    gmac_ephy_shutdown(); /* Turn off the clock of PHY for low power consumption  */
+#endif
+
+    if (priv->mii) {
         mdiobus_unregister(priv->mii);
         priv->mii->priv = NULL;
         mdiobus_free(priv->mii);
@@ -644,15 +791,13 @@ static void geth_rx_refill(struct net_device *ndev)
     struct sk_buff *sk = NULL;
     dma_addr_t paddr;
 
-    while (circ_space(priv->rx_clean, priv->rx_dirty, dma_desc_rx) > 0)
-    {
+    while (circ_space(priv->rx_clean, priv->rx_dirty, dma_desc_rx) > 0) {
         int entry = priv->rx_clean;
 
         /* Find the dirty's desc and clean it */
         desc = priv->dma_rx + entry;
 
-        if (priv->rx_sk[entry] == NULL)
-        {
+        if (priv->rx_sk[entry] == NULL) {
             sk = netdev_alloc_skb_ip_align(ndev, priv->buf_sz);
 
             if (unlikely(sk == NULL))
@@ -660,7 +805,7 @@ static void geth_rx_refill(struct net_device *ndev)
 
             priv->rx_sk[entry] = sk;
             paddr = dma_map_single(priv->dev, sk->data,
-                                   priv->buf_sz, DMA_FROM_DEVICE);
+                           priv->buf_sz, DMA_FROM_DEVICE);
             desc_buf_set(desc, paddr, priv->buf_sz);
         }
 
@@ -723,10 +868,8 @@ static void geth_free_rx_sk(struct geth_priv *priv)
 {
     int i;
 
-    for (i = 0; i < dma_desc_rx; i++)
-    {
-        if (priv->rx_sk[i] != NULL)
-        {
+    for (i = 0; i < dma_desc_rx; i++) {
+        if (priv->rx_sk[i] != NULL) {
             struct dma_desc *desc = priv->dma_rx + i;
 
             dma_unmap_single(priv->dev, (u32)desc_buf_get_addr(desc), desc_buf_get_len(desc), DMA_FROM_DEVICE);
@@ -740,10 +883,8 @@ static void geth_free_tx_sk(struct geth_priv *priv)
 {
     int i;
 
-    for (i = 0; i < dma_desc_tx; i++)
-    {
-        if (priv->tx_sk[i] != NULL)
-        {
+    for (i = 0; i < dma_desc_tx; i++) {
+        if (priv->tx_sk[i] != NULL) {
             struct dma_desc *desc = priv->dma_tx + i;
 
             if (desc_buf_get_addr(desc))
@@ -771,8 +912,7 @@ static int geth_select_gpio_state(struct pinctrl *pctrl, char *name)
     struct pinctrl_state *pctrl_state = NULL;
 
     pctrl_state = pinctrl_lookup_state(pctrl, name);
-    if (IS_ERR(pctrl_state))
-    {
+    if (IS_ERR(pctrl_state)) {
         pr_err("gmac pinctrl_lookup_state(%s) failed! return %p\n", name, pctrl_state);
         return -EINVAL;
     }
@@ -819,9 +959,21 @@ static void geth_resume_work(struct work_struct *work)
 
     geth_open(ndev);
 
+#if 1 //defined(CONFIG_SUNXI_EPHY)
+    if (!ephy_is_enable()) {
+        pr_info("[geth_resume] ephy is not enable, waiting...\n");
+        msleep(2000);
+        if (!ephy_is_enable()) {
+            netdev_err(ndev, "Wait for ephy resume timeout.\n");
+            return;
+        }
+    }
+#endif
+
     spin_lock(&priv->lock);
     netif_device_attach(ndev);
     spin_unlock(&priv->lock);
+
 }
 
 static void geth_resume(struct device *dev)
@@ -874,8 +1026,7 @@ static void geth_chip_hwaddr(u8 *addr)
     sunxi_get_soc_chipid((u8 *)chipid);
 
     tfm = crypto_alloc_ahash("md5", 0, CRYPTO_ALG_ASYNC);
-    if (IS_ERR(tfm))
-    {
+    if (IS_ERR(tfm)) {
         pr_err("Failed to alloc md5\n");
         return;
     }
@@ -887,8 +1038,7 @@ static void geth_chip_hwaddr(u8 *addr)
     ahash_request_set_callback(req, 0, NULL, NULL);
 
     ret = crypto_ahash_init(req);
-    if (ret)
-    {
+    if (ret) {
         pr_err("crypto_ahash_init() failed\n");
         goto out;
     }
@@ -896,15 +1046,13 @@ static void geth_chip_hwaddr(u8 *addr)
     sg_init_one(&sg, chipid, sizeof(chipid));
     ahash_request_set_crypt(req, &sg, result, sizeof(chipid));
     ret = crypto_ahash_update(req);
-    if (ret)
-    {
+    if (ret) {
         pr_err("crypto_ahash_update() failed for id\n");
         goto out;
     }
 
     ret = crypto_ahash_final(req);
-    if (ret)
-    {
+    if (ret) {
         pr_err("crypto_ahash_final() failed for result\n");
         goto out;
     }
@@ -926,18 +1074,16 @@ static void geth_check_addr(struct net_device *ndev, unsigned char *mac)
     int i;
     char *p = mac;
 
-    if (!is_valid_ether_addr(ndev->dev_addr))
-    {
+    if (!is_valid_ether_addr(ndev->dev_addr)) {
         for (i = 0; i < ETH_ALEN; i++, p++)
             ndev->dev_addr[i] = simple_strtoul(p, &p, 16);
 
         if (!is_valid_ether_addr(ndev->dev_addr))
             geth_chip_hwaddr(ndev->dev_addr);
 
-        if (!is_valid_ether_addr(ndev->dev_addr))
-        {
-            eth_random_addr(ndev->dev_addr); // kandy
-            pr_warn("\n----------------------%s: Use random mac address---------\n\n", ndev->name);
+        if (!is_valid_ether_addr(ndev->dev_addr)) {
+            eth_random_addr(ndev->dev_addr);
+            pr_warn("%s: Use random mac address\n", ndev->name);
         }
     }
 }
@@ -951,8 +1097,7 @@ static void geth_clk_enable(struct geth_priv *priv)
     if (clk_prepare_enable(priv->geth_clk))
         pr_err("try to enable geth_clk failed!\n");
 
-    if (((priv->phy_ext == INT_PHY) || g_use_ephy_clk) && !IS_ERR_OR_NULL(priv->ephy_clk))
-    {
+    if (((priv->phy_ext == INT_PHY) || g_use_ephy_clk) && !IS_ERR_OR_NULL(priv->ephy_clk)) {
         if (clk_prepare_enable(priv->ephy_clk))
             pr_err("try to enable ephy_clk failed!\n");
     }
@@ -971,8 +1116,7 @@ static void geth_clk_enable(struct geth_priv *priv)
     else if (phy_interface == PHY_INTERFACE_MODE_RMII)
         clk_value |= 0x00002001;
 
-    if (priv->phy_ext == INT_PHY)
-    {
+    if (priv->phy_ext == INT_PHY) {
         if (0 != sunxi_efuse_read(EFUSE_OEM_NAME, &efuse_value))
             pr_err("get PHY efuse fail!\n");
         else
@@ -1019,8 +1163,7 @@ static void geth_tx_err(struct geth_priv *priv)
 
 static inline void geth_schedule(struct geth_priv *priv)
 {
-    if (likely(napi_schedule_prep(&priv->napi)))
-    {
+    if (likely(napi_schedule_prep(&priv->napi))) {
         sunxi_int_disable(priv->base);
         __napi_schedule(&priv->napi);
     }
@@ -1032,8 +1175,7 @@ static irqreturn_t geth_interrupt(int irq, void *dev_id)
     struct geth_priv *priv = netdev_priv(ndev);
     int status;
 
-    if (unlikely(!ndev))
-    {
+    if (unlikely(!ndev)) {
         pr_err("%s: invalid ndev pointer\n", __func__);
         return IRQ_NONE;
     }
@@ -1058,15 +1200,13 @@ static int geth_open(struct net_device *ndev)
     int ret = 0;
 
     ret = geth_dma_desc_init(ndev);
-    if (ret)
-    {
+    if (ret) {
         ret = -EINVAL;
         return ret;
     }
 
     ret = geth_power_on(priv);
-    if (ret)
-    {
+    if (ret) {
         netdev_err(ndev, "Power on is failed\n");
         ret = -EINVAL;
         goto power_err;
@@ -1075,12 +1215,10 @@ static int geth_open(struct net_device *ndev)
     geth_clk_enable(priv);
 
     ret = geth_phy_init(ndev);
-    if (ret)
-    {
+    if (ret) {
         netdev_err(ndev, "phy init again...\n");
         ret = geth_phy_init(ndev);
-        if (ret)
-        {
+        if (ret) {
             netdev_err(ndev, "phy init failed\n");
             ret = -EINVAL;
             goto phy_err;
@@ -1088,8 +1226,7 @@ static int geth_open(struct net_device *ndev)
     }
 
     ret = sunxi_mac_reset((void *)priv->base, &sunxi_udelay, 10000);
-    if (ret)
-    {
+    if (ret) {
         netdev_err(ndev, "Initialize hardware error\n");
         goto mac_err;
     }
@@ -1113,9 +1250,7 @@ static int geth_open(struct net_device *ndev)
     memset(&priv->xstats, 0, sizeof(struct geth_extra_stats));
 
     if (ndev->phydev)
-    {
         phy_start(ndev->phydev);
-    }
 
     sunxi_start_rx(priv->base, (unsigned long)((struct dma_desc *)priv->dma_rx_phy + priv->rx_dirty));
     sunxi_start_tx(priv->base, (unsigned long)((struct dma_desc *)priv->dma_tx_phy + priv->tx_clean));
@@ -1181,8 +1316,7 @@ static void geth_tx_complete(struct geth_priv *priv)
     int tx_stat;
 
     spin_lock(&priv->tx_lock);
-    while (circ_cnt(priv->tx_dirty, priv->tx_clean, dma_desc_tx) > 0)
-    {
+    while (circ_cnt(priv->tx_dirty, priv->tx_clean, dma_desc_tx) > 0) {
         entry = priv->tx_clean;
         desc = priv->dma_tx + entry;
 
@@ -1191,8 +1325,7 @@ static void geth_tx_complete(struct geth_priv *priv)
             break;
 
         /* Verify tx error by looking at the last segment */
-        if (desc_get_tx_ls(desc))
-        {
+        if (desc_get_tx_ls(desc)) {
             tx_stat = desc_get_tx_status(desc, (void *)(&priv->xstats));
 
             if (likely(!tx_stat))
@@ -1216,8 +1349,7 @@ static void geth_tx_complete(struct geth_priv *priv)
         dev_kfree_skb(skb);
     }
 
-    if (unlikely(netif_queue_stopped(priv->ndev)) && circ_space(priv->tx_dirty, priv->tx_clean, dma_desc_tx) > TX_THRESH)
-    {
+    if (unlikely(netif_queue_stopped(priv->ndev)) && circ_space(priv->tx_dirty, priv->tx_clean, dma_desc_tx) > TX_THRESH) {
         netif_wake_queue(priv->ndev);
     }
     spin_unlock(&priv->tx_lock);
@@ -1225,7 +1357,7 @@ static void geth_tx_complete(struct geth_priv *priv)
 
 static netdev_tx_t geth_xmit(struct sk_buff *skb, struct net_device *ndev)
 {
-    struct geth_priv *priv = netdev_priv(ndev);
+    struct geth_priv  *priv = netdev_priv(ndev);
     unsigned int entry;
     struct dma_desc *desc, *first;
     unsigned int len, tmp_len = 0;
@@ -1234,10 +1366,8 @@ static netdev_tx_t geth_xmit(struct sk_buff *skb, struct net_device *ndev)
     dma_addr_t paddr;
 
     spin_lock(&priv->tx_lock);
-    if (unlikely(circ_space(priv->tx_dirty, priv->tx_clean, dma_desc_tx) < (nfrags + 1)))
-    {
-        if (!netif_queue_stopped(ndev))
-        {
+    if (unlikely(circ_space(priv->tx_dirty, priv->tx_clean, dma_desc_tx) < (nfrags + 1))) {
+        if (!netif_queue_stopped(ndev)) {
             netdev_err(ndev, "%s: BUG! Tx Ring full when queue awake\n", __func__);
             netif_stop_queue(ndev);
         }
@@ -1262,21 +1392,18 @@ static netdev_tx_t geth_xmit(struct sk_buff *skb, struct net_device *ndev)
 #endif
 
     /* Every desc max size is 2K */
-    while (len != 0)
-    {
+    while (len != 0) {
         desc = priv->dma_tx + entry;
         tmp_len = ((len > MAX_BUF_SZ) ? MAX_BUF_SZ : len);
 
         paddr = dma_map_single(priv->dev, skb->data, tmp_len, DMA_TO_DEVICE);
-        if (dma_mapping_error(priv->dev, paddr))
-        {
+        if (dma_mapping_error(priv->dev, paddr)) {
             dev_kfree_skb(skb);
             return -EIO;
         }
         desc_buf_set(desc, paddr, tmp_len);
         /* Don't set the first's own bit, here */
-        if (first != desc)
-        {
+        if (first != desc) {
             priv->tx_sk[entry] = NULL;
             desc_set_own(desc);
         }
@@ -1285,15 +1412,13 @@ static netdev_tx_t geth_xmit(struct sk_buff *skb, struct net_device *ndev)
         len -= tmp_len;
     }
 
-    for (i = 0; i < nfrags; i++)
-    {
+    for (i = 0; i < nfrags; i++) {
         const skb_frag_t *frag = &skb_shinfo(skb)->frags[i];
 
         len = skb_frag_size(frag);
         desc = priv->dma_tx + entry;
         paddr = skb_frag_dma_map(priv->dev, frag, 0, len, DMA_TO_DEVICE);
-        if (dma_mapping_error(priv->dev, paddr))
-        {
+        if (dma_mapping_error(priv->dev, paddr)) {
             dev_kfree_skb(skb);
             return -EIO;
         }
@@ -1311,8 +1436,7 @@ static netdev_tx_t geth_xmit(struct sk_buff *skb, struct net_device *ndev)
     desc_set_own(first);
     spin_unlock(&priv->tx_lock);
 
-    if (circ_space(priv->tx_dirty, priv->tx_clean, dma_desc_tx) <= (MAX_SKB_FRAGS + 1))
-    {
+    if (circ_space(priv->tx_dirty, priv->tx_clean, dma_desc_tx) <= (MAX_SKB_FRAGS + 1)) {
         netif_stop_queue(ndev);
         if (circ_space(priv->tx_dirty, priv->tx_clean, dma_desc_tx) > TX_THRESH)
             netif_wake_queue(ndev);
@@ -1338,8 +1462,7 @@ static int geth_rx(struct geth_priv *priv, int limit)
     int status;
     int frame_len;
 
-    while (rxcount < limit)
-    {
+    while (rxcount < limit) {
         entry = priv->rx_dirty;
         desc = priv->dma_rx + entry;
 
@@ -1356,8 +1479,7 @@ static int geth_rx(struct geth_priv *priv, int limit)
         netdev_dbg(priv->ndev, "Rx frame size %d, status: %d\n", frame_len, status);
 
         skb = priv->rx_sk[entry];
-        if (unlikely(!skb))
-        {
+        if (unlikely(!skb)) {
             netdev_err(priv->ndev, "Skb is null\n");
             priv->ndev->stats.rx_dropped++;
             break;
@@ -1370,8 +1492,7 @@ static int geth_rx(struct geth_priv *priv, int limit)
                        16, 1, skb->data, 64, true);
 #endif
 
-        if (status == discard_frame)
-        {
+        if (status == discard_frame) {
             netdev_dbg(priv->ndev, "Get error pkt\n");
             priv->ndev->stats.rx_errors++;
             continue;
@@ -1386,6 +1507,7 @@ static int geth_rx(struct geth_priv *priv, int limit)
         dma_unmap_single(priv->dev, (u32)desc_buf_get_addr(desc), desc_buf_get_len(desc), DMA_FROM_DEVICE);
 
         skb->protocol = eth_type_trans(skb, priv->ndev);
+
         skb->ip_summed = CHECKSUM_UNNECESSARY;
         napi_gro_receive(&priv->napi, skb);
 
@@ -1394,8 +1516,7 @@ static int geth_rx(struct geth_priv *priv, int limit)
     }
 
 #ifdef DEBUG
-    if (rxcount > 0)
-    {
+    if (rxcount > 0) {
         printk("======RX Descriptor DMA: 0x%08llx=\n", priv->dma_rx_phy);
         printk("RX pointor: dirty: %d, clean: %d\n", priv->rx_dirty, priv->rx_clean);
         desc_print(priv->dma_rx, dma_desc_rx);
@@ -1414,8 +1535,7 @@ static int geth_poll(struct napi_struct *napi, int budget)
     geth_tx_complete(priv);
     work_done = geth_rx(priv, budget);
 
-    if (work_done < budget)
-    {
+    if (work_done < budget) {
         napi_complete(napi);
         sunxi_int_enable(priv->base);
     }
@@ -1427,16 +1547,14 @@ static int geth_change_mtu(struct net_device *ndev, int new_mtu)
 {
     int max_mtu;
 
-    if (netif_running(ndev))
-    {
+    if (netif_running(ndev)) {
         pr_err("%s: must be stopped to change its MTU\n", ndev->name);
         return -EBUSY;
     }
 
     max_mtu = SKB_MAX_HEAD(NET_SKB_PAD + NET_IP_ALIGN);
 
-    if ((new_mtu < 46) || (new_mtu > max_mtu))
-    {
+    if ((new_mtu < 46) || (new_mtu > max_mtu)) {
         pr_err("%s: invalid MTU, max MTU is: %d\n", ndev->name, max_mtu);
         return -EINVAL;
     }
@@ -1461,18 +1579,13 @@ static void geth_set_rx_mode(struct net_device *ndev)
              __func__, netdev_mc_count(ndev), netdev_uc_count(ndev));
 
     spin_lock(&priv->lock);
-    if (ndev->flags & IFF_PROMISC)
-    {
+    if (ndev->flags & IFF_PROMISC) {
         value = GETH_FRAME_FILTER_PR;
-    }
-    else if ((netdev_mc_count(ndev) > HASH_TABLE_SIZE) ||
-             (ndev->flags & IFF_ALLMULTI))
-    {
+    } else if ((netdev_mc_count(ndev) > HASH_TABLE_SIZE) ||
+               (ndev->flags & IFF_ALLMULTI)) {
         value = GETH_FRAME_FILTER_PM; /* pass all multi */
         sunxi_hash_filter(priv->base, ~0UL, ~0UL);
-    }
-    else if (!netdev_mc_empty(ndev))
-    {
+    } else if (!netdev_mc_empty(ndev)) {
         u32 mc_filter[2];
         struct netdev_hw_addr *ha;
 
@@ -1480,8 +1593,7 @@ static void geth_set_rx_mode(struct net_device *ndev)
         value = GETH_FRAME_FILTER_HMC;
 
         memset(mc_filter, 0, sizeof(mc_filter));
-        netdev_for_each_mc_addr(ha, ndev)
-        {
+        netdev_for_each_mc_addr(ha, ndev) {
             /* The upper 6 bits of the calculated CRC are used to
              *  index the contens of the hash table
              */
@@ -1496,18 +1608,14 @@ static void geth_set_rx_mode(struct net_device *ndev)
     }
 
     /* Handle multiple unicast addresses (perfect filtering)*/
-    if (netdev_uc_count(ndev) > 16)
-    {
+    if (netdev_uc_count(ndev) > 16) {
         /* Switch to promiscuous mode is more than 8 addrs are required */
         value |= GETH_FRAME_FILTER_PR;
-    }
-    else
-    {
+    } else {
         int reg = 1;
         struct netdev_hw_addr *ha;
 
-        netdev_for_each_uc_addr(ha, ndev)
-        {
+        netdev_for_each_uc_addr(ha, ndev) {
             sunxi_set_umac(priv->base, ha->addr, reg);
             reg++;
         }
@@ -1519,6 +1627,13 @@ static void geth_set_rx_mode(struct net_device *ndev)
 #endif
     sunxi_set_filter(priv->base, value);
     spin_unlock(&priv->lock);
+}
+
+static void geth_tx_timeout(struct net_device *ndev, unsigned int txqueue)
+{
+    struct geth_priv *priv = netdev_priv(ndev);
+
+    geth_tx_err(priv);
 }
 
 static int geth_ioctl(struct net_device *ndev, struct ifreq *rq, int cmd)
@@ -1539,15 +1654,13 @@ static int geth_config(struct net_device *ndev, struct ifmap *map)
         return -EBUSY;
 
     /* Don't allow changing the I/O address */
-    if (map->base_addr != ndev->base_addr)
-    {
+    if (map->base_addr != ndev->base_addr) {
         pr_warn("%s: can't change I/O address\n", ndev->name);
         return -EOPNOTSUPP;
     }
 
     /* Don't allow changing the IRQ */
-    if (map->irq != ndev->irq)
-    {
+    if (map->irq != ndev->irq) {
         pr_warn("%s: can't change IRQ number %d\n", ndev->name, ndev->irq);
         return -EOPNOTSUPP;
     }
@@ -1581,12 +1694,17 @@ int geth_set_features(struct net_device *ndev, netdev_features_t features)
     return 0;
 }
 
-static void geth_tx_timeout(struct net_device *ndev, unsigned int txqueue)
+#ifdef CONFIG_NET_POLL_CONTROLLER
+/* Polling receive - used by NETCONSOLE and other diagnostic tools
+ * to allow network I/O with interrupts disabled.
+ */
+static void geth_poll_controller(struct net_device *dev)
 {
-    struct geth_priv *priv = netdev_priv(ndev);
-
-    geth_tx_err(priv);
+    disable_irq(dev->irq);
+    geth_interrupt(dev->irq, dev);
+    enable_irq(dev->irq);
 }
+#endif
 
 static const struct net_device_ops geth_netdev_ops = {
     .ndo_init = NULL,
@@ -1599,6 +1717,9 @@ static const struct net_device_ops geth_netdev_ops = {
     .ndo_tx_timeout = geth_tx_timeout,
     .ndo_do_ioctl = geth_ioctl,
     .ndo_set_config = geth_config,
+#ifdef CONFIG_NET_POLL_CONTROLLER
+    .ndo_poll_controller = geth_poll_controller,
+#endif
     .ndo_set_mac_address = geth_set_mac_address,
     .ndo_set_features = geth_set_features,
 };
@@ -1614,8 +1735,7 @@ static int geth_get_sset_count(struct net_device *netdev, int sset)
 {
     int len;
 
-    switch (sset)
-    {
+    switch (sset) {
     case ETH_SS_STATS:
         len = 0;
         return len;
@@ -1623,6 +1743,49 @@ static int geth_get_sset_count(struct net_device *netdev, int sset)
         return -EOPNOTSUPP;
     }
 }
+
+#if 0
+static int geth_ethtool_getsettings(struct net_device *ndev,
+                    struct ethtool_cmd *cmd)
+{
+    struct geth_priv *priv = netdev_priv(ndev);
+    struct phy_device *phy = ndev->phydev;
+    int rc;
+
+    if (phy == NULL) {
+        netdev_err(ndev, "%s: %s: PHY is not registered\n",
+               __func__, ndev->name);
+        return -ENODEV;
+    }
+
+    if (!netif_running(ndev)) {
+        pr_err("%s: interface is disabled: we cannot track "
+               "link speed / duplex setting\n", ndev->name);
+        return -EBUSY;
+    }
+
+    cmd->transceiver = XCVR_INTERNAL;
+    spin_lock_irq(&priv->lock);
+    rc = phy_ethtool_gset(phy, cmd);
+    spin_unlock_irq(&priv->lock);
+
+    return rc;
+}
+
+static int geth_ethtool_setsettings(struct net_device *ndev,
+                    struct ethtool_cmd *cmd)
+{
+    struct geth_priv *priv = netdev_priv(ndev);
+    struct phy_device *phy = ndev->phydev;
+    int rc;
+
+    spin_lock(&priv->lock);
+    rc = phy_ethtool_sset(phy, cmd);
+    spin_unlock(&priv->lock);
+
+    return rc;
+}
+#endif
 
 static void geth_ethtool_getdrvinfo(struct net_device *ndev,
                                     struct ethtool_drvinfo *info)
@@ -1637,6 +1800,8 @@ static void geth_ethtool_getdrvinfo(struct net_device *ndev,
 
 static const struct ethtool_ops geth_ethtool_ops = {
     .begin = geth_check_if_running,
+    // .get_settings = geth_ethtool_getsettings,
+    // .set_settings = geth_ethtool_setsettings,
     .get_link_ksettings = phy_ethtool_get_link_ksettings,
     .set_link_ksettings = phy_ethtool_set_link_ksettings,
     .get_link = ethtool_op_get_link,
@@ -1672,30 +1837,26 @@ static int geth_hw_init(struct platform_device *pdev)
 
     /* config memery resource */
     res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-    if (unlikely(!res))
-    {
+    if (unlikely(!res)) {
         pr_err("%s: ERROR: get gmac memory failed", __func__);
         return -ENODEV;
     }
 
     priv->base = devm_ioremap_resource(&pdev->dev, res);
-    if (!priv->base)
-    {
+    if (!priv->base) {
         pr_err("%s: ERROR: gmac memory mapping failed", __func__);
         return -ENOMEM;
     }
 
     res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
-    if (unlikely(!res))
-    {
+    if (unlikely(!res)) {
         pr_err("%s: ERROR: get phy memory failed", __func__);
         ret = -ENODEV;
         goto mem_err;
     }
 
     priv->base_phy = devm_ioremap_resource(&pdev->dev, res);
-    if (unlikely(!priv->base_phy))
-    {
+    if (unlikely(!priv->base_phy)) {
         pr_err("%s: ERROR: phy memory mapping failed", __func__);
         ret = -ENOMEM;
         goto mem_err;
@@ -1703,62 +1864,75 @@ static int geth_hw_init(struct platform_device *pdev)
 
     /* config IRQ */
     ndev->irq = platform_get_irq_byname(pdev, "gmacirq");
-    if (ndev->irq == -ENXIO)
-    {
+    if (ndev->irq == -ENXIO) {
         pr_err("%s: ERROR: MAC IRQ not found\n", __func__);
         ret = -ENXIO;
         goto irq_err;
     }
 
     ret = request_irq(ndev->irq, geth_interrupt, IRQF_SHARED, dev_name(&pdev->dev), ndev);
-    if (unlikely(ret < 0))
-    {
-        pr_err("==> Could not request irq %d, error: %d\n", ndev->irq, ret);
+    if (unlikely(ret < 0)) {
+        pr_err("Could not request irq %d, error: %d\n", ndev->irq, ret);
         goto irq_err;
     }
 
     /* config clock */
     priv->geth_clk = of_clk_get_by_name(np, "bus-emac1");
-    if (unlikely(!priv->geth_clk || IS_ERR(priv->geth_clk)))
-    {
-        pr_err("==> Get gmac clock failed!\n");
+    if (unlikely(!priv->geth_clk || IS_ERR(priv->geth_clk))) {
+        pr_err("Get gmac clock failed!\n");
         ret = -EINVAL;
         goto clk_err;
     }
 
-    if (INT_PHY == priv->phy_ext)
-    {
+    if (INT_PHY == priv->phy_ext) {
         priv->ephy_clk = of_clk_get_by_name(np, "emac-25m");
-        if (unlikely(IS_ERR_OR_NULL(priv->ephy_clk)))
-        {
+        if (unlikely(IS_ERR_OR_NULL(priv->ephy_clk))) {
             pr_err("Get ephy clock failed!\n");
             ret = -EINVAL;
             goto clk_err;
         }
     }
+#if 1 // defined(CONFIG_ARCH_SUN8IW12) || defined(CONFIG_ARCH_SUN50IW9)
+    else {
+        if (!of_property_read_u32(np, "use_ephy25m", &g_use_ephy_clk)
+                && g_use_ephy_clk) {
+            priv->ephy_clk = of_clk_get_by_name(np, "ephy");
+            if (unlikely(IS_ERR_OR_NULL(priv->ephy_clk))) {
+                pr_err("Get ephy clk failed!\n");
+                ret = -EINVAL;
+                goto clk_err;
+            }
+        }
+    }
+#endif
 
     /* config power regulator */
-    if (EXT_PHY == priv->phy_ext)
-    {
-        for (i = 0; i < POWER_CHAN_NUM; i++)
-        {
+    if (EXT_PHY == priv->phy_ext) {
+        for (i = 0; i < POWER_CHAN_NUM; i++) {
             snprintf(power, 15, "gmac-power%d", i);
             ret = of_property_read_string(np, power, &gmac_power);
-            if (ret)
-            {
+            if (ret) {
                 priv->gmac_power[i] = NULL;
                 pr_info("gmac-power%d: NULL\n", i);
                 continue;
             }
             priv->gmac_power[i] = regulator_get(NULL, gmac_power);
-            if (IS_ERR(priv->gmac_power[i]))
-            {
+            if (IS_ERR(priv->gmac_power[i])) {
                 pr_err("gmac-power%d get error!\n", i);
                 ret = -EINVAL;
                 goto clk_err;
             }
         }
     }
+
+    // /* config other parameters */
+    // priv->phy_interface = of_get_phy_mode(np);
+    // if (priv->phy_interface != PHY_INTERFACE_MODE_MII &&
+    //     priv->phy_interface != PHY_INTERFACE_MODE_RGMII &&
+    //     priv->phy_interface != PHY_INTERFACE_MODE_RMII) {
+    //     pr_err("Not support phy type!\n");
+    //     priv->phy_interface = PHY_INTERFACE_MODE_MII;
+    // }
 
     priv->phy_interface = PHY_INTERFACE_MODE_RMII;
 
@@ -1769,15 +1943,12 @@ static int geth_hw_init(struct platform_device *pdev)
         rx_delay = value;
 
     /* config pinctrl */
-    if (EXT_PHY == priv->phy_ext)
-    {
+    if (EXT_PHY == priv->phy_ext) {
         priv->phyrst = of_get_named_gpio_flags(np, "phy-rst", 0, (enum of_gpio_flags *)&cfg);
         priv->rst_active_low = (cfg.data == OF_GPIO_ACTIVE_LOW) ? 1 : 0;
 
-        if (gpio_is_valid(priv->phyrst))
-        {
-            if (gpio_request(priv->phyrst, "phy-rst") < 0)
-            {
+        if (gpio_is_valid(priv->phyrst)) {
+            if (gpio_request(priv->phyrst, "phy-rst") < 0) {
                 pr_err("gmac gpio request fail!\n");
                 ret = -EINVAL;
                 goto pin_err;
@@ -1785,8 +1956,7 @@ static int geth_hw_init(struct platform_device *pdev)
         }
 
         priv->pinctrl = devm_pinctrl_get_select_default(&pdev->dev);
-        if (IS_ERR_OR_NULL(priv->pinctrl))
-        {
+        if (IS_ERR_OR_NULL(priv->pinctrl)) {
             pr_err("gmac pinctrl error!\n");
             priv->pinctrl = NULL;
             ret = -EINVAL;
@@ -1803,10 +1973,8 @@ static int geth_hw_init(struct platform_device *pdev)
     return 0;
 
 pin_err:
-    if (EXT_PHY == priv->phy_ext)
-    {
-        for (i = 0; i < POWER_CHAN_NUM; i++)
-        {
+    if (EXT_PHY == priv->phy_ext) {
+        for (i = 0; i < POWER_CHAN_NUM; i++) {
             if (IS_ERR_OR_NULL(priv->gmac_power[i]))
                 continue;
             regulator_put(priv->gmac_power[i]);
@@ -1834,10 +2002,8 @@ static void geth_hw_release(struct platform_device *pdev)
     if (priv->geth_clk)
         clk_put(priv->geth_clk);
 
-    if (EXT_PHY == priv->phy_ext)
-    {
-        for (i = 0; i < POWER_CHAN_NUM; i++)
-        {
+    if (EXT_PHY == priv->phy_ext) {
+        for (i = 0; i < POWER_CHAN_NUM; i++) {
             if (IS_ERR_OR_NULL(priv->gmac_power[i]))
                 continue;
             regulator_put(priv->gmac_power[i]);
@@ -1871,8 +2037,7 @@ static int geth_probe(struct platform_device *pdev)
 #endif
 
     ndev = alloc_etherdev(sizeof(struct geth_priv));
-    if (!ndev)
-    {
+    if (!ndev) {
         dev_err(&pdev->dev, "could not allocate device.\n");
         return -ENOMEM;
     }
@@ -1883,8 +2048,7 @@ static int geth_probe(struct platform_device *pdev)
 
     /* Must set private data to pdev, before call it */
     ret = geth_hw_init(pdev);
-    if (0 != ret)
-    {
+    if (0 != ret) {
         pr_err("geth_hw_init fail!\n");
         goto hw_err;
     }
@@ -1917,8 +2081,7 @@ static int geth_probe(struct platform_device *pdev)
     sunxi_geth_register((void *)ndev->base_addr, HW_VERSION, 0x03);
 
     ret = register_netdev(ndev);
-    if (ret)
-    {
+    if (ret) {
         netif_napi_del(&priv->napi);
         pr_err("Error: Register %s failed\n", ndev->name);
         goto reg_err;
@@ -1931,6 +2094,8 @@ static int geth_probe(struct platform_device *pdev)
     geth_create_attrs(ndev);
 #endif
     device_create_file(&pdev->dev, &dev_attr_gphy_test);
+    device_create_file(&pdev->dev, &dev_attr_mii_read);
+    device_create_file(&pdev->dev, &dev_attr_mii_write);
 
     device_enable_async_suspend(&pdev->dev);
 
@@ -1955,6 +2120,8 @@ static int geth_remove(struct platform_device *pdev)
     struct geth_priv *priv = netdev_priv(ndev);
 
     device_remove_file(&pdev->dev, &dev_attr_gphy_test);
+    device_remove_file(&pdev->dev, &dev_attr_mii_read);
+    device_remove_file(&pdev->dev, &dev_attr_mii_write);
 
     netif_napi_del(&priv->napi);
     unregister_netdev(ndev);
@@ -1966,9 +2133,7 @@ static int geth_remove(struct platform_device *pdev)
 }
 
 static const struct of_device_id geth_of_match[] = {
-    {
-        .compatible = "allwinner,sunxi-gmac",
-    },
+    {.compatible = "allwinner,sunxi-gmac",},
     {},
 };
 MODULE_DEVICE_TABLE(of, geth_of_match);
@@ -1983,31 +2148,7 @@ static struct platform_driver geth_driver = {
         .of_match_table = geth_of_match,
     },
 };
-
-#include <linux/pwm.h>
-static struct pwm_device *pwm;
-
-static int __init phy_init(void)
-{
-    int ret = 0;
-
-    pwm = pwm_request(5, NULL);
-    if (!IS_ERR_OR_NULL(pwm))
-    {
-        //	pwm_config(pwm, 205, 410);
-        pwm_config(pwm, 20, 40); // 25MHz
-        pwm_enable(pwm);
-    }
-
-    return platform_driver_register(&geth_driver);
-}
-module_init(phy_init);
-
-static void __exit phy_exit(void)
-{
-    platform_driver_unregister(&geth_driver);
-}
-module_exit(phy_exit);
+module_platform_driver(geth_driver);
 
 #ifndef MODULE
 static int __init set_mac_addr(char *str)

@@ -208,4 +208,9 @@ struct ac200_dev
     struct regmap_irq_chip_data *regmap_irqc;
 };
 
+int ac200_enable(void);
+int acx00_reg_read(struct ac200_dev *acx00, unsigned short reg);
+int acx00_reg_write(struct ac200_dev *acx00, unsigned short reg, unsigned short val);
+uint32_t sun50i_ephy_calibrate_value(void);
+
 #endif /* __LINUX_MFD_AC200_H */
