@@ -13,12 +13,15 @@
 *.bak
 *.swp
 *.tar.gz
+*.o.cmd
+*.gz.cmd
+*.deb
 
+.config
+.config.old
 .tmp
 .vscode
 output
-nfs_folder
-!nfs_folder/update_kernel.sh
 
 toolchains/libexec/
 
