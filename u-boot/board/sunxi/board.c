@@ -495,6 +495,11 @@ static void mmc_pinmux_setup(int sdc)
             sunxi_gpio_set_pull(pin, SUNXI_GPIO_PULL_UP);
             sunxi_gpio_set_drv(pin, 3);
         }
+
+        /* PC3 eMMC sel pin set to pull down mode for boot from eMMC */
+        sunxi_gpio_set_cfgpin(SUNXI_GPC(3), SUNXI_GPIO_INPUT);
+        sunxi_gpio_set_pull(SUNXI_GPC(3), SUNXI_GPIO_PULL_DOWN);
+        sunxi_gpio_set_drv(SUNXI_GPC(3), 3);
 #else
         puts("ERROR: No pinmux setup defined for MMC2!\n");
 #endif
