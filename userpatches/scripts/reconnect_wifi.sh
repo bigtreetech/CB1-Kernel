@@ -64,11 +64,6 @@ function Env_init() {
         exit 1
     fi
 
-    sudo kill -9 `pidof wpa_supplicant`
-    sleep 2
-    sudo systemctl restart NetworkManager
-    sleep 4
-
     # enable wlan
     [[ $(ifconfig | grep $wlan) == "" ]] && sudo nmcli radio wifi on
 

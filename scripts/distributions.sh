@@ -240,12 +240,12 @@ install_common()
 		sed -i "s/^#kernel.printk*/kernel.printk/" "${SDCARD}"/etc/sysctl.conf
 	fi
 
-	# disable repeated messages due to xconsole not being installed.
-	[[ -f "${SDCARD}"/etc/rsyslog.d/50-default.conf ]] && \
-	sed '/daemon\.\*\;mail.*/,/xconsole/ s/.*/#&/' -i "${SDCARD}"/etc/rsyslog.d/50-default.conf
+	# # disable repeated messages due to xconsole not being installed.
+	# [[ -f "${SDCARD}"/etc/rsyslog.d/50-default.conf ]] && \
+	# sed '/daemon\.\*\;mail.*/,/xconsole/ s/.*/#&/' -i "${SDCARD}"/etc/rsyslog.d/50-default.conf
 
-	# disable deprecated parameter
-	sed '/.*$KLogPermitNonKernelFacility.*/,// s/.*/#&/' -i "${SDCARD}"/etc/rsyslog.conf
+	# # disable deprecated parameter
+	# sed '/.*$KLogPermitNonKernelFacility.*/,// s/.*/#&/' -i "${SDCARD}"/etc/rsyslog.conf
 
 	# enable getty on multiple serial consoles
 	# and adjust the speed if it is defined and different than 115200
@@ -381,22 +381,12 @@ install_rclocal()
 install_system_cfg()
 {
     mkdir "${SDCARD}"/boot/gcode -p
-    mkdir "${SDCARD}"/etc/scripts -p
 
-    cp $USERPATCHES_PATH/scripts/system.cfg ${SDCARD}/boot/system.cfg
+    cp $USERPATCHES_PATH/boot/system.cfg ${SDCARD}/boot/system.cfg
     chmod +x "${SDCARD}"/boot/system.cfg
 
-    cp $USERPATCHES_PATH/scripts/ex_rootfs.sh ${SDCARD}/etc/scripts
-    chmod +x "${SDCARD}"/etc/scripts/ex_rootfs.sh
-
-    cp $USERPATCHES_PATH/scripts/reconnect_wifi.sh ${SDCARD}/etc/scripts
-    chmod +x "${SDCARD}"/etc/scripts/reconnect_wifi.sh
-
-    cp $USERPATCHES_PATH/scripts/auto_brightness ${SDCARD}/etc/scripts
-    chmod +x "${SDCARD}"/etc/scripts/auto_brightness
-
-    cp $USERPATCHES_PATH/scripts/set_rgb ${SDCARD}/etc/scripts
-    chmod +x "${SDCARD}"/etc/scripts/set_rgb
+    cp -r $USERPATCHES_PATH/scripts/ ${SDCARD}/etc/
+    chmod +x "${SDCARD}"/etc/scripts/*
 }
 
 install_distribution_specific()

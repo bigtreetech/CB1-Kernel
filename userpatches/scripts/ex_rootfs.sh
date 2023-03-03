@@ -206,27 +206,27 @@ fi
 if [[ \${BTT_PAD7} == "ON" ]]; then
     # Toggle status light color
     sudo /etc/scripts/set_rgb 0x000001 0x000001
+    sudo /etc/scripts/set_rgb 0x000001 0x000001
 
     # Automatic brightness adjustment
     [[ \${AUTO_BRIGHTNESS} == "ON" ]] && /etc/scripts/auto_brightness &
 
-    if [[ -d "/home/${username}/KlipperScreen/scripts/BTT-PAD7" ]]; then
-        SRC_FILE=/home/${username}/KlipperScreen/scripts/BTT-PAD7/click_effect.sh
+    SRC_FILE=/etc/scripts/ks_click.sh
 
-        [[ -e "\${SRC_FILE}" ]] && sudo rm \${SRC_FILE} -fr
+    [[ -e "\${SRC_FILE}" ]] && sudo rm \${SRC_FILE} -fr
 
-        touch \${SRC_FILE} && chmod +x \${SRC_FILE}
-        echo "#!/bin/bash" >> \${SRC_FILE}
+    touch \${SRC_FILE} && chmod +x \${SRC_FILE}
+    echo "#!/bin/bash" >> \${SRC_FILE}
 
-        if [[ \${TOUCH_VIBRATION} == "ON" ]] && [[ \${TOUCH_SOUND} == "ON" ]]; then
-            RUN_FILE="motor_sound"
-        elif [[ \${TOUCH_VIBRATION} == "ON" ]] && [[ \${TOUCH_SOUND} == "OFF" ]]; then
-            RUN_FILE="motor"
-        elif [[ \${TOUCH_VIBRATION} == "OFF" ]] && [[ \${TOUCH_SOUND} == "ON" ]]; then
-            RUN_FILE="sound"
-        fi
+    if [[ \${TOUCH_VIBRATION} == "ON" ]]; then
+        RUN_FILE="\${RUN_FILE}vibration"
+    fi
+    if [[ \${TOUCH_SOUND} == "ON" ]]; then
+        RUN_FILE="\${RUN_FILE}sound"
+    fi
 
-        if [[ \${RUN_FILE} != "sound" ]]; then
+    if [ -n "\${RUN_FILE}" ]; then
+        if [[ \${RUN_FILE} =~ "vibration" ]]; then
             sudo chmod 666 /sys/class/gpio/export
             echo 79 > /sys/class/gpio/export
             cd /sys/class/gpio/gpio79
@@ -234,7 +234,11 @@ if [[ \${BTT_PAD7} == "ON" ]]; then
             echo out > /sys/class/gpio/gpio79/direction
         fi
 
-        [[ -z "\${RUN_FILE}" ]] || echo "/home/${username}/KlipperScreen/scripts/BTT-PAD7/\${RUN_FILE}.sh &" >> \${SRC_FILE}
+        if [[ \${RUN_FILE} =~ "sound" ]]; then
+            export AUDIODRIVER=alsa
+        fi
+
+        [[ -z "\${RUN_FILE}" ]] || echo "/etc/scripts/\${RUN_FILE}.sh &" >> \${SRC_FILE}
     fi
 fi
 

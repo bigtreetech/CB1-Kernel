@@ -13,7 +13,7 @@ console=display
 ## uncomment for ws2812
 #overlays=ws2812
 
-## uncomment for bh1750 i2c-gpio, pwm3, disable uart0 for pwm3
+## uncomment for i2c-gpio, pwm3, disable uart0 for pwm3
 #overlays=light
 
 ## uncomment for TFT35_SPI screen
@@ -25,10 +25,19 @@ console=display
 ## uncomment to release 'spidev0.0' to user space
 #overlays=spidev0_0
 
+## uncomment to release 'spidev1.0' to user space
+#overlays=spidev1_0
+
+## uncomment to release 'spidev1.1' to user space
+#overlays=spidev1_1
+
 ## uncomment to release 'spidev1.2' to user space
 #overlays=spidev1_2
 
+## uncomment to set 'PH10' for IR
+#overlays=ir
+
 ## write the config after the 'overlays' and separate it with a space when multiple functions are enabled
-#overlays=disable_uart0 ws2812 light tft35_spi mcp2515 spidev0_0 spidev1_2
+#overlays=disable_uart0 pwm ws2812 light tft35_spi mcp2515 spidev0_0 spidev1_0 spidev1_1 spidev1_2 ir
 
 #------------------------------------------------#

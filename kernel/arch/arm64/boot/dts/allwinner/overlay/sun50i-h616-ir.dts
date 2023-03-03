@@ -5,7 +5,7 @@
 	compatible = "allwinner,sun50i-h616";
 
 	fragment@0 {
-		target = <&pwm>;
+		target = <&ir>;
 		__overlay__ {
 			status = "okay";
 		};

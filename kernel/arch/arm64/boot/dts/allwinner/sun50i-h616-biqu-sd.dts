@@ -472,12 +472,6 @@
 	status = "okay";
 };
 
-&ir {
-	pinctrl-names = "default";
-	pinctrl-0 = <&ir_rx_pin>;
-	status = "disabled";
-};
-
 &codec {
     allwinner,audio-routing =
         "Line Out", "LINEOUT";

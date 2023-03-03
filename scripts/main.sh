@@ -16,7 +16,7 @@ umask 002
 
 DEST="${SRC}"/output
 
-REVISION="2.3.1"
+REVISION="2.3.2"
 NTP_SERVER="cn.pool.ntp.org"
 titlestr="Choose an option"
 
