@@ -185,6 +185,7 @@ compile_uboot()
 	Provides: armbian-u-boot
 	Replaces: armbian-u-boot
 	Conflicts: armbian-u-boot, u-boot-sunxi
+	Description: Das U-Boot bootloader for ${BOARD}
 	EOF
 
 	# copy config file to the package
