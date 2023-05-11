@@ -38,80 +38,67 @@
 #define DRIVER_NAME "ws2812_ctl"
 #define CLASS_NAME "ws2812"
 
-uint32_t ws2812_pin = 1; // 定义ws2812的管脚
-unsigned int val = 0;
-
-// WS2811 timings
-#define T0H_TIME 220
-#define T0L_TIME 515
-#define T1H_TIME 545
-#define T1L_TIME 380
-
 //=====================================
 #define GPIO_BASE 0x0300B000
 #define GPIO_DAT_OFFSET(n) ((n)*0x0024 + 0x10)
 
-#define REG_WRITE(addr, value) iowrite32(value, gpio_regs + addr)
-#define REG_READ(addr) ioread32(gpio_regs + addr)
+static uint32_t ws2812_pin = 0; // 定义ws2812的管脚
+static volatile uint32_t *ws2812_gpio_port; // 直接用指针形式，用此定义
+static volatile uint32_t ws2812_gpio_bit;
+static volatile uint32_t ws2812_set_val = 0;
+static volatile uint32_t ws2812_reset_val = 0;
+
 //=====================================
 
 DEFINE_SPINLOCK(lock);
 
-static volatile unsigned int *ws2812_gpio_port; // 直接用指针形式，用此定义
-static volatile uint32_t ws2812_gpio_bit;       // 直接用指针形式，用此定义
-
-// 复位 ws2812
+// ws2812 reset
 static void ws2812_rst(void)
 {
-    val = readl(ws2812_gpio_port);
-    val &= ~ws2812_gpio_bit;       // 0xBFFF;
-    writel(val, ws2812_gpio_port); // pin_val=0
-    udelay(400);                   // 拉低至少300us
+    *ws2812_gpio_port &= ~ws2812_gpio_bit;
+    udelay(200);// RES low voltage time, Above 50µs
 }
 
-static void ws2812_sendbit_0(void)
-{
-    val = readl(ws2812_gpio_port);
-
-    val |= ws2812_gpio_bit;
-    writel(val, ws2812_gpio_port); // pin_val=1
-    ndelay(T0H_TIME);              // 350ns
-    val &= ~ws2812_gpio_bit;
-    writel(val, ws2812_gpio_port); // pin_val=0
-    ndelay(T0L_TIME);              // 800ns
-}
-
-static void ws2812_sendbit_1(void)
-{
-    val = readl(ws2812_gpio_port);
-
-    val |= ws2812_gpio_bit;
-    writel(val, ws2812_gpio_port); // pin_val=1
-    ndelay(T1H_TIME);              // 700ns
-    val &= ~ws2812_gpio_bit;
-    writel(val, ws2812_gpio_port); // pin_val=0
-    ndelay(T1L_TIME);              // 600ns
-}
-
-static void ws2812_Write_Byte(uint8_t byte)
+static void ws2812_Write_24Bits(uint32_t grb)
 {
     uint8_t i;
-    for (i = 0; i < 8; i++)
+    for (i = 0; i < 24; i++)
     {
-        if (byte & 0x80)
-            ws2812_sendbit_1();
+        if (grb & 0x800000)
+        {
+            // loop for delay about 700ns
+            *ws2812_gpio_port = ws2812_set_val;
+            *ws2812_gpio_port = ws2812_set_val;
+            *ws2812_gpio_port = ws2812_set_val;
+            *ws2812_gpio_port = ws2812_set_val;
+            *ws2812_gpio_port = ws2812_set_val;
+            *ws2812_gpio_port = ws2812_set_val;
+            *ws2812_gpio_port = ws2812_set_val;
+            // loop for delay about 600ns
+            *ws2812_gpio_port = ws2812_reset_val;
+            *ws2812_gpio_port = ws2812_reset_val;
+            *ws2812_gpio_port = ws2812_reset_val;
+            *ws2812_gpio_port = ws2812_reset_val;
+            *ws2812_gpio_port = ws2812_reset_val;
+            *ws2812_gpio_port = ws2812_reset_val;
+        }
         else
-            ws2812_sendbit_0();
-        byte <<= 1;
+        {
+            // loop for delay about 200ns
+            *ws2812_gpio_port = ws2812_set_val;
+            *ws2812_gpio_port = ws2812_set_val;
+            // loop for delay about 800ns
+            *ws2812_gpio_port = ws2812_reset_val;
+            *ws2812_gpio_port = ws2812_reset_val;
+            *ws2812_gpio_port = ws2812_reset_val;
+            *ws2812_gpio_port = ws2812_reset_val;
+            *ws2812_gpio_port = ws2812_reset_val;
+            *ws2812_gpio_port = ws2812_reset_val;
+            *ws2812_gpio_port = ws2812_reset_val;
+            *ws2812_gpio_port = ws2812_reset_val;
+        }
+        grb <<= 1;
     }
-}
-
-static void ws2812_Write_24Bits(uint8_t green, uint8_t red, uint8_t blue)
-{
-
-    ws2812_Write_Byte(green);
-    ws2812_Write_Byte(red);
-    ws2812_Write_Byte(blue);
 }
 
 static void ws2812_write_array(uint32_t *rgb, uint32_t cnt)
@@ -119,14 +106,20 @@ static void ws2812_write_array(uint32_t *rgb, uint32_t cnt)
     uint32_t i = 0;
     unsigned long flags;
 
+    for (i = 0; i < cnt; i++)
+    {
+        rgb[i] = (((rgb[i] >> 16) & 0xff) << 8) | (((rgb[i] >> 8) & 0xff) << 16) | ((rgb[i]) & 0xff);
+    }
+
     spin_lock_irqsave(&lock, flags);
-    udelay(100);
+    ws2812_set_val = *ws2812_gpio_port | ws2812_gpio_bit;
+    ws2812_reset_val = *ws2812_gpio_port & (~ws2812_gpio_bit);
     ws2812_rst();
     for (i = 0; i < cnt; i++)
     {
-        ws2812_Write_24Bits((rgb[i] >> 8) & 0xFF, (rgb[i] >> 16) & 0xFF, rgb[i] & 0xFF);
+        //grb = (((rgb[i] >> 16) & 0xff) << 8) | (((rgb[i] >> 8) & 0xff) << 16) | ((rgb[i]) & 0xff);
+        ws2812_Write_24Bits(rgb[i]);
     }
-
     spin_unlock_irqrestore(&lock, flags);
 }
 
