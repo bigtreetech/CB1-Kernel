@@ -411,7 +411,8 @@
 
     pinctrl-0 = <&spi1_pins>;
     cs-gpios = <&pio 2 11 GPIO_ACTIVE_HIGH>,    /* PC11 */
-                <&pio 2 7 GPIO_ACTIVE_HIGH>;    /* PC7 */
+                <&pio 2 7 GPIO_ACTIVE_HIGH>,    /* PC7 */
+                <&pio 2 13 GPIO_ACTIVE_HIGH>;    /* PC13 */
 
     status = "disabled";
     
