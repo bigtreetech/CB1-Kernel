@@ -108,6 +108,7 @@ static void ws2812_write_array(uint32_t *rgb, uint32_t cnt)
 
     for (i = 0; i < cnt; i++)
     {
+        // rgb -> grb
         rgb[i] = (((rgb[i] >> 16) & 0xff) << 8) | (((rgb[i] >> 8) & 0xff) << 16) | ((rgb[i]) & 0xff);
     }
 
@@ -117,7 +118,6 @@ static void ws2812_write_array(uint32_t *rgb, uint32_t cnt)
     ws2812_rst();
     for (i = 0; i < cnt; i++)
     {
-        //grb = (((rgb[i] >> 16) & 0xff) << 8) | (((rgb[i] >> 8) & 0xff) << 16) | ((rgb[i]) & 0xff);
         ws2812_Write_24Bits(rgb[i]);
     }
     spin_unlock_irqrestore(&lock, flags);

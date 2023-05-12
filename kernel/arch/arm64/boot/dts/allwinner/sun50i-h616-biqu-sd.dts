@@ -102,12 +102,17 @@
         // i2c-gpio,sda-open-drain;
         // i2c-gpio,scl-open-drain;
         
-        i2c-gpio,delay-us = <5>; /* 100 kHz */
+        i2c-gpio,delay-us = <3>; /* 100 kHz */
         
         tft_tp: ns2009@48 {
-            compatible = "ns2009";
+            compatible = "ti,tsc2007";
             reg = <0x48>;
             status = "disabled";
+			ti,x-plate-ohms = <660>;
+			ti,rt-thr = <3000>;
+			ti,fuzzx = <32>;
+			ti,fuzzy = <16>;
+			i2c,ignore-nak = <1>;
         };
 
         light: bh1750@5c {

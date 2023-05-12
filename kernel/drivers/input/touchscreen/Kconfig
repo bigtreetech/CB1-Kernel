@@ -1367,10 +1367,4 @@ config TOUCHSCREEN_ZINITIX
 	  To compile this driver as a module, choose M here: the
 	  module will be called zinitix.
 
-config  TOUCHSCREEN_NS2009
-	tristate  "ns2009 touchscreen driver"
-	default m
-	depends on I2C
-    depends on I2C_GPIO
-
 endif

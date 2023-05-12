@@ -66,10 +66,13 @@ struct tsc2007 {
 	u16			model;
 	u16			x_plate_ohms;
 	u16			max_rt;
+	u16			rt_thr;
+	u8			touched;
 	unsigned long		poll_period; /* in jiffies */
 	int			fuzzx;
 	int			fuzzy;
 	int			fuzzz;
+	bool		ignore_nak;
 
 	struct gpio_desc	*gpiod;
 	int			irq;
@@ -81,6 +84,9 @@ struct tsc2007 {
 	void			(*clear_penirq)(void);
 
 	struct mutex		mlock;
+
+	struct timer_list timer;
+	struct work_struct work_i2c_poll;
 };
 
 int tsc2007_xfer(struct tsc2007 *tsc, u8 cmd);
