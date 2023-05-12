@@ -189,7 +189,7 @@ static irqreturn_t tsc2007_soft_poll(int irq, void *handle)
 
 		rt = tsc2007_calculate_resistance(ts, &tc);
 
-		if (rt == 0) {
+		if (rt == 0 || rt == 256) {
 
 			/*
 				* Sample found inconsistent by debouncing or pressure is
@@ -209,8 +209,8 @@ static irqreturn_t tsc2007_soft_poll(int irq, void *handle)
 				rt = ts->max_rt - rt;
 
 				input_report_key(input, BTN_TOUCH, 1);
-				input_report_abs(input, ABS_X, tc.x);
-				input_report_abs(input, ABS_Y, tc.y);
+				input_report_abs(input, ABS_X, tc.y);
+				input_report_abs(input, ABS_Y, 4096 - tc.x);
 				input_report_abs(input, ABS_PRESSURE, rt);
 
 				input_sync(input);
