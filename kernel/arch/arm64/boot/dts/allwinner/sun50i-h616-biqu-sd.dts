@@ -178,6 +178,31 @@
         clock-frequency = <2000000>;
         status = "okay";
     };
+
+	gpu_opp_table: opp-table-1 {
+		compatible = "operating-points-v2";
+
+		opp-200000000 {
+			opp-hz = /bits/ 64 <200000000>;
+			opp-microvolt = <1100000>;
+		};
+		opp-312000000 {
+			opp-hz = /bits/ 64 <312000000>;
+			opp-microvolt = <1100000>;
+		};
+		opp-432000000 {
+			opp-hz = /bits/ 64 <432000000>;
+			opp-microvolt = <1100000>;
+		};
+		opp-528000000 {
+			opp-hz = /bits/ 64 <528000000>;
+			opp-microvolt = <1100000>;
+		};
+		opp-650000000 {
+			opp-hz = /bits/ 64 <650000000>;
+			opp-microvolt = <1100000>;
+		};
+	};
 };
 
 &pwm5 {
@@ -273,6 +298,7 @@
 
 &gpu {
     mali-supply = <&reg_dcdc3>;
+	operating-points-v2 = <&gpu_opp_table>;
     status = "okay";
 };
 
@@ -374,7 +400,7 @@
 			reg_dcdc3: dcdc3 {
 				regulator-name = "axp1530-dcdc3";
 				regulator-min-microvolt = <500000>;
-				regulator-max-microvolt = <1840000>;
+				regulator-max-microvolt = <1220000>;
 				regulator-step-delay-us = <25>;
 				regulator-final-delay-us = <50>;
 				regulator-always-on;

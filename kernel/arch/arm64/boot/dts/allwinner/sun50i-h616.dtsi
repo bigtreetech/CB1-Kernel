@@ -1192,7 +1192,7 @@
 			clock-names = "core", "bus";
 			resets = <&ccu RST_BUS_GPU>;
 			//operating-points-v2 = <&gpu_opp_table>;
-			//#cooling-cells = <2>;
+			#cooling-cells = <2>;
 			status = "disabled";
 		};
 

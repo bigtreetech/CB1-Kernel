@@ -139,6 +139,38 @@ config DRM_KMS_CMA_HELPER
 	help
 	  Choose this if you need the KMS CMA helper functions
 
+config DRM_GEM_SHMEM_HELPER
+	bool
+	depends on DRM && MMU
+	help
+	  Choose this if you need the GEM shmem helper functions
+
+config DRM_SCHED
+	tristate
+	depends on DRM
+
+config DRM_VGEM
+	tristate "Virtual GEM provider"
+	depends on DRM && MMU
+	select DRM_GEM_SHMEM_HELPER
+	help
+	  Choose this option to get a virtual graphics memory manager,
+	  as used by Mesa's software renderer for enhanced performance.
+	  If M is selected the module will be called vgem.
+
+config DRM_VKMS
+	tristate "Virtual KMS (EXPERIMENTAL)"
+	depends on DRM && MMU
+	select DRM_KMS_HELPER
+	select DRM_GEM_SHMEM_HELPER
+	select CRC32
+	default n
+	help
+	  Virtual Kernel Mode-Setting (VKMS) is used for testing or for
+	  running GPU in a headless machines. Choose this option to get
+	  a VKMS.
+
+	  If M is selected the module will be called vkms.
 
 source "drivers/gpu/drm/sun4i/Kconfig"
 
@@ -147,3 +179,5 @@ source "drivers/gpu/drm/bridge/Kconfig"
 # Separate option because drm_panel_orientation_quirks.c is shared with fbdev
 config DRM_PANEL_ORIENTATION_QUIRKS
 	tristate
+
+source "drivers/gpu/drm/panfrost/Kconfig"
