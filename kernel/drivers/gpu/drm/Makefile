@@ -40,13 +40,20 @@ drm_kms_helper-y := drm_bridge_connector.o drm_crtc_helper.o \
 
 drm_kms_helper-$(CONFIG_DRM_FBDEV_EMULATION) += drm_fb_helper.o
 drm_kms_helper-$(CONFIG_DRM_KMS_CMA_HELPER) += drm_fb_cma_helper.o
+drm-$(CONFIG_DRM_GEM_SHMEM_HELPER) += drm_gem_shmem_helper.o
 
 obj-$(CONFIG_DRM_KMS_HELPER) += drm_kms_helper.o
+obj-$(CONFIG_DRM_VGEM)	+= vgem/
+obj-$(CONFIG_DRM_VKMS)	+= vkms/
+obj-$(CONFIG_DRM_MESON)	+= meson/
 
 obj-$(CONFIG_DRM)	+= drm.o
 
 obj-$(CONFIG_DRM_PANEL_ORIENTATION_QUIRKS) += drm_panel_orientation_quirks.o
+obj-$(CONFIG_DRM_SCHED)	+= scheduler/
 
 obj-$(CONFIG_DRM_SUN4I) += sun4i/
 
 obj-y			+= bridge/
+obj-$(CONFIG_DRM_LIMA)  += lima/
+obj-$(CONFIG_DRM_PANFROST) += panfrost/
