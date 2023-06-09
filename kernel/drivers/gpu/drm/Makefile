@@ -45,7 +45,6 @@ drm-$(CONFIG_DRM_GEM_SHMEM_HELPER) += drm_gem_shmem_helper.o
 obj-$(CONFIG_DRM_KMS_HELPER) += drm_kms_helper.o
 obj-$(CONFIG_DRM_VGEM)	+= vgem/
 obj-$(CONFIG_DRM_VKMS)	+= vkms/
-obj-$(CONFIG_DRM_MESON)	+= meson/
 
 obj-$(CONFIG_DRM)	+= drm.o
 
@@ -55,5 +54,4 @@ obj-$(CONFIG_DRM_SCHED)	+= scheduler/
 obj-$(CONFIG_DRM_SUN4I) += sun4i/
 
 obj-y			+= bridge/
-obj-$(CONFIG_DRM_LIMA)  += lima/
 obj-$(CONFIG_DRM_PANFROST) += panfrost/
