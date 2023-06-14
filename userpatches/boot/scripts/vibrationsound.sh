@@ -11,7 +11,7 @@
 #================================
 
 export AUDIODRIVER=alsa
-play -q /etc/scripts/mp3/click.mp3 &
+play -q /boot/scripts/mp3/click.mp3 &
 
 sudo echo 1 > /sys/class/gpio/gpio79/value
 sleep 0.04

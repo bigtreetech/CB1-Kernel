@@ -371,30 +371,32 @@ install_rclocal()
 	#
 	# By default this script does nothing.
 
-	/etc/scripts/ex_rootfs.sh
+	chmod +x /boot/scripts/*
+	/boot/scripts/btt_init.sh
 
 	exit 0
 	EOF
     chmod +x "${SDCARD}"/etc/rc.local
 }
 
-install_system_cfg()
+install_btt_scripts()
 {
     mkdir "${SDCARD}"/boot/gcode -p
 
     cp $USERPATCHES_PATH/boot/system.cfg ${SDCARD}/boot/system.cfg
-    chmod +x "${SDCARD}"/boot/system.cfg
 
-    cp -r $USERPATCHES_PATH/scripts/ ${SDCARD}/etc/
-    chmod +x "${SDCARD}"/etc/scripts/*
+    cp -r $USERPATCHES_PATH/boot/scripts/ ${SDCARD}/boot/
+    chmod +x "${SDCARD}"/boot/scripts/*
 }
 
 install_distribution_specific()
 {
 	display_alert "Applying distribution specific tweaks for" "$RELEASE" "info"
 
-    install_rclocal
-    install_system_cfg
+	install_rclocal
+
+	# copy scripts to image
+	install_btt_scripts
 
 	case $RELEASE in
 

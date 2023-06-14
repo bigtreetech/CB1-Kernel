@@ -10,7 +10,7 @@ HOSTRELEASE=$(cat /etc/os-release | grep VERSION_CODENAME | cut -d"=" -f2)
 
 [[ -z $VENDOR ]] && VENDOR=$BOARD_NAME
 [[ -z $MAINTAINER ]] && MAINTAINER=$BOARD_NAME      # deb signature
-[[ -z $MAINTAINERMAIL ]] && MAINTAINERMAIL="shilong.native@gmail.com"     # deb signature
+[[ -z $MAINTAINERMAIL ]] && MAINTAINERMAIL="tech@biqu3d.com"     # deb signature
 [[ -z $DEB_COMPRESS ]] && DEB_COMPRESS="xz"         # compress .debs with XZ by default. Use 'none' for faster/larger builds
 [[ -z $EXIT_PATCHING_ERROR ]] && EXIT_PATCHING_ERROR=""         # exit patching if failed
 [[ -z $HOST ]] && HOST=$BOARD_NAME                              # set hostname to the board
