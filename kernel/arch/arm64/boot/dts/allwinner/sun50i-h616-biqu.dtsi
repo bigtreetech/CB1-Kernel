@@ -311,8 +311,8 @@
 		regulators{
 			reg_dcdc1: dcdc1 {
 				regulator-name = "axp1530-dcdc1";
-				regulator-min-microvolt = <500000>;
-				regulator-max-microvolt = <3400000>;
+				regulator-min-microvolt = <810000>;
+				regulator-max-microvolt = <990000>;
 				regulator-step-delay-us = <25>;
 				regulator-final-delay-us = <50>;
 				regulator-always-on;
@@ -320,8 +320,8 @@
 
 			reg_dcdc2: dcdc2 {
 				regulator-name = "axp1530-dcdc2";
-				regulator-min-microvolt = <500000>;
-				regulator-max-microvolt = <1540000>;
+				regulator-min-microvolt = <810000>;
+				regulator-max-microvolt = <1100000>;
 				regulator-step-delay-us = <25>;
 				regulator-final-delay-us = <50>;
 				regulator-ramp-delay = <200>; // FIXME
@@ -330,8 +330,8 @@
 
 			reg_dcdc3: dcdc3 {
 				regulator-name = "axp1530-dcdc3";
-				regulator-min-microvolt = <500000>;
-				regulator-max-microvolt = <1220000>;
+				regulator-min-microvolt = <1350000>;
+				regulator-max-microvolt = <1350000>;
 				regulator-step-delay-us = <25>;
 				regulator-final-delay-us = <50>;
 				regulator-always-on;
