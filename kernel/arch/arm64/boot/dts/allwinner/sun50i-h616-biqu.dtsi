@@ -331,7 +331,7 @@
 			reg_dcdc3: dcdc3 {
 				regulator-name = "axp1530-dcdc3";
 				regulator-min-microvolt = <1350000>;
-				regulator-max-microvolt = <1350000>;
+				regulator-max-microvolt = <1500000>;
 				regulator-step-delay-us = <25>;
 				regulator-final-delay-us = <50>;
 				regulator-always-on;
