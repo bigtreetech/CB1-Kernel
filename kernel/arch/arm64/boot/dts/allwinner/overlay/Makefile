@@ -9,6 +9,7 @@ dtbo-$(CONFIG_ARCH_SUNXI) += \
 	sun50i-h616-spidev1_0.dtbo \
 	sun50i-h616-spidev1_1.dtbo \
 	sun50i-h616-spidev1_2.dtbo \
+	sun50i-h616-i2c0.dtbo\
 	sun50i-h616-ir.dtbo \
 	sun50i-h616-tft35_spi.dtbo \
 	sun50i-h616-tft35_spi25.dtbo \

@@ -23,6 +23,9 @@ console=display
 #overlays=mcp2515
 
 ## uncomment to release 'spidev0.0' to user space
+#overlays=i2c0
+
+## uncomment to release 'spidev0.0' to user space
 #overlays=spidev0_0
 
 ## uncomment to release 'spidev1.0' to user space
@@ -38,6 +41,6 @@ console=display
 #overlays=ir
 
 ## write the config after the 'overlays' and separate it with a space when multiple functions are enabled
-#overlays=disable_uart0 pwm ws2812 light tft35_spi mcp2515 spidev0_0 spidev1_0 spidev1_1 spidev1_2 ir
+#overlays=disable_uart0 pwm ws2812 light tft35_spi mcp2515 i2c0 spidev0_0 spidev1_0 spidev1_1 spidev1_2 ir
 
 #------------------------------------------------#

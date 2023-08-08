@@ -335,6 +335,7 @@
 			i2c0_pins: i2c0-pins {
 				pins = "PI5", "PI6";
 				function = "i2c0";
+				bias-pull-up;
 			};
 
 			i2c1_pins: i2c1-pins {
