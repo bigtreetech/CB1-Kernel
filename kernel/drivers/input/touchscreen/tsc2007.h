@@ -65,6 +65,7 @@ struct tsc2007 {
 
 	u16			model;
 	u16			x_plate_ohms;
+	u16			y_plate_ohms;
 	u16			max_rt;
 	u16			rt_thr;
 	u8			touched;

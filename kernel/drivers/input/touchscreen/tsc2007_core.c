@@ -70,22 +70,25 @@ static void tsc2007_read_values(struct tsc2007 *tsc, struct ts_event *tc)
 
 u32 tsc2007_calculate_resistance(struct tsc2007 *tsc, struct ts_event *tc)
 {
-	u32 rt = 0;
+    u32 rt = 0;
+    if (tc->x == MAX_12BIT){
+        /* dev_info(&tsc->client->dev, "[DEBUG TSC] RESISTANCE CALCULATED | TC->X is MAX_12BIT Force to 0 || TC Z1: (%4d) | TC Z2: (%4d) | TC X: (%4d) | TC Y: (%4d)", tc->z1, tc->z2, tc->x, tc->y);*/
+        tc->x = 0;
+    }
 
-	/* range filtering */
-	if (tc->x == MAX_12BIT)
-		tc->x = 0;
+    if (tc->y == MAX_12BIT){
+        /*dev_info(&tsc->client->dev, "[DEBUG TSC] RESISTANCE CALCULATED | TC->Y is MAX_12BIT Force to 0 || TC Z1: (%4d) | TC Z2: (%4d) | TC X: (%4d) | TC Y: (%4d)", tc->z1, tc->z2, tc->x, tc->y);*/
+        tc->y = 0;
+    }
 
-	if (likely(tc->x && tc->z1)) {
-		/* compute touch resistance using equation #1 */
-		rt = tc->z2 - tc->z1;
-		rt *= tc->x;
-		rt *= tsc->x_plate_ohms;
-		rt /= tc->z1;
-		rt = (rt + 2047) >> 12;
-	}
 
-	return rt;
+    if (likely(tc->x && tc->y && tc->z1)) {
+        return (tsc->x_plate_ohms * tc->x / 4096) * ((4096 / tc->z1) - 1) - tsc->y_plate_ohms * (1 - tc->y / 4096);
+    }else{
+       /*dev_info(&tsc->client->dev, "[DEBUG TSC] RESISTANCE CALCULATED | Missing mandatory Data TCX(%4d) | TCY(%4d) | TCZ1(%4d)",tc->x,tc->y,tc->z1);*/
+       return false;
+    }
+
 }
 
 bool tsc2007_is_pen_down(struct tsc2007 *ts)
@@ -180,6 +183,7 @@ static irqreturn_t tsc2007_soft_poll(int irq, void *handle)
 	struct input_dev *input = ts->input;
 	struct ts_event tc;
 	u32 rt;
+	bool skipSync = false;
 
 	if(!ts->stopped) {
 
@@ -189,46 +193,38 @@ static irqreturn_t tsc2007_soft_poll(int irq, void *handle)
 
 		rt = tsc2007_calculate_resistance(ts, &tc);
 
-		if (rt == 0 || rt == 256) {
+        if (likely(rt)) {
 
-			/*
-				* Sample found inconsistent by debouncing or pressure is
-				* beyond the maximum. Don't report it to user space,
-				* repeat at least once more the measurement.
-				*/
-			dev_dbg(&ts->client->dev, "ignored pressure %d\n", rt);
+            /* range >= 0 && <= 4096 */
+            if (rt > 0 && rt <= ts->max_rt) {
+                    rt = ts->max_rt - rt;
+                    input_report_key(input, BTN_TOUCH, 1);
+                    input_report_abs(input, ABS_X, tc.y);
+                    input_report_abs(input, ABS_Y, 4096 - tc.x);
+                    input_report_abs(input, ABS_PRESSURE, rt);
+                    input_sync(input);
+                    /*dev_info(&ts->client->dev, "[DEBUG TSC] TOUCH TRIGGERED | RT: (%4d) | TC Z1: (%4d) | TC Z2: (%4d) | TC X: (%4d) | TC Y: (%4d)", rt, tc.z1, tc.z2, tc.x, tc.y);*/
 
-		} else {
+            } else {
+                //Discard Input Ghost or inconsistent
+                /*dev_info(&ts->client->dev, "[DEBUG TSC] TOUCH DISCARD | RT: (%4d) | TC Z1: (%4d) | TC Z2: (%4d) | TC X: (%4d) | TC Y: (%4d)", rt, tc.z1, tc.z2, tc.x, tc.y);*/
+                skipSync= true;
+            }
+        }else{
+       	    // No touch event or missing data for rt calculation
+            skipSync= true;
+        }
 
-			if (rt < ts->rt_thr) {
-
-				dev_dbg(&ts->client->dev,
-					"DOWN point(%4d,%4d), resistance (%4u)\n",
-					tc.x, tc.y, rt);
-
-				rt = ts->max_rt - rt;
-
-				input_report_key(input, BTN_TOUCH, 1);
-				input_report_abs(input, ABS_X, tc.y);
-				input_report_abs(input, ABS_Y, 4096 - tc.x);
-				input_report_abs(input, ABS_PRESSURE, rt);
-
-				input_sync(input);
-				ts->touched = 1;
-
-			} else if (ts->touched == 1) {
-
-				dev_dbg(&ts->client->dev, "UP\n");
-
-				input_report_key(input, BTN_TOUCH, 0);
-				input_report_abs(input, ABS_PRESSURE, 0);
-				input_sync(input);
-				ts->touched = 0;
-			}
-		}
-
-
+	}else{
+	    // TFT Not initialized
+	    /* dev_info(&ts->client->dev, "DEBUG TSC: TouchScreen Stopped"); */
 	}
+
+    if(skipSync){
+        input_report_key(input, BTN_TOUCH, 0);
+        input_report_abs(input, ABS_PRESSURE, 0);
+        input_sync(input);
+    }
 
 	return IRQ_HANDLED;
 }
@@ -339,6 +335,13 @@ static int tsc2007_probe_properties(struct device *dev, struct tsc2007 *ts)
 		ts->x_plate_ohms = val32;
 	} else {
 		dev_err(dev, "Missing ti,x-plate-ohms device property\n");
+		return -EINVAL;
+	}
+
+	if (!device_property_read_u32(dev, "ti,y-plate-ohms", &val32)) {
+		ts->y_plate_ohms = val32;
+	} else {
+		dev_err(dev, "Missing ti,y-plate-ohms device property\n");
 		return -EINVAL;
 	}
 
