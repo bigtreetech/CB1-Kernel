@@ -13,45 +13,42 @@
 # get_flash_information
 # check_sd_card_speed
 
-
-# Read in basic OS image information
-. /etc/armbian-release
-# and script configuration
+. /etc/board-release
 . /usr/lib/armbian/armbian-common
 
 prepare_temp_monitoring() {
 	# still an ugly hack but better do it just once at startup instead of every login
-	[ -d /etc/armbianmonitor/datasources ] || mkdir -p -m775 /etc/armbianmonitor/datasources
+	[ -d /etc/sysmonitor/datasources ] || mkdir -p -m775 /etc/sysmonitor/datasources
 
 	# PMIC check
 	if [[ -f /sys/power/axp_pmu/pmu/temp ]]; then
-		ln -fs /sys/power/axp_pmu/pmu/temp /etc/armbianmonitor/datasources/pmictemp
+		ln -fs /sys/power/axp_pmu/pmu/temp /etc/sysmonitor/datasources/pmictemp
 	elif [[ -f /sys/devices/platform/sunxi-i2c.0/i2c-0/0-0034//temp1_input ]]; then
 		ln -fs /sys/devices/platform/sunxi-i2c.0/i2c-0/0-0034/temp1_input \
-			/etc/armbianmonitor/datasources/pmictemp
+			/etc/sysmonitor/datasources/pmictemp
 	elif [[ -f /sys/devices/b0170000.i2c/i2c-0/0-0065/atc2603c-hwmon.0/ic_temperature ]]; then
 		ln -fs /sys/devices/b0170000.i2c/i2c-0/0-0065/atc2603c-hwmon.0/ic_temperature \
-			/etc/armbianmonitor/datasources/pmictemp
+			/etc/sysmonitor/datasources/pmictemp
 	elif [[ -f /sys/class/axppower/ic_temp ]]; then
-		ln -fs /sys/class/axppower/ic_temp /etc/armbianmonitor/datasources/pmictemp
+		ln -fs /sys/class/axppower/ic_temp /etc/sysmonitor/datasources/pmictemp
 	fi
 
 	# SoC temp: check sun7i legacy exception first, then standard path(s)
 	if [[ -d "/sys/devices/platform/a20-tp-hwmon" ]]; then
 		# sun7i legacy
-		ln -fs /sys/devices/platform/a20-tp-hwmon/temp1_input /etc/armbianmonitor/datasources/soctemp
-	elif [[ -f /sys/class/hwmon/hwmon0/temp1_input && ${BOARDFAMILY} != "mvebu" ]]; then
+		ln -fs /sys/devices/platform/a20-tp-hwmon/temp1_input /etc/sysmonitor/datasources/soctemp
+	elif [[ -f /sys/class/hwmon/hwmon0/temp1_input ]]; then
 		# usual convention with modern kernels
-		ln -fs /sys/class/hwmon/hwmon0/temp1_input /etc/armbianmonitor/datasources/soctemp
+		ln -fs /sys/class/hwmon/hwmon0/temp1_input /etc/sysmonitor/datasources/soctemp
 	else
 		# all other boards/kernels use the same sysfs node except of Actions Semi S500:
-		[[ ${BOARDFAMILY} == s500 ]] && THERMAL_ZONE="thermal_zone1" || THERMAL_ZONE="thermal_zone0"
-		ln -fs /sys/devices/virtual/thermal/${THERMAL_ZONE}/temp /etc/armbianmonitor/datasources/soctemp
+		THERMAL_ZONE="thermal_zone0"
+		ln -fs /sys/devices/virtual/thermal/${THERMAL_ZONE}/temp /etc/sysmonitor/datasources/soctemp
 	fi
 
 	# Ambient temp
 	if [[ ${BOARD} == "helios4" && -f /dev/thermal-board/temp1_input ]]; then
-		ln -fs /dev/thermal-board/temp1_input /etc/armbianmonitor/datasources/ambienttemp
+		ln -fs /dev/thermal-board/temp1_input /etc/sysmonitor/datasources/ambienttemp
 	fi
 } # prepare_temp_monitoring
 
@@ -67,9 +64,9 @@ log_hardware_info() {
 	echo -e "\n### dmesg:\n" >>${Log}
 	dmesg >>${Log}
 	echo -e "\n### armbian-release:\n" >>${Log}
-	cat /etc/armbian-release >>${Log}
+	cat /etc/board-release >>${Log}
 	echo -e "\n### boot environment:\n" >>${Log}
-	cat /boot/armbianEnv.txt >>${Log} 2>/dev/null || grep -v "^#" /boot/boot.ini | sed '/^\s*$/d' >>${Log}
+	cat /boot/BoardEnv.txt >>${Log} 2>/dev/null || grep -v "^#" /boot/boot.ini | sed '/^\s*$/d' >>${Log}
 	echo -e "\n### lsusb:\n" >>${Log}
 	lsusb 2>/dev/null >>${Log}
 	echo -e "\n### lscpu:\n" >>${Log}
@@ -91,17 +88,17 @@ log_hardware_info() {
 	echo -e "### partitions:\n" >>${Log}
 	grep -v " ram" /proc/partitions >>${Log}
 	echo -e "\n### df:\n" >>${Log}
-	df -h | grep -E '^udev|^tmpfs|^/dev/|log2ram|folder2ram' >>${Log}
-	command -v zpool >/dev/null 2>&1 && echo -e "\n### zpools:\n\n$(zpool list)\n\n### zfs datasets:\n\n$(zfs list)" >>${Log}
+	df -h | egrep '^udev|^tmpfs|^/dev/|log2ram|folder2ram' >>${Log}
+	which zpool >/dev/null 2>&1 && echo -e "\n### zpools:\n\n$(zpool list)\n\n### zfs datasets:\n\n$(zfs list)" >>${Log}
 	echo -e "\n### lsblk:\n" >>${Log}
 	lsblk -o NAME,FSTYPE,SIZE,MOUNTPOINT,UUID | grep -v "SWAP" >>${Log}
-	command -v zramctl >/dev/null 2>&1 && echo -e "\n### zramctl:\n\n$(zramctl)" >>${Log}
+	which zramctl >/dev/null 2>&1 && echo -e "\n### zramctl:\n\n$(zramctl)" >>${Log}
 	echo -e "\n### mtab:\n" >>${Log}
-	grep -E '^/dev/|\ zfs\ ' /etc/mtab | grep -Ev "log2ram|folder2ram" | sort >>${Log}
+	egrep '^/dev/|\ zfs\ ' /etc/mtab | egrep -v "log2ram|folder2ram" | sort >>${Log}
 	[[ -e /boot/script.bin ]] && echo -e "\n### /boot/script.bin --> $(readlink /boot/script.bin)" >>${Log}
 	get_flash_information >>${Log}
 	echo -e "\n### Boot system health:\n" >>${Log}
-	armbianmonitor -s | grep -E "^Time|^[0-9]" >>${Log}
+	sysmonitor -s | egrep "^Time|^[0-9]" >>${Log}
 } # log_hardware_info
 
 get_flash_information() {
@@ -130,7 +127,7 @@ check_sd_card_speed() {
 				Readspeed=$1
 				Writespeed=$2
 				if [ ${Readspeed} -lt 500 -o ${Writespeed} -lt 250 ]; then
-					show_motd_warning "Your SD card seems to be very slow. Please check performance using armbianmonitor -c"
+					show_motd_warning "Your SD card seems to be very slow. Please check performance using sysmonitor -c"
 				fi
 			fi
 		fi
@@ -158,13 +155,6 @@ case $1 in
 
 		;;
 	*stop*)
-		case ${BOARDFAMILY} in
-			sun?i)
-			# redefine green led to blink until shutdown, try to switch OTG port to host
-			(echo heartbeat >/sys/class/leds/*green*/trigger) 2>/dev/null
-			echo 0 > /sys/bus/platform/devices/sunxi_usb_udc/otg_role 2>/dev/null
-			;;
-		esac
 		# some kernel modules are known to crash the kernel on shutdown (an example
 		# is the mass storage gadget module at least on sun7i). We try to unload as
 		# much modules as possible to minimize such situations:
