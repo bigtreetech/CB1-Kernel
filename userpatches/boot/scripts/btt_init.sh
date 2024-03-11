@@ -14,6 +14,8 @@ cd /boot/scripts
 
 #./extend_fs.sh &
 
+./power_led.sh &
+
 ./system_cfg.sh &
 
 ./connect_wifi.sh &
