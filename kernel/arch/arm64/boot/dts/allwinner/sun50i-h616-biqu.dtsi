@@ -310,7 +310,7 @@
 		};
 
 		regulators{
-			reg_dcdc1: dcdc1 {
+			reg_dcdc1: dcdc1 { // GPU
 				regulator-name = "axp1530-dcdc1";
 				regulator-min-microvolt = <810000>;
 				regulator-max-microvolt = <990000>;
@@ -319,7 +319,7 @@
 				regulator-always-on;
 			};
 
-			reg_dcdc2: dcdc2 {
+			reg_dcdc2: dcdc2 { // CPU
 				regulator-name = "axp1530-dcdc2";
 				regulator-min-microvolt = <810000>;
 				regulator-max-microvolt = <1100000>;
@@ -329,7 +329,7 @@
 				regulator-always-on;
 			};
 
-			reg_dcdc3: dcdc3 {
+			reg_dcdc3: dcdc3 { // DRAM
 				regulator-name = "axp1530-dcdc3";
 				regulator-min-microvolt = <1350000>;
 				regulator-max-microvolt = <1500000>;
@@ -375,7 +375,7 @@
 };
 
 &gpu {
-	mali-supply = <&reg_dcdc3>;
+	mali-supply = <&reg_dcdc1>;
 	operating-points-v2 = <&gpu_opp_table>;
 	status = "okay";
 };
