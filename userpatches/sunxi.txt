@@ -22,7 +22,7 @@ console=display
 ## uncomment MCP2515 spi to canbus module
 #overlays=mcp2515
 
-## uncomment to release 'spidev0.0' to user space
+## uncomment to release 'i2c0'(PI5/PI6) to user space
 #overlays=i2c0
 
 ## uncomment to release 'spidev0.0' to user space
