@@ -115,6 +115,17 @@
 		status = "disabled";
 	};
 
+	gpio_keys {
+		compatible = "gpio-keys";
+		status = "disabled";
+
+		button_power {
+			label = "Power";
+			linux,code = <116>; // KEY_POWER
+			debounce-interval = <100>; // ms
+		};
+	};
+
 	i2c_gpio: i2c-gpio {
 		#address-cells = <1>;
 		#size-cells = <0>;
