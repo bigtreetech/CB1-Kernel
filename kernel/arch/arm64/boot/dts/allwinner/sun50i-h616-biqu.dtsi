@@ -287,7 +287,7 @@
 		xceiver-supply = <&reg_vcc33_wifi>;
 	};
 
-	tft_35: st7789v@1 {
+	tft_35: st7796@1 {
 		status = "disabled";
 		compatible = "sitronix,st7796";
 		reg = <1>;

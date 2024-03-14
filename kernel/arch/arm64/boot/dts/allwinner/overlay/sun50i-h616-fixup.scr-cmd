@@ -99,6 +99,10 @@ if test -n "${param_gpio_shutdown_pin}"; then
 	fi
 fi
 
+if test -n "${param_tft35_spi_rotate}"; then
+	fdt set /soc/spi@5011000/st7796@1 rotate "<${param_tft35_spi_rotate}>"
+fi
+
 if test "${param_uart1_rtscts}" = "1"; then
 	fdt get value tmp_phandle1 /soc/pinctrl@300b000/uart1-pins phandle
 	fdt get value tmp_phandle2 /soc/pinctrl@300b000/uart1-rts-cts-pins phandle

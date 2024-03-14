@@ -18,6 +18,8 @@ console=display
 
 ## uncomment for TFT35_SPI screen
 #overlays=tft35_spi
+## tft35 rotate: 0, 90, 180, 270
+#param_tft35_spi_rotate=0
 
 ## uncomment MCP2515 spi to canbus module
 #overlays=mcp2515
