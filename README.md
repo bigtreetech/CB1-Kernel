@@ -1,3 +1,5 @@
+# No more updates here, go to the [mainline armbian build](https://github.com/bigtreetech/build)
+
 # Debian Build for AllWinner H616
 
 ## Tested Hardwares
